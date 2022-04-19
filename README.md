@@ -76,3 +76,9 @@ runProject.bat
 - Go to tab "Home, click "Run model"
 
 > NOTE: If you don't see any detection, check in "app/public/model" whether it has file `best.pt`
+
+## Contributors:
+
+<a href="https://github.com/DuckyMomo20012/nodejs-yolov5/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=DuckyMomo20012/nodejs-yolov5" />
+</a>
