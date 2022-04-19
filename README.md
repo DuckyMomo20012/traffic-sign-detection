@@ -57,7 +57,7 @@ npm i
 
 ## How to run server and YOLOv5 (cmd):
 
-> Make sure you in folder root directories (E.g: nodejs-yolov5)
+> NOTE: Make sure you in folder root directories (E.g: nodejs-yolov5)
 
 > NOTE: To detect traffic sign use file `best.pt`
 
@@ -71,7 +71,7 @@ runProject.bat
 
 - Go to localhost:3000
 
-- Go to tab "Upload image", upload image to detect
+- Go to tab "Upload image", upload image to detect (you can use file `traffic-sign.jpg`)
 
 - Go to tab "Home, click "Run model"
 
