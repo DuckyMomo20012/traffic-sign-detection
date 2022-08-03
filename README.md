@@ -1,84 +1,352 @@
-# Traffic sign object detection
+<div align="center">
 
-A website to detect traffic signs, built with NodeJS.
+  <h1>Traffic sign object detection</h1>
 
-> WARNING: This website has a lot of bugs. Use it as reference only!!!
+  <p>
+    A website to detect traffic signs
+  </p>
 
-## Tech stacks:
-
-<p align="center">
-    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt="javascript" height="48" width="48" />
-    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" alt="css3" height="48" width="48" />
-    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/handlebars/handlebars-original.svg" alt="handlebars" height="48" width="48" />
-    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" alt="nodejs" height="48" width="48" />
-    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg" alt="expressjs" height="48" width="48" />
-    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="python" height="48" width="48" />
+<!-- Badges -->
+<p>
+  <a href="https://github.com/DuckyMomo20012/nodejs-yolov5/graphs/contributors">
+    <img src="https://img.shields.io/github/contributors/DuckyMomo20012/nodejs-yolov5" alt="contributors" />
+  </a>
+  <a href="">
+    <img src="https://img.shields.io/github/last-commit/DuckyMomo20012/nodejs-yolov5" alt="last update" />
+  </a>
+  <a href="https://github.com/DuckyMomo20012/nodejs-yolov5/network/members">
+    <img src="https://img.shields.io/github/forks/DuckyMomo20012/nodejs-yolov5" alt="forks" />
+  </a>
+  <a href="https://github.com/DuckyMomo20012/nodejs-yolov5/stargazers">
+    <img src="https://img.shields.io/github/stars/DuckyMomo20012/nodejs-yolov5" alt="stars" />
+  </a>
+  <a href="https://github.com/DuckyMomo20012/nodejs-yolov5/issues/">
+    <img src="https://img.shields.io/github/issues/DuckyMomo20012/nodejs-yolov5" alt="open issues" />
+  </a>
+  <a href="https://github.com/DuckyMomo20012/nodejs-yolov5/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/DuckyMomo20012/nodejs-yolov5.svg" alt="license" />
+  </a>
 </p>
 
-## How to build:
+<h4>
+    <a href="https://github.com/DuckyMomo20012/nodejs-yolov5/">View Demo</a>
+  <span> · </span>
+    <a href="https://github.com/DuckyMomo20012/nodejs-yolov5">Documentation</a>
+  <span> · </span>
+    <a href="https://github.com/DuckyMomo20012/nodejs-yolov5/issues/">Report Bug</a>
+  <span> · </span>
+    <a href="https://github.com/DuckyMomo20012/nodejs-yolov5/issues/">Request Feature</a>
+  </h4>
+</div>
 
-yolov5 is a submodule, so you may have to clone repo recursively:
+<br />
 
-```console
+<!-- Table of Contents -->
+
+# :notebook_with_decorative_cover: Table of Contents
+
+- [About the Project](#star2-about-the-project)
+  - [Screenshots](#camera-screenshots)
+  - [Tech Stack](#space_invader-tech-stack)
+  - [Features](#dart-features)
+- [Getting Started](#toolbox-getting-started)
+  - [Prerequisites](#bangbang-prerequisites)
+  - [Run Locally](#running-run-locally)
+- [Usage](#eyes-usage)
+- [Training](#rocket-training)
+- [Roadmap](#compass-roadmap)
+- [Contributing](#wave-contributing)
+  - [Code of Conduct](#scroll-code-of-conduct)
+- [FAQ](#grey_question-faq)
+- [License](#warning-license)
+- [Contact](#handshake-contact)
+- [Acknowledgements](#gem-acknowledgements)
+
+<!-- About the Project -->
+
+## :star2: About the Project
+
+<!-- Screenshots -->
+
+### :camera: Screenshots
+
+<div align="center">
+  <img src="https://user-images.githubusercontent.com/64480713/182522564-d872a2d6-646d-4223-9a2f-fe5ba3d12d66.png" alt="screenshot" />
+</div>
+
+<!-- TechStack -->
+
+### :space_invader: Tech Stack
+
+<details>
+  <summary>Server</summary>
+  <ul>
+    <li><a href="https://expressjs.com/">Express.js</a></li>
+    <li><a href="https://www.python.org/">Python</a></li>
+  </ul>
+</details>
+
+<!-- Features -->
+
+### :dart: Features
+
+- Detect traffic sign objects.
+
+<!-- Getting Started -->
+
+## :toolbox: Getting Started
+
+<!-- Prerequisites -->
+
+### :bangbang: Prerequisites
+
+- Python: `>= 3.9`.
+
+- This project uses [Yarn](https://yarnpkg.com/) as package manager:
+
+  ```bash
+  npm install --global yarn
+  ```
+
+- This project uses [Poetry](https://python-poetry.org/) as package manager:
+
+  Linux, macOS, Windows (WSL)
+
+  ```bash
+  curl -sSL https://install.python-poetry.org | python3 -
+  ```
+
+  Read more about installation on
+  [Poetry documentation](https://python-poetry.org/docs/master/#installation).
+
+- To run the script, you need to install [zx](https://github.com/google/zx)
+  tool:
+
+  **Requirement**: Node version >= 16.0.0
+
+  ```bash
+  npm install --global zx
+  ```
+
+<!-- Run Locally -->
+
+### :running: Run Locally
+
+Clone the project:
+
+[yolov5](https://github.com/ultralytics/yolov5) is a submodule, so you have to
+clone repo recursively:
+
+```bash
 git clone --recursive https://github.com/DuckyMomo20012/nodejs-yolov5.git
 ```
 
-### 1. Install environment for YOLOv5:
+Go to the project directory:
 
-```console
-python -m venv .venv
+```bash
+cd nodejs-yolov5
 ```
 
-### 2. Activate environment (cmd):
+Install dependencies:
 
-```console
-.venv\Scripts\activate
-```
+- **app:**
 
-### 3. Install python libs:
+  ```bash
+  cd ./app
+  yarn
+  ```
 
-```console
-pip install -r requirements.txt
-```
+- **yolo:**
 
-### 4. Install packages for server:
+  Install dependencies with `Poetry`:
 
-#### 4.1 Change directories to app:
+  ```bash
+  cd ./yolo
+  poetry install
+  ```
 
-```console
-cd app
-```
+  OR:
 
-#### 4.2 Install packages:
+  Install dependencies with `pip`:
 
-```console
-npm i
-```
+  ```bash
+  pip install -r requirements.txt
+  ```
 
-## How to run server and YOLOv5 (cmd):
+Running script to start the server:
 
-> NOTE: Make sure you in folder root directories (E.g: nodejs-yolov5)
+- **Windows:**
 
-> NOTE: To detect traffic sign use file `best.pt`
+  ```console
+  run.bat
+  ```
 
-> NOTE: Upload model function doesn't work. Don't use it.
+- **Linux and macOS:** Requires zx tool to be installed.
 
-- Run server:
+  ```bash
+  chmod +x ./run.mjs
+  ./run.mjs
+  ```
 
-```console
-runProject.bat
-```
+Start server manually:
 
-- Go to localhost:3000
+- **app:**
 
-- Go to tab "Upload image", upload image to detect (you can use file `traffic-sign.jpg`)
+  ```bash
+  cd ./app
+  yarn start
+  ```
 
-- Go to tab "Home, click "Run model"
+- **yolo:**
 
-> NOTE: If you don't see any detection, check in "app/public/model" whether it has file `best.pt`
+  ```bash
+  cd ./yolo
+  poetry shell
+  poe dev
+  ```
 
-## Contributors:
+<!-- Usage -->
+
+## :eyes: Usage
+
+- To detect traffic sign use file `yolo/sample/best.pt`.
+
+- Go to the tab "UPLOAD MODEL", and upload the model to detect (you can use a
+  sample file `yolo/sample/best.pt`).
+
+  > NOTE: This function is not "working" because the server will load the model
+  > name `best.pt` from folder `app/public/model/` automatically.
+
+- Go to the tab "UPLOAD IMAGE", and upload the image to detect (you can use a
+  sample file `yolo/sample/traffic-sign.jpg`).
+
+  - Accept image formats: `.png`, `.jpeg`, `.jpg`.
+
+  - After uploading the image, the image will be renamed to `image.png`.
+
+- Go to tab `HOME`, click `Run model`.
+
+  > NOTE: If you don't see any detection, check in folder `app/public/model`
+  > whether it has file `best.pt`. Then you have to copy the sample model file
+  > from `yolo/sample/best.pt` to `app/public/model/` manually.
+
+- Traffic signs detectable by the model:
+
+  <details>
+  <summary>List</summary>
+
+  ```
+  - Cycle Zone
+  - Danger Ahead
+  - Deer Zone
+  - End of Right Road Go straight
+  - Give Way
+  - Go Left or Straight
+  - Go Right or Straight
+  - Go Straight
+  - Huddle Road
+  - Left Curve Ahead
+  - Left Sharp Curve
+  - No Entry
+  - No Over Taking Trucks
+  - No Over Taking
+  - No Stopping
+  - No Waiting
+  - Pedestrian
+  - Right Curve Ahead
+  - Right Sharp Curve
+  - Road Work
+  - RoundAbout
+  - Slippery Road
+  - Snow Warning Sign
+  - Speed Limit 100
+  - Speed Limit 120
+  - Speed Limit 20
+  - Speed Limit 30
+  - Speed Limit 50
+  - Speed Limit 60
+  - Speed Limit 70
+  - Speed Limit 80
+  - Stop
+  - Traffic Signals Ahead
+  - Truck Sign
+  - Turn Left
+  - Turn Right
+  ```
+
+  </details>
+
+- If you want to detect using other models, you can rename the model file to
+  `best.pt` and copy it to `app/public/model/`.
+
+> NOTE: The model still needs more training, so the result may not be accurate.
+
+<!-- Training -->
+
+## :rocket: Training
+
+Please go to folder `training` and read `README.md` file.
+
+<!-- Roadmap -->
+
+## :compass: Roadmap
+
+- [ ] Fix server writing file problem.
+- [ ] Fix fixed model and image name problem.
+- [ ] Fix fixed uploading model problem.
+- [ ] Update UI.
+- [ ] Improve model for detection.
+
+<!-- Contributing -->
+
+## :wave: Contributing
 
 <a href="https://github.com/DuckyMomo20012/nodejs-yolov5/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=DuckyMomo20012/nodejs-yolov5" />
 </a>
+
+Contributions are always welcome!
+
+<!-- Code of Conduct -->
+
+### :scroll: Code of Conduct
+
+Please read the [Code of Conduct](https://github.com/DuckyMomo20012/nodejs-yolov5/blob/main/CODE_OF_CONDUCT.md).
+
+<!-- FAQ -->
+
+## :grey_question: FAQ
+
+- Is this project still maintained?
+
+  - No, but I will only update documentation.
+
+<!-- License -->
+
+## :warning: License
+
+Distributed under Apache-2.0 license. See
+[LICENSE](https://github.com/DuckyMomo20012/nodejs-yolov5/blob/main/LICENSE)
+for more information.
+
+<!-- Contact -->
+
+## :handshake: Contact
+
+Duong Vinh - [@duckymomo20012](https://twitter.com/duckymomo20012) - tienvinh.duong4@gmail.com
+
+Project Link: [https://github.com/DuckyMomo20012/nodejs-yolov5](https://github.com/DuckyMomo20012/nodejs-yolov5).
+
+<!-- Acknowledgments -->
+
+## :gem: Acknowledgements
+
+Here are useful resources and libraries that we have used in our projects:
+
+- [YOLOv5](https://github.com/ultralytics/yolov5): YOLOv5 rocket is a family of
+  object detection architectures and models pretrained on the COCO dataset, and
+  represents Ultralytics open-source research into future vision AI methods,
+  incorporating lessons learned and best practices evolved over thousands of
+  hours of research and development.
+- [Awesome Readme Template](https://github.com/Louis3797/awesome-readme-template):
+  A detailed template to bootstrap your README file quickly.
