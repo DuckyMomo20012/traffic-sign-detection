@@ -1,6 +1,6 @@
 import socket
-import time
 import threading
+import time
 
 
 def checkPortIsOpen(port):
@@ -23,34 +23,33 @@ def checkPortIsOpen(port):
 
 def interruptListen(s):
     while True:
-        print('check port 3000')
+        print("check port 3000")
         if checkPortIsOpen(3000):
             time.sleep(10)
             continue
         else:
-            print('app not work')
+            print("app not work")
             s.close()
             break
-
 
 
 def runServer(s):
     try:
         while True:
-            print('listen')
+            print("listen")
             try:
                 conn, addr = s.accept()
                 if conn:
-                    print('Connected by', addr)
+                    print("Connected by", addr)
                     data = conn.recv(1024).decode()
-                    print('received {!r}'.format(data))
+                    print("received {!r}".format(data))
                     if not data:
                         break
-                    if data == 'Close':
-                        print('end')
+                    if data == "Close":
+                        print("end")
                         break
                     time.sleep(5)
-                    reply = 'Success'
+                    reply = "Success"
                     conn.send(reply.encode())
             finally:
                 break
@@ -58,7 +57,8 @@ def runServer(s):
     finally:
         s.close()
 
-HOST = '127.0.0.1'  # Standard loopback interface address (localhost)
+
+HOST = "127.0.0.1"  # Standard loopback interface address (localhost)
 PORT = 1234  # Port to listen on (non-privileged ports are > 1023)
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 if s:
