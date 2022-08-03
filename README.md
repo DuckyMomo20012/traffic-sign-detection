@@ -71,7 +71,7 @@
 ### :camera: Screenshots
 
 <div align="center">
-  <img src="https://placehold.co/600x400?text=Your+Screenshot+here" alt="screenshot" />
+  <img src="https://user-images.githubusercontent.com/64480713/182522564-d872a2d6-646d-4223-9a2f-fe5ba3d12d66.png" alt="screenshot" />
 </div>
 
 <!-- TechStack -->
@@ -134,8 +134,11 @@
 
 Clone the project:
 
+[yolov5](https://github.com/ultralytics/yolov5) is a submodule, so you have to
+clone repo recursively:
+
 ```bash
-git clone https://github.com/DuckyMomo20012/nodejs-yolov5.git
+git clone --recursive https://github.com/DuckyMomo20012/nodejs-yolov5.git
 ```
 
 Go to the project directory:
@@ -178,7 +181,7 @@ Running script to start the server:
   run.bat
   ```
 
-- **Linux and macOS:** Requires zx tool
+- **Linux and macOS:** Requires zx tool to be installed.
 
   ```bash
   chmod +x ./run.mjs
@@ -208,13 +211,64 @@ Start server manually:
 
 - To detect traffic sign use file `yolo/best.pt`.
 
-- Go to the tab "Upload image", and upload the image to detect (you can use a
+- Go to the tab "UPLOAD MODEL", and upload the model to detect (you can use a
+  sample file `yolo/best.pt`).
+
+- Go to the tab "UPLOAD IMAGE", and upload the image to detect (you can use a
   sample file `yolo/traffic-sign.jpg`).
 
-- Go to tab "Home, click "Run model"
+- Go to tab `HOME`, click `Run model`
 
-> NOTE: If you don't see any detection, check in "app/public/model" whether it
-> has file `best.pt`.
+  > NOTE: If you don't see any detection, check in folder `app/public/model`
+  > whether it has file `best.pt`.
+
+- Traffic sign detectable by the model:
+
+  <details>
+  <summary>List</summary>
+
+  ```
+  - Cycle Zone
+  - Danger Ahead
+  - Deer Zone
+  - End of Right Road Go straight
+  - Give Way
+  - Go Left or Straight
+  - Go Right or Straight
+  - Go Straight
+  - Huddle Road
+  - Left Curve Ahead
+  - Left Sharp Curve
+  - No Entry
+  - No Over Taking Trucks
+  - No Over Taking
+  - No Stopping
+  - No Waiting
+  - Pedestrian
+  - Right Curve Ahead
+  - Right Sharp Curve
+  - Road Work
+  - RoundAbout
+  - Slippery Road
+  - Snow Warning Sign
+  - Speed Limit 100
+  - Speed Limit 120
+  - Speed Limit 20
+  - Speed Limit 30
+  - Speed Limit 50
+  - Speed Limit 60
+  - Speed Limit 70
+  - Speed Limit 80
+  - Stop
+  - Traffic Signals Ahead
+  - Truck Sign
+  - Turn Left
+  - Turn Right
+  ```
+
+  </details>
+
+> NOTE: The model still needs more training, so the result may not be accurate.
 
 <!-- Training -->
 
