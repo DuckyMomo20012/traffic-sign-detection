@@ -190,6 +190,8 @@ Running script to start the server:
 
 Start server manually:
 
+> NOTE: `app` and `yolo` needs to be **run concurrently**.
+
 - **app:**
 
   ```bash
@@ -209,10 +211,10 @@ Start server manually:
 
 ## :eyes: Usage
 
-- To detect traffic sign use file `yolo/sample/best.pt`.
+> NOTE: The model still needs more training, so the result may not be accurate.
 
 - Go to the tab "UPLOAD MODEL", and upload the model to detect (you can use a
-  sample file `yolo/sample/best.pt`).
+  sample file `yolo/best.pt`).
 
   > NOTE: This function is not "working" because the server will load the model
   > name `best.pt` from folder `app/public/model/` automatically.
@@ -227,8 +229,8 @@ Start server manually:
 - Go to tab `HOME`, click `Run model`.
 
   > NOTE: If you don't see any detection, check in folder `app/public/model`
-  > whether it has file `best.pt`. Then you have to copy the sample model file
-  > from `yolo/sample/best.pt` to `app/public/model/` manually.
+  > whether it has file `best.pt`. If not, then you have to copy the sample
+  > model file from `yolo/best.pt` to `app/public/model/` manually.
 
 - Traffic signs detectable by the model:
 
@@ -279,8 +281,6 @@ Start server manually:
 - If you want to detect using other models, you can rename the model file to
   `best.pt` and copy it to `app/public/model/`.
 
-> NOTE: The model still needs more training, so the result may not be accurate.
-
 <!-- Training -->
 
 ## :rocket: Training
@@ -320,6 +320,12 @@ Please read the [Code of Conduct](https://github.com/DuckyMomo20012/nodejs-yolov
 - Is this project still maintained?
 
   - No, but I will only update documentation.
+
+- Can't detect traffic signs:
+
+  - Make sure that you run both `app` and `yolo`.
+  - Check if `app/public/model/best.pt` exists.
+  - The model can't detect that traffic sign :man_shrugging:.
 
 <!-- License -->
 
