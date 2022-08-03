@@ -53,6 +53,7 @@
   - [Prerequisites](#bangbang-prerequisites)
   - [Run Locally](#running-run-locally)
 - [Usage](#eyes-usage)
+- [Training](#rocket-training)
 - [Roadmap](#compass-roadmap)
 - [Contributing](#wave-contributing)
   - [Code of Conduct](#scroll-code-of-conduct)
@@ -118,7 +119,8 @@
   Read more about installation on
   [Poetry documentation](https://python-poetry.org/docs/master/#installation).
 
-- To run the script, you need to install [zx](https://github.com/google/zx) tool:
+- To run the script, you need to install [zx](https://github.com/google/zx)
+  tool:
 
   **Requirement**: Node version >= 16.0.0
 
@@ -144,34 +146,89 @@ cd nodejs-yolov5
 
 Install dependencies:
 
-```bash
-yarn
-```
+- **app:**
 
-Start the server:
+  ```bash
+  cd ./app
+  yarn
+  ```
 
-```bash
-yarn start
-```
+- **yolo:**
+
+  Install dependencies with `Poetry`:
+
+  ```bash
+  cd ./yolo
+  poetry install
+  ```
+
+  OR:
+
+  Install dependencies with `pip`:
+
+  ```bash
+  pip install -r requirements.txt
+  ```
+
+Running script to start the server:
+
+- **Windows:**
+
+  ```console
+  run.bat
+  ```
+
+- **Linux and macOS:** Requires zx tool
+
+  ```bash
+  chmod +x ./run.mjs
+  ./run.mjs
+  ```
+
+Start server manually:
+
+- **app:**
+
+  ```bash
+  cd ./app
+  yarn start
+  ```
+
+- **yolo:**
+
+  ```bash
+  cd ./yolo
+  poetry shell
+  poe dev
+  ```
 
 <!-- Usage -->
 
 ## :eyes: Usage
 
-- To detect traffic sign use file `best.pt`.
+- To detect traffic sign use file `yolo/best.pt`.
 
-- Go to tab "Upload image", upload image to detect (you can use file `traffic-sign.jpg`).
+- Go to the tab "Upload image", and upload the image to detect (you can use a
+  sample file `yolo/traffic-sign.jpg`).
 
 - Go to tab "Home, click "Run model"
 
-> NOTE: If you don't see any detection, check in "app/public/model" whether it has file `best.pt`
+> NOTE: If you don't see any detection, check in "app/public/model" whether it
+> has file `best.pt`.
+
+<!-- Training -->
+
+## :rocket: Training
+
+Please go to folder `training` and read `README.md` file.
 
 <!-- Roadmap -->
 
 ## :compass: Roadmap
 
-- [x] Todo 1.
-- [ ] Todo 2.
+- [ ] Fix server writing file problem.
+- [ ] Update UI.
+- [ ] Improve model for detection.
 
 <!-- Contributing -->
 
