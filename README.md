@@ -209,20 +209,28 @@ Start server manually:
 
 ## :eyes: Usage
 
-- To detect traffic sign use file `yolo/best.pt`.
+- To detect traffic sign use file `yolo/sample/best.pt`.
 
 - Go to the tab "UPLOAD MODEL", and upload the model to detect (you can use a
-  sample file `yolo/best.pt`).
+  sample file `yolo/sample/best.pt`).
+
+  > NOTE: This function is not "working" because the server will load the model
+  > name `best.pt` from folder `app/public/model/` automatically.
 
 - Go to the tab "UPLOAD IMAGE", and upload the image to detect (you can use a
-  sample file `yolo/traffic-sign.jpg`).
+  sample file `yolo/sample/traffic-sign.jpg`).
 
-- Go to tab `HOME`, click `Run model`
+  - Accept image formats: `.png`, `.jpeg`, `.jpg`.
+
+  - After uploading the image, the image will be renamed to `image.png`.
+
+- Go to tab `HOME`, click `Run model`.
 
   > NOTE: If you don't see any detection, check in folder `app/public/model`
-  > whether it has file `best.pt`.
+  > whether it has file `best.pt`. Then you have to copy the sample model file
+  > from `yolo/sample/best.pt` to `app/public/model/` manually.
 
-- Traffic sign detectable by the model:
+- Traffic signs detectable by the model:
 
   <details>
   <summary>List</summary>
@@ -268,6 +276,9 @@ Start server manually:
 
   </details>
 
+- If you want to detect using other models, you can rename the model file to
+  `best.pt` and copy it to `app/public/model/`.
+
 > NOTE: The model still needs more training, so the result may not be accurate.
 
 <!-- Training -->
@@ -281,6 +292,8 @@ Please go to folder `training` and read `README.md` file.
 ## :compass: Roadmap
 
 - [ ] Fix server writing file problem.
+- [ ] Fix fixed model and image name problem.
+- [ ] Fix fixed uploading model problem.
 - [ ] Update UI.
 - [ ] Improve model for detection.
 
