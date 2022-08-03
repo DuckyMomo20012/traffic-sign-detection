@@ -7,23 +7,9 @@
   "extends": [
     "airbnb-base",
     "plugin:import/recommended",
-    "plugin:jsx-a11y/recommended",
-    "plugin:react/recommended",
-    "plugin:prettier/recommended",
-    "plugin:react-hooks/recommended",
-    "plugin:react/jsx-runtime"
+    "plugin:prettier/recommended"
   ],
-  "parser": "@babel/eslint-parser",
-  "parserOptions": {
-    "babelOptions": {},
-    "ecmaFeatures": {
-      "ecmaVersion": 2022,
-      "jsx": true
-    },
-    "requireConfigFile": false,
-    "sourceType": "module"
-  },
-  "plugins": ["react", "import"],
+  "plugins": ["import"],
   "rules": {
     "eqeqeq": "warn",
     "import/extensions": "off",
@@ -44,20 +30,8 @@
         "endOfLine": "auto"
       }
     ],
-    "react/jsx-sort-props": "warn",
-    "react/prop-types": [
-      "off",
-      {
-        "ignore": ["children"]
-      }
-    ],
     "require-await": "warn",
     "spaced-comment": ["warn", "always"],
     "strict": ["error", "global"]
-  },
-  "settings": {
-    "react": {
-      "version": "detect"
-    }
   }
 }
