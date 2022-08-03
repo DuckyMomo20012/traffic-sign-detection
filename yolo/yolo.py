@@ -60,7 +60,11 @@ def _create(
             ]  # model.yaml path
             model = Model(cfg, channels, classes)  # create model
             if pretrained:
-                ckpt = torch.load(attempt_load(path), map_location=device)  # load
+                ckpt = torch.load(
+                    attempt_load(path),
+                    map_location=device,
+                    force_reload=True,
+                )  # load
                 csd = (
                     ckpt["model"].float().state_dict()
                 )  # checkpoint state_dict as FP32
