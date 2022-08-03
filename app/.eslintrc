@@ -1,0 +1,63 @@
+{
+  "env": {
+    "browser": true,
+    "es2022": true,
+    "node": true
+  },
+  "extends": [
+    "airbnb-base",
+    "plugin:import/recommended",
+    "plugin:jsx-a11y/recommended",
+    "plugin:react/recommended",
+    "plugin:prettier/recommended",
+    "plugin:react-hooks/recommended",
+    "plugin:react/jsx-runtime"
+  ],
+  "parser": "@babel/eslint-parser",
+  "parserOptions": {
+    "babelOptions": {},
+    "ecmaFeatures": {
+      "ecmaVersion": 2022,
+      "jsx": true
+    },
+    "requireConfigFile": false,
+    "sourceType": "module"
+  },
+  "plugins": ["react", "import"],
+  "rules": {
+    "eqeqeq": "warn",
+    "import/extensions": "off",
+    "import/no-unresolved": "off",
+    "import/prefer-default-export": "off",
+    "no-var": "error",
+    "prefer-destructuring": [
+      "warn",
+      {
+        "array": false,
+        "object": true
+      }
+    ],
+    "no-param-reassign": ["off"],
+    "prettier/prettier": [
+      "error",
+      {
+        "endOfLine": "auto"
+      }
+    ],
+    "react/jsx-sort-props": "warn",
+    "react/prop-types": [
+      "off",
+      {
+        "ignore": ["children"]
+      }
+    ],
+    "require-await": "warn",
+    "spaced-comment": ["warn", "always"],
+    "strict": ["error", "global"]
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  }
+}
