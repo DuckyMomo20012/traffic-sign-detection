@@ -1,14 +1,20 @@
+import os
 import socket
 import sys
 import threading
 import time
+from glob import glob
+from pathlib import Path
 
 import torch
 
 sys.path.append("../yolov5")
 
-from models.common import *
-from models.experimental import *
+from models.common import AutoShape, DetectMultiBackend
+from models.experimental import attempt_load
+from models.yolo import Model
+from utils.general import check_requirements, intersect_dicts, set_logging
+from utils.torch_utils import select_device
 
 
 def _create(
@@ -34,12 +40,6 @@ def _create(
     Returns:
         YOLOv5 pytorch model
     """
-    from pathlib import Path
-
-    from models.common import AutoShape, DetectMultiBackend
-    from models.yolo import Model
-    from utils.general import check_requirements, intersect_dicts, set_logging
-    from utils.torch_utils import select_device
 
     check_requirements(exclude=("tensorboard", "thop", "opencv-python"))
     set_logging(verbose=verbose)
@@ -118,11 +118,13 @@ def interruptListen(s):
 
 
 def predict():
-    imgs = ["image.png"]  # numpy
+    imgs = []
+    for ext in ("*.png", "*.jpeg", "*.jpg"):
+        imgs.extend(glob(os.path.join("./upload/", ext)))
 
     results = model(imgs, size=640)  # batched inference
     results.print()
-    results.save(save_dir="app/public/result")
+    results.save(save_dir="../app/public/result")
 
 
 def runServer(s):
@@ -149,8 +151,11 @@ def runServer(s):
 
 
 if __name__ == "__main__":
+
+    modelFileName = list(glob("./upload/*.pt") + glob("./upload/*.pth"))[0]
+
     model = _create(
-        name="best.pt",
+        name=modelFileName,
         pretrained=True,
         channels=3,
         classes=80,
@@ -168,21 +173,3 @@ if __name__ == "__main__":
         threadServer = threading.Thread(target=runServer, args=(s,))
         threadCheckPort.start()
         threadServer.start()
-    # model = custom(path='path/to/model.pt')  # custom
-
-    # Verify inference
-    # from pathlib import Path
-
-    # import cv2
-    # import numpy as np
-    # from PIL import Image
-
-    # imgs = ['yolov5/data/images/zidane.jpg',
-    #         'traffic-sign.png',  # filename
-    #         Path('yolov5/data/images/zidane.jpg'),  # Path
-    #         'https://ultralytics.com/images/zidane.jpg',  # URI
-    #         np.zeros((320, 640, 3))]  # numpy
-
-    # results = model(imgs, size=320)  # batched inference
-    # results.print()
-    # results.save()
