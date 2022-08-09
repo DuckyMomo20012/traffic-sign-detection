@@ -51,7 +51,7 @@ def _create(
             ("0" if torch.cuda.is_available() else "cpu") if device is None else device
         )
 
-        if pretrained and channels == 3 and classes == 80:
+        if pretrained and channels == 3 and classes == 36:
             model = DetectMultiBackend(path, device=device)  # download/load FP32 model
             # model = models.experimental.attempt_load(path, map_location=device)  # download/load FP32 model
         else:
@@ -158,7 +158,7 @@ if __name__ == "__main__":
         name=modelFileName,
         pretrained=True,
         channels=3,
-        classes=80,
+        classes=36,
         autoshape=True,
         verbose=True,
     )  # pretrained
