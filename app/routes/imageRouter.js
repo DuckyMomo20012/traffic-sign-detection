@@ -17,8 +17,6 @@ router.get('/upload-image', async (req, res) => {
   });
 });
 
-const EXT_ACCEPT = ['.png', '.jpeg', '.jpg'];
-
 router.post(
   '/upload-image',
   uploadImage.array('data-image'),
@@ -26,20 +24,6 @@ router.post(
     if (!req.files) {
       return res.render('upload-image', {
         notFile: true,
-      });
-    }
-
-    // REVIEW: Might remove these lines because multer has already checked the
-    // file extension
-    const notSupport = req.files.some((file) => {
-      return !EXT_ACCEPT.includes(
-        path.extname(file.originalname).toLowerCase(),
-      );
-    });
-
-    if (notSupport) {
-      return res.render('upload-image', {
-        notSupport,
       });
     }
 

@@ -16,8 +16,6 @@ router.get('/upload-model', async (req, res) => {
   });
 });
 
-const EXT_ACCEPT = ['.pt', '.pth'];
-
 router.post(
   '/upload-model',
   uploadModel.single('data-model'),
@@ -25,14 +23,6 @@ router.post(
     if (!req.file) {
       return res.render('upload-model', {
         notFile: true,
-      });
-    }
-
-    const extname = path.extname(req.file.originalname).toLowerCase();
-
-    if (!EXT_ACCEPT.includes(extname)) {
-      return res.render('upload-model', {
-        notSupport: true,
       });
     }
 
