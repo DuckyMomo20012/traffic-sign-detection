@@ -2,11 +2,15 @@ const express = require('express');
 
 const router = express.Router();
 const fs = require('fs-extra');
+const fg = require('fast-glob');
+
 const path = require('path');
 const { uploadModel } = require('../services/multer');
 
 router.get('/upload-model', async (req, res) => {
-  const hasModel = await fs.pathExists(path.join(__dirname, '../../best.pt'));
+  const models = await fg(path.posix.join(__dirname, '../../yolo/upload/*.pt'));
+
+  const hasModel = !!models;
   return res.render('upload-model', {
     hasModel,
   });
@@ -34,15 +38,7 @@ router.post(
 
     await fs.move(
       path.join(__dirname, '../public/model/', req.file.originalname),
-      path.join(__dirname, '../public/model/', 'best.pt'),
-      {
-        overwrite: true,
-      },
-    );
-
-    await fs.move(
-      path.join(__dirname, '../public/model/best.pt'),
-      path.join(__dirname, '../../yolo/best.pt'),
+      path.join(__dirname, '../../yolo/upload/', req.file.originalname),
       {
         overwrite: true,
       },

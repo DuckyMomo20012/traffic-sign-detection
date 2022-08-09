@@ -2,13 +2,16 @@ const express = require('express');
 
 const router = express.Router();
 const fs = require('fs-extra');
+const fg = require('fast-glob');
 const path = require('path');
 const { uploadImage } = require('../services/multer');
 
 router.get('/upload-image', async (req, res) => {
-  const hasImage = await fs.pathExists(
-    path.join(__dirname, '../public/img/image.png'),
+  const images = await fg(
+    path.posix.join(__dirname, '../../yolo/upload/*.{jpg,png,jpeg}'),
   );
+
+  const hasImage = !!images;
   return res.render('upload-image', {
     hasImage,
   });
@@ -18,36 +21,38 @@ const EXT_ACCEPT = ['.png', '.jpeg', '.jpg'];
 
 router.post(
   '/upload-image',
-  uploadImage.single('data-image'),
+  uploadImage.array('data-image'),
   async (req, res) => {
-    if (!req.file) {
+    if (!req.files) {
       return res.render('upload-image', {
         notFile: true,
       });
     }
 
-    const extname = path.extname(req.file.originalname).toLowerCase();
+    // REVIEW: Might remove these lines because multer has already checked the
+    // file extension
+    const notSupport = req.files.some((file) => {
+      return !EXT_ACCEPT.includes(
+        path.extname(file.originalname).toLowerCase(),
+      );
+    });
 
-    if (!EXT_ACCEPT.includes(extname)) {
+    if (notSupport) {
       return res.render('upload-image', {
-        notSupport: true,
+        notSupport,
       });
     }
 
-    await fs.move(
-      path.join(__dirname, '../public/img/', req.file.originalname),
-      path.join(__dirname, '../public/img/', 'image.png'),
-      {
-        overwrite: true,
-      },
-    );
-
-    await fs.move(
-      path.join(__dirname, '../public/img/image.png'),
-      path.join(__dirname, '../../yolo/image.png'),
-      {
-        overwrite: true,
-      },
+    await Promise.all(
+      req.files.map(async (file) => {
+        await fs.move(
+          path.join(__dirname, '../public/img/', file.originalname),
+          path.join(__dirname, '../../yolo/upload/', file.originalname),
+          {
+            overwrite: true,
+          },
+        );
+      }),
     );
 
     return res.render('upload-image', {

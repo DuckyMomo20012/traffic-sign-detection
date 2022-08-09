@@ -12,6 +12,12 @@ const storageImage = multer.diskStorage({
   },
 });
 
+const IMG_ACCEPT = ['.png', '.jpeg', '.jpg'];
+
+const filterImage = (req, file, cb) => {
+  cb(null, IMG_ACCEPT.includes(path.extname(file.originalname).toLowerCase()));
+};
+
 const storageModel = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, path.join(__dirname, '../public/model'));
@@ -21,5 +27,20 @@ const storageModel = multer.diskStorage({
   },
 });
 
-exports.uploadImage = multer({ storage: storageImage });
-exports.uploadModel = multer({ storage: storageModel });
+const MODEL_ACCEPT = ['.pt', '.pth'];
+
+const filterModel = (req, file, cb) => {
+  cb(
+    null,
+    MODEL_ACCEPT.includes(path.extname(file.originalname).toLowerCase()),
+  );
+};
+
+exports.uploadImage = multer({
+  storage: storageImage,
+  fileFilter: filterImage,
+});
+exports.uploadModel = multer({
+  storage: storageModel,
+  fileFilter: filterModel,
+});
