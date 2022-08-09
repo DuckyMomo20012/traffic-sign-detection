@@ -1,66 +1,58 @@
 const express = require('express');
-const router = express.Router();
-const { upload_image } = require('../services/multer');
-const fs = require('fs');
-const path = require('path');
 
-router.get('/upload-image', (req, res) => {
-  const hasImage = fs.existsSync(path.join(__dirname, '../../image.png'));
+const router = express.Router();
+const fs = require('fs-extra');
+const path = require('path');
+const { uploadImage } = require('../services/multer');
+
+router.get('/upload-image', async (req, res) => {
+  const hasImage = await fs.pathExists(
+    path.join(__dirname, '../public/img/image.png'),
+  );
   return res.render('upload-image', {
     hasImage,
   });
 });
 
+const EXT_ACCEPT = ['.png', '.jpeg', '.jpg'];
+
 router.post(
   '/upload-image',
-  upload_image.single('data-image'),
+  uploadImage.single('data-image'),
   async (req, res) => {
-    const extAccept = ['.png', '.jpeg', '.jpg'];
-    if (req.file) {
-      const extname = path.extname(req.file.originalname).toLowerCase();
-
-      if (extAccept.includes(extname)) {
-        await fs.renameSync(
-          path.join(__dirname, '../public/img/', req.file.originalname),
-          path.join(__dirname, '../public/img/', 'image.png'),
-          (err) => {
-            if (err) throw err;
-          },
-        );
-        if (await fs.existsSync(path.join(__dirname, '../../image.png'))) {
-          await fs.unlinkSync(path.join(__dirname, '../../image.png'));
-        }
-        const path_src = path.join(__dirname, '../public/img/image.png');
-        const path_dst = path.join(__dirname, '../../image.png');
-        await fs.copyFile(path_src, path_dst, (err) => {
-          if (err) {
-            console.log(err);
-          }
-          console.log('Copy file done.');
-        });
-        const hasImage = true;
-        return res.render('upload-image', {
-          hasImage,
-        });
-      } else {
-        if (await fs.existsSync(path.join(__dirname, '../../image.png'))) {
-          await fs.unlinkSync(path.join(__dirname, '../../image.png'));
-        }
-        await fs.unlinkSync(
-          path.join(__dirname, '../public/img/', req.file.originalname),
-        );
-
-        const notSupport = true;
-        return res.render('upload-image', {
-          notSupport,
-        });
-      }
-    } else {
-      const notFile = true;
+    if (!req.file) {
       return res.render('upload-image', {
-        notFile,
+        notFile: true,
       });
     }
+
+    const extname = path.extname(req.file.originalname).toLowerCase();
+
+    if (!EXT_ACCEPT.includes(extname)) {
+      return res.render('upload-image', {
+        notSupport: true,
+      });
+    }
+
+    await fs.move(
+      path.join(__dirname, '../public/img/', req.file.originalname),
+      path.join(__dirname, '../public/img/', 'image.png'),
+      {
+        overwrite: true,
+      },
+    );
+
+    await fs.move(
+      path.join(__dirname, '../public/img/image.png'),
+      path.join(__dirname, '../../yolo/image.png'),
+      {
+        overwrite: true,
+      },
+    );
+
+    return res.render('upload-image', {
+      hasImage: true,
+    });
   },
 );
 

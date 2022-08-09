@@ -1,8 +1,9 @@
 const express = require('express');
+
 const router = express.Router();
-const { upload_model } = require('../services/multer');
 const fs = require('fs');
 const path = require('path');
+const { uploadModel } = require('../services/multer');
 
 router.get('/upload-model', (req, res) => {
   const hasModel = fs.existsSync(path.join(__dirname, '../../best.pt'));
@@ -13,7 +14,7 @@ router.get('/upload-model', (req, res) => {
 
 router.post(
   '/upload-model',
-  upload_model.single('data-model'),
+  uploadModel.single('data-model'),
   async (req, res) => {
     if (req.file) {
       const extAccept = ['.pt', '.pth'];
@@ -43,24 +44,22 @@ router.post(
         return res.render('upload-model', {
           justAdd,
         });
-      } else {
-        if (await fs.existsSync(path.join(__dirname, '../../best.pt'))) {
-          await fs.unlinkSync(path.join(__dirname, '../../best.pt'));
-        }
-        await fs.unlinkSync(
-          path.join(__dirname, '../../', req.file.originalname),
-        );
-        const notSupport = true;
-        return res.render('upload-model', {
-          notSupport,
-        });
       }
-    } else {
-      const notFile = true;
+      if (await fs.existsSync(path.join(__dirname, '../../best.pt'))) {
+        await fs.unlinkSync(path.join(__dirname, '../../best.pt'));
+      }
+      await fs.unlinkSync(
+        path.join(__dirname, '../../', req.file.originalname),
+      );
+      const notSupport = true;
       return res.render('upload-model', {
-        notFile,
+        notSupport,
       });
     }
+    const notFile = true;
+    return res.render('upload-model', {
+      notFile,
+    });
   },
 );
 
