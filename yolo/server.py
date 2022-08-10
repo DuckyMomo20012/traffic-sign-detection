@@ -1,70 +1,50 @@
-import socket
-import threading
-import time
+import os
+from glob import glob
+
+import socketio
+import yolov5
+from flask import Flask
+
+app = Flask(__name__)
+# create a Socket.IO server
+sio = socketio.Server()
+app.wsgi_app = socketio.WSGIApp(sio, app.wsgi_app)
 
 
-def checkPortIsOpen(port):
-    a_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+@sio.on("predict")
+def predict(sid, data):
+    imgs = []
+    for ext in ("*.png", "*.jpeg", "*.jpg"):
+        imgs.extend(glob(os.path.join("./upload/", ext)))
 
-    location = ("127.0.0.1", port)
-    result_of_check = a_socket.connect_ex(location)
-
-    isOpen = False
-
-    if result_of_check == 0:
-        isOpen = True
-    else:
-        isOpen = False
-
-    a_socket.close()
-
-    return isOpen
+    results = model(imgs, size=640)  # batched inference
+    results.print()
+    results.save(save_dir="../app/public/result")
 
 
-def interruptListen(s):
-    while True:
-        print("check port 3000")
-        if checkPortIsOpen(3000):
-            time.sleep(10)
-            continue
-        else:
-            print("app not work")
-            s.close()
-            break
+@sio.on("update-model")
+def updateModel(sid, data):
+    global model
+
+    fileName = data["file"]
+
+    modelFileName = glob(f"./upload/{fileName}")
+
+    if len(modelFileName) > 0:
+        model = yolov5.load(
+            model_path=modelFileName[0],
+            autoshape=True,
+            verbose=True,
+        )
 
 
-def runServer(s):
-    try:
-        while True:
-            print("listen")
-            try:
-                conn, addr = s.accept()
-                if conn:
-                    print("Connected by", addr)
-                    data = conn.recv(1024).decode()
-                    print("received {!r}".format(data))
-                    if not data:
-                        break
-                    if data == "Close":
-                        print("end")
-                        break
-                    time.sleep(5)
-                    reply = "Success"
-                    conn.send(reply.encode())
-            finally:
-                break
+if __name__ == "__main__":
 
-    finally:
-        s.close()
+    modelFileName = "./model/best.pt"
+    model = yolov5.load(
+        model_path=modelFileName,
+        autoshape=True,
+        verbose=True,
+    )
 
-
-HOST = "127.0.0.1"  # Standard loopback interface address (localhost)
-PORT = 1234  # Port to listen on (non-privileged ports are > 1023)
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-if s:
-    s.bind((HOST, PORT))
-    s.listen()
-    threadCheckPort = threading.Thread(target=interruptListen, args=(s,))
-    threadServer = threading.Thread(target=runServer, args=(s,))
-    threadCheckPort.start()
-    threadServer.start()
+    app.run(host="127.0.0.1", port=1234)
