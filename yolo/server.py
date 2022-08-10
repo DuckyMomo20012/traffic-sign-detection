@@ -22,6 +22,22 @@ def predict(sid, data):
     results.save(save_dir="../app/public/result")
 
 
+@sio.on("update-model")
+def updateModel(sid, data):
+    global model
+
+    fileName = data["file"]
+
+    modelFileName = glob(f"./upload/{fileName}")
+
+    if len(modelFileName) > 0:
+        model = yolov5.load(
+            model_path=modelFileName[0],
+            autoshape=True,
+            verbose=True,
+        )
+
+
 if __name__ == "__main__":
 
     modelFileName = "./model/best.pt"
