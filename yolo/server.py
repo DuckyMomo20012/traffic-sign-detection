@@ -24,7 +24,7 @@ def predict(sid, data):
 
 if __name__ == "__main__":
 
-    modelFileName = list(glob("./upload/*.pt") + glob("./upload/*.pth"))[0]
+    modelFileName = "./model/best.pt"
     model = yolov5.load(
         model_path=modelFileName,
         autoshape=True,
