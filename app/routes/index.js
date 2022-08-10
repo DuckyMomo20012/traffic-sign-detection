@@ -1,7 +1,9 @@
 const express = require('express');
+
 const router = express.Router();
 const fs = require('fs');
 const path = require('path');
+const { socket } = require('../socket/socket.js');
 
 /* GET home page. */
 router.get('/', (req, res) => {
@@ -15,23 +17,10 @@ router.get('/', (req, res) => {
   });
 });
 
-router.post('/run-model', async (req, res) => {
-  const path_script = path.join(__dirname, '../../client.py');
+router.post('/run-model', (req, res) => {
+  socket.emit('predict', 'Please predict for me');
 
-  const child = require('child_process').exec(`python ${path_script}`);
-  child.stdout.pipe(process.stdout);
-  child.on('exit', function () {
-    console.log('client exit');
-    // const path_src = path.join(__dirname, "../../traffic-sign.png");
-    // const path_dst = path.join(__dirname, "../public/result/image.png");
-    // fs.copyFile(path_src, path_dst, (err) => {
-    //   if (err) {
-    //     console.log(err);
-    //   }
-    // 	console.log('Copy file done.');
-    // });
-    res.render('predict');
-  });
+  res.render('predict');
 });
 
 module.exports = router;

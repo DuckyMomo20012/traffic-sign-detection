@@ -19,6 +19,7 @@
     "morgan": "1.10.0",
     "multer": "1.4.4",
     "react-scripts": "5.0.1",
+    "socket.io-client": "^4.5.1",
     "zx": "^7.0.8"
   },
   "devDependencies": {

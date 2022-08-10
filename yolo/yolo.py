@@ -1,20 +1,26 @@
 import os
 import socket
 import sys
-import threading
 import time
 from glob import glob
 from pathlib import Path
 
 import torch
+from flask import Flask
 
 sys.path.append("../yolov5")
 
+import socketio
 from models.common import AutoShape, DetectMultiBackend
 from models.experimental import attempt_load
 from models.yolo import Model
 from utils.general import check_requirements, intersect_dicts, set_logging
 from utils.torch_utils import select_device
+
+app = Flask(__name__)
+# create a Socket.IO server
+sio = socketio.Server()
+app.wsgi_app = socketio.WSGIApp(sio, app.wsgi_app)
 
 
 def _create(
@@ -87,37 +93,8 @@ def _create(
         raise Exception(s) from e
 
 
-def checkPortIsOpen(port):
-    a_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-    location = ("127.0.0.1", port)
-    result_of_check = a_socket.connect_ex(location)
-
-    isOpen = False
-
-    if result_of_check == 0:
-        isOpen = True
-    else:
-        isOpen = False
-
-    a_socket.close()
-
-    return isOpen
-
-
-def interruptListen(s):
-    while True:
-        print("check port 3000")
-        time.sleep(10)
-        if checkPortIsOpen(3000):
-            continue
-        else:
-            print("app not work")
-            s.close()
-            break
-
-
-def predict():
+@sio.on("predict")
+def predict(sid, data):
     imgs = []
     for ext in ("*.png", "*.jpeg", "*.jpg"):
         imgs.extend(glob(os.path.join("./upload/", ext)))
@@ -127,33 +104,10 @@ def predict():
     results.save(save_dir="../app/public/result")
 
 
-def runServer(s):
-    try:
-        while True:
-            print("listen")
-            conn, addr = s.accept()
-            if conn:
-                print("Connected by", addr)
-                data = conn.recv(1024).decode()
-                print("received {!r}".format(data))
-                if not data:
-                    break
-                if data == "Close":
-                    print("end")
-                    break
-                predict()
-
-                reply = "Success"
-                conn.send(reply.encode())
-
-    finally:
-        s.close()
-
-
 if __name__ == "__main__":
 
-    modelFileName = list(glob("./upload/*.pt") + glob("./upload/*.pth"))[0]
 
+    modelFileName = list(glob("./upload/*.pt") + glob("./upload/*.pth"))[0]
     model = _create(
         name=modelFileName,
         pretrained=True,
@@ -163,13 +117,4 @@ if __name__ == "__main__":
         verbose=True,
     )  # pretrained
 
-    HOST = "127.0.0.1"  # Standard loopback interface address (localhost)
-    PORT = 1234  # Port to listen on (non-privileged ports are > 1023)
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    if s:
-        s.bind((HOST, PORT))
-        s.listen()
-        threadCheckPort = threading.Thread(target=interruptListen, args=(s,))
-        threadServer = threading.Thread(target=runServer, args=(s,))
-        threadCheckPort.start()
-        threadServer.start()
+    app.run(host="127.0.0.1", port=1234)
