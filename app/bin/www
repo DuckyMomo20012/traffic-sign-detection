@@ -11,13 +11,7 @@ const app = require('../app');
 /**
  * Get port from environment and store in Express.
  */
-//  const path_script = path.join(__dirname, '../../model.py');
 
-//  const child = require('child_process').exec(`python ${path_script}`)
-//  child.stdout.pipe(process.stdout)
-//  child.on('exit', function () {
-//    console.log('server off')
-//  })
 const port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
@@ -42,7 +36,7 @@ server.on('listening', onListening);
 function normalizePort(val) {
   const port = parseInt(val, 10);
 
-  if (isNaN(port)) {
+  if (Number.isNaN(port)) {
     // named pipe
     return val;
   }
