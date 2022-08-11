@@ -1,4 +1,5 @@
 import os
+import shutil
 from glob import glob
 
 import socketio
@@ -13,13 +14,19 @@ app.wsgi_app = socketio.WSGIApp(sio, app.wsgi_app)
 
 @sio.on("detect")
 def detect(sid, data):
+    idFolder = data.get("idFolder")
     imgs = []
     for ext in ("*.png", "*.jpeg", "*.jpg"):
-        imgs.extend(glob(os.path.join("./upload/", ext)))
+        imgs.extend(glob(os.path.join("./upload/", idFolder, ext)))
 
-    results = model(imgs, size=640)  # batched inference
-    results.print()
-    results.save(save_dir="../app/public/result")
+    if imgs:
+        results = model(imgs, size=640)  # batched inference
+        results.print()
+        results.save(save_dir=f"../app/public/result/{idFolder}")
+
+    shutil.rmtree(os.path.join("./upload/", idFolder), ignore_errors=True)
+
+    sio.emit("detect-finished", {"idFolder": idFolder}, room=sid)
 
 
 @sio.on("update-model")
