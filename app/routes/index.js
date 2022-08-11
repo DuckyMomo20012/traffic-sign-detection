@@ -1,26 +1,32 @@
 const express = require('express');
+const createError = require('http-errors');
 
 const router = express.Router();
-const fs = require('fs');
+const fs = require('fs-extra');
 const path = require('path');
 const { socket } = require('../socket/socket.js');
+const { uploadImage } = require('../services/multer');
 
-/* GET home page. */
-router.get('/', (req, res) => {
-  const imgExist = fs.existsSync(path.join(__dirname, '../../image.png'));
-  const mdlExist = fs.existsSync(path.join(__dirname, '../../best.pt'));
-  const run = imgExist && mdlExist;
-  return res.render('home', {
-    imgExist,
-    mdlExist,
-    run,
-  });
-});
+router.post('/run-model', uploadImage.array('data-image'), async (req, res) => {
+  if (!req.files) {
+    return createError(422, 'No file uploaded');
+  }
 
-router.post('/run-model', (req, res) => {
+  await Promise.all(
+    req.files.map(async (file) => {
+      await fs.move(
+        path.join(__dirname, '../public/img/', file.originalname),
+        path.join(__dirname, '../../yolo/upload/', file.originalname),
+        {
+          overwrite: true,
+        },
+      );
+    }),
+  );
+
   socket.emit('predict', 'Please predict for me');
 
-  res.render('predict');
+  return res.status(204).send('');
 });
 
 module.exports = router;
