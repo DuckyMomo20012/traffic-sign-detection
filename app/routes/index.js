@@ -24,7 +24,7 @@ router.post('/run-model', uploadImage.array('data-image'), async (req, res) => {
     }),
   );
 
-  socket.emit('predict', 'Please predict for me');
+  socket.emit('detect', 'Please detect for me');
 
   return res.status(204).send('');
 });

@@ -11,8 +11,8 @@ sio = socketio.Server()
 app.wsgi_app = socketio.WSGIApp(sio, app.wsgi_app)
 
 
-@sio.on("predict")
-def predict(sid, data):
+@sio.on("detect")
+def detect(sid, data):
     imgs = []
     for ext in ("*.png", "*.jpeg", "*.jpg"):
         imgs.extend(glob(os.path.join("./upload/", ext)))
