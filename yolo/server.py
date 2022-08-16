@@ -8,7 +8,7 @@ from flask import Flask
 
 app = Flask(__name__)
 # create a Socket.IO server
-sio = socketio.Server()
+sio = socketio.Server(cors_allowed_origins="http://localhost:5173")
 app.wsgi_app = socketio.WSGIApp(sio, app.wsgi_app)
 
 
@@ -26,7 +26,7 @@ def detect(sid, data):
 
     shutil.rmtree(os.path.join("./upload/", idFolder), ignore_errors=True)
 
-    sio.emit("detect-finished", {"idFolder": idFolder}, room=sid)
+    sio.emit("detect-finished", {"idFolder": idFolder})
 
 
 @sio.on("update-model")

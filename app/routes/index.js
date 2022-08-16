@@ -32,4 +32,44 @@ router.post('/run-model', uploadImage.array('data-image'), async (req, res) => {
   return res.status(204).send('');
 });
 
+router.get('/result/:idFolder', async (req, res) => {
+  const { idFolder } = req.params;
+
+  const files = await fs.readdir(
+    path.join(__dirname, '../public/result/', idFolder),
+  );
+
+  const filesResponse = files.map((fileName) => {
+    const idFile = uuidv4();
+
+    const ext = path.extname(fileName);
+
+    // Rename file
+    fs.move(
+      path.join(__dirname, '../public/result/', idFolder, fileName),
+      path.join(__dirname, '../public/result/', idFolder, idFile + ext),
+      {
+        overwrite: true,
+      },
+    );
+
+    return {
+      name: fileName,
+      url: `api/result/${idFolder}/${idFile + ext}`,
+    };
+  });
+
+  res.status(200).send(filesResponse);
+});
+
+router.get('/result/:idFolder/:fileName', (req, res) => {
+  const { idFolder, fileName } = req.params;
+
+  const opts = {
+    root: path.join(__dirname, '../public/result/', idFolder),
+  };
+
+  res.status(200).sendFile(fileName, opts);
+});
+
 module.exports = router;
