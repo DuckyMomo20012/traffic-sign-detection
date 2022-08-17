@@ -20,14 +20,17 @@ import { Dropzone } from '@mantine/dropzone';
 import { Icon } from '@iconify/react';
 import { ImagePreview } from '@/components/elements/ImagePreview';
 import axios from 'axios';
+import { saveAs } from 'file-saver';
 import { socket } from '@/socket/socket.js';
 import { useForm } from 'react-hook-form';
+import { v4 as uuidv4 } from 'uuid';
+import { zipSync } from 'fflate';
 
 const MAX_FILES = 3;
 
 const HomePage = () => {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
-  const { register, handleSubmit, setValue } = useForm();
+  const { register, handleSubmit, setValue, reset } = useForm();
   const dark = colorScheme === 'dark';
   const openRef = useRef(null);
   const [files, setFiles] = useState([]);
@@ -47,7 +50,7 @@ const HomePage = () => {
           const fileReq = await axios.get(url, { responseType: 'blob' });
           return {
             name,
-            src: URL.createObjectURL(fileReq.data),
+            data: fileReq.data,
           };
         }),
       );
@@ -61,18 +64,42 @@ const HomePage = () => {
   }, []);
 
   const handleRemoveImageClick = (index) => {
+    // Remove file at index
     const newFiles = files.filter((file, i) => i !== index);
-    // setValue('data-image', newFiles);
+    setValue('data-image', newFiles);
     setFiles(newFiles);
   };
 
   const handleClearImageClick = () => {
+    // Reset form
+    reset();
+    // Clear files
     setFiles([]);
     setDetected(false);
   };
 
+  const handleDownloadImageClick = async () => {
+    // We have to convert from array to object
+    const zipFiles = {};
+    await Promise.all(
+      // NOTE: Files now is array of Blob, so we have to convert it to
+      // ArrayBuffer and then to Uint8Array
+      files.map(async (file) => {
+        zipFiles[file.name] = new Uint8Array(await file.data.arrayBuffer());
+      }),
+    );
+
+    // Zip its
+    const zipped = zipSync(zipFiles);
+
+    const zipName = uuidv4() + '.zip';
+
+    saveAs(new Blob([zipped]), zipName);
+  };
+
   const previews = files?.map((file, index) => {
-    const imageSrc = file.src || URL.createObjectURL(file);
+    // NOTE: Response image with have "Blob" type, Upload image will have "File" type
+    const imageSrc = URL.createObjectURL(file.data);
     return (
       <ImagePreview
         key={index}
@@ -93,7 +120,15 @@ const HomePage = () => {
     // NOTE: Have to set the value here because I can' get files from the
     // Dropzone component
     setValue('data-image', selectedFiles);
-    setFiles(selectedFiles);
+
+    const newFiles = selectedFiles.map((file) => {
+      return {
+        name: file.name,
+        data: file,
+      };
+    });
+
+    setFiles(newFiles);
   };
 
   const onSubmit = async (data) => {
@@ -218,12 +253,16 @@ const HomePage = () => {
         </Button>
         {files?.length > 0 && (
           <>
-            <Button
-              className="self-end"
-              onClick={() => handleClearImageClick()}
-            >
-              Clear all images
-            </Button>
+            <Group className="self-end">
+              {detected && (
+                <Button onClick={() => handleDownloadImageClick()}>
+                  Download all images as zip
+                </Button>
+              )}
+              <Button onClick={() => handleClearImageClick()}>
+                Clear all images
+              </Button>
+            </Group>
             <Text
               gradient={{ from: 'rose', to: 'orange' }}
               size="xl"
