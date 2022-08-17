@@ -16,15 +16,13 @@ import {
 } from '@mantine/core';
 import { useEffect, useRef, useState } from 'react';
 
+import { DownloadMenu } from '@/components/modules/DownloadMenu';
 import { Dropzone } from '@mantine/dropzone';
 import { Icon } from '@iconify/react';
 import { ImagePreview } from '@/components/elements/ImagePreview';
 import axios from 'axios';
-import { saveAs } from 'file-saver';
 import { socket } from '@/socket/socket.js';
 import { useForm } from 'react-hook-form';
-import { v4 as uuidv4 } from 'uuid';
-import { zipSync } from 'fflate';
 
 const MAX_FILES = 3;
 
@@ -76,25 +74,6 @@ const HomePage = () => {
     // Clear files
     setFiles([]);
     setDetected(false);
-  };
-
-  const handleDownloadImageClick = async () => {
-    // We have to convert from array to object
-    const zipFiles = {};
-    await Promise.all(
-      // NOTE: Files now is array of Blob, so we have to convert it to
-      // ArrayBuffer and then to Uint8Array
-      files.map(async (file) => {
-        zipFiles[file.name] = new Uint8Array(await file.data.arrayBuffer());
-      }),
-    );
-
-    // Zip its
-    const zipped = zipSync(zipFiles);
-
-    const zipName = uuidv4() + '.zip';
-
-    saveAs(new Blob([zipped]), zipName);
   };
 
   const previews = files?.map((file, index) => {
@@ -254,11 +233,7 @@ const HomePage = () => {
         {files?.length > 0 && (
           <>
             <Group className="self-end">
-              {detected && (
-                <Button onClick={() => handleDownloadImageClick()}>
-                  Download all images as zip
-                </Button>
-              )}
+              {detected && <DownloadMenu files={files} />}
               <Button onClick={() => handleClearImageClick()}>
                 Clear all images
               </Button>
