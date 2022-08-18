@@ -22,7 +22,7 @@ def detect(sid, data):
     if imgs:
         results = model(imgs, size=640)  # batched inference
         results.print()
-        results.save(save_dir=f"../app/public/result/{idFolder}")
+        results.save(save_dir=f"./result/{idFolder}")
 
     shutil.rmtree(os.path.join("./upload/", idFolder), ignore_errors=True)
 

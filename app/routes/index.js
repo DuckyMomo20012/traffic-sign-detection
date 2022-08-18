@@ -37,18 +37,18 @@ router.get('/result/:idFolder', async (req, res) => {
   const { idFolder } = req.params;
 
   const files = await fs.readdir(
-    path.join(__dirname, '../public/result/', idFolder),
+    path.join(__dirname, '../../yolo/result/', idFolder),
   );
 
   // Create zip file from result folder
   await zipFolderStream(
-    path.join(__dirname, '../public/result/', idFolder, `${idFolder}.zip`),
-    path.join(__dirname, '../public/result/', idFolder),
+    path.join(__dirname, '../../yolo/result/', idFolder, `${idFolder}.zip`),
+    path.join(__dirname, '../../yolo/result/', idFolder),
   );
 
   // await zipFolderSync(
-  //   path.join(__dirname, '../public/result/', idFolder, `${idFolder}.zip`),
-  //   path.join(__dirname, '../public/result/', idFolder),
+  //   path.join(__dirname, '../../yolo/result/', idFolder, `${idFolder}.zip`),
+  //   path.join(__dirname, '../../yolo/result/', idFolder),
   // );
 
   const filesResponse = files.map((fileName) => {
@@ -58,8 +58,8 @@ router.get('/result/:idFolder', async (req, res) => {
 
     // Rename file
     fs.move(
-      path.join(__dirname, '../public/result/', idFolder, fileName),
-      path.join(__dirname, '../public/result/', idFolder, idFile + ext),
+      path.join(__dirname, '../../yolo/result/', idFolder, fileName),
+      path.join(__dirname, '../../yolo/result/', idFolder, idFile + ext),
       {
         overwrite: true,
       },
@@ -78,7 +78,7 @@ router.get('/result/:idFolder/:fileName', (req, res) => {
   const { idFolder, fileName } = req.params;
 
   const opts = {
-    root: path.join(__dirname, '../public/result/', idFolder),
+    root: path.join(__dirname, '../../yolo/result/', idFolder),
   };
 
   res.status(200).sendFile(fileName, opts);
