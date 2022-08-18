@@ -7,6 +7,7 @@ const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 const { socket } = require('../socket/socket.js');
 const { uploadImage } = require('../services/multer');
+const { zipFolderStream } = require('../utils/zip.js');
 
 router.post('/run-model', uploadImage.array('data-image'), async (req, res) => {
   if (!req.files) {
@@ -38,6 +39,17 @@ router.get('/result/:idFolder', async (req, res) => {
   const files = await fs.readdir(
     path.join(__dirname, '../public/result/', idFolder),
   );
+
+  // Create zip file from result folder
+  await zipFolderStream(
+    path.join(__dirname, '../public/result/', idFolder, `${idFolder}.zip`),
+    path.join(__dirname, '../public/result/', idFolder),
+  );
+
+  // await zipFolderSync(
+  //   path.join(__dirname, '../public/result/', idFolder, `${idFolder}.zip`),
+  //   path.join(__dirname, '../public/result/', idFolder),
+  // );
 
   const filesResponse = files.map((fileName) => {
     const idFile = uuidv4();
