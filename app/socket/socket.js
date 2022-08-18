@@ -1,15 +1,14 @@
-const { io } = require('socket.io-client');
+const { Server } = require('socket.io');
 
-const socket = io.connect('http://127.0.0.1:1234');
+const io = new Server({
+  cors: {
+    origin: 'http://localhost:5173',
+  },
+});
 
-socket.on('connect', () => {
-  console.log('Connected with YOLO server');
+io.on('connect', (socket) => {
+  console.log('Connected with 1 client');
   console.log(socket.id);
 });
 
-socket.on('disconnect', () => {
-  console.log('Disconnected from YOLO server');
-  console.log(socket.id); // undefined
-});
-
-exports.socket = socket;
+exports.io = io;
