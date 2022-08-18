@@ -7,7 +7,7 @@ const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 const { socket } = require('../socket/socket.js');
 const { uploadImage } = require('../services/multer');
-const { zipFolderStream } = require('../utils/zip.js');
+const { zipFolderSync } = require('../utils/zip.js');
 
 router.post('/run-model', uploadImage.array('data-image'), async (req, res) => {
   if (!req.files) {
@@ -40,17 +40,6 @@ router.get('/result/:idFolder', async (req, res) => {
     path.join(__dirname, '../../yolo/result/', idFolder),
   );
 
-  // Create zip file from result folder
-  await zipFolderStream(
-    path.join(__dirname, '../../yolo/result/', idFolder, `${idFolder}.zip`),
-    path.join(__dirname, '../../yolo/result/', idFolder),
-  );
-
-  // await zipFolderSync(
-  //   path.join(__dirname, '../../yolo/result/', idFolder, `${idFolder}.zip`),
-  //   path.join(__dirname, '../../yolo/result/', idFolder),
-  // );
-
   const filesResponse = files.map((fileName) => {
     const idFile = uuidv4();
 
@@ -74,12 +63,27 @@ router.get('/result/:idFolder', async (req, res) => {
   res.status(200).send(filesResponse);
 });
 
-router.get('/result/:idFolder/:fileName', (req, res) => {
+router.get('/result/:idFolder/:fileName', async (req, res) => {
   const { idFolder, fileName } = req.params;
 
   const opts = {
     root: path.join(__dirname, '../../yolo/result/', idFolder),
   };
+
+  if (fileName.includes('.zip')) {
+    await zipFolderSync(
+      path.join(__dirname, '../../yolo/result/', idFolder, `${idFolder}.zip`),
+      path.join(__dirname, '../../yolo/result/', idFolder),
+    );
+
+    // NOTE: Currently we don't know when the zipping process is done, we can
+    // emit an event to YOLO server, but then we have to emit that event back to
+    // client. We can refactor this later
+    // await zipFolderStream(
+    //   path.join(__dirname, '../../yolo/result/', idFolder, `${idFolder}.zip`),
+    //   path.join(__dirname, '../../yolo/result/', idFolder),
+    // );
+  }
 
   res.status(200).sendFile(fileName, opts);
 });
