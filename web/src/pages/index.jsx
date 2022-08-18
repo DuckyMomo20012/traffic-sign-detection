@@ -4,6 +4,7 @@ import {
   AppShell,
   Button,
   Center,
+  Code,
   Footer,
   Group,
   Header,
@@ -185,6 +186,7 @@ const HomePage = () => {
         onSubmit={handleSubmit(onSubmit)}
       >
         <Dropzone
+          accept={['image/png', 'image/jpeg']}
           className="w-1/2"
           loading={loadingDetect}
           maxFiles={MAX_FILES}
@@ -208,7 +210,13 @@ const HomePage = () => {
                 width="48"
               />
             </Dropzone.Idle>
-            <Text>Drag images here or click to select files</Text>
+            <Text>
+              Drag images here or click to select files.
+              <Space />
+              Support only <Code color="rose">.PNG</Code> and{' '}
+              <Code color="rose">.JPG</Code> files
+            </Text>
+            <Text></Text>
           </Group>
         </Dropzone>
         {error && (
