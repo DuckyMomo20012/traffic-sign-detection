@@ -8,7 +8,9 @@ import { zipSync } from 'fflate';
 
 const DownloadMenu = ({ files }) => {
   const zipFolder = useMemo(() => {
-    // We have to convert from array to object, this acts like root directory
+    // NOTE: We have to convert from array to object
+    // This object acts like a root directory, please go to fflate doc to see
+    // nested folder zip
     const folder = {};
     (async () => {
       await Promise.all(

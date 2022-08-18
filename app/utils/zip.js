@@ -7,6 +7,10 @@ async function zipFolderStream(outputFilePath, folderPath) {
 
   const zip = new Zip((err, chunk, final) => {
     zippedFile.write(chunk);
+
+    if (final) {
+      zippedFile.end();
+    }
   });
 
   const files = await fs.readdir(folderPath);
@@ -33,11 +37,13 @@ async function zipFolderStream(outputFilePath, folderPath) {
 async function zipFolderSync(outputFilePath, folderPath) {
   const files = await fs.readdir(folderPath);
 
+  // NOTE: We have to convert from array to object
+  // This object acts like a root directory, please go to fflate doc to see
+  // nested folder zip
   const folder = {};
   await (async () => {
     await Promise.all(
-      // NOTE: Files now is array of Blob, so we have to convert it to
-      // ArrayBuffer and then to Uint8Array
+      // NOTE: We don't have to convert Buffer to Uint8Array
       files.map(async (fileName) => {
         folder[fileName] = await fs.readFile(path.join(folderPath, fileName));
       }),
