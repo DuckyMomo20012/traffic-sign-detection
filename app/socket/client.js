@@ -1,5 +1,5 @@
 const { io } = require('socket.io-client');
-const { io: socketServer } = require('./socket.js');
+const { io: socketServer } = require('./server.js');
 
 const socket = io.connect('http://127.0.0.1:1234');
 
