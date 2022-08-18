@@ -4,6 +4,7 @@ import {
   AppShell,
   Button,
   Center,
+  Code,
   Footer,
   Group,
   Header,
@@ -16,6 +17,7 @@ import {
 } from '@mantine/core';
 import { useEffect, useRef, useState } from 'react';
 
+import { DownloadMenu } from '@/components/modules/DownloadMenu';
 import { Dropzone } from '@mantine/dropzone';
 import { Icon } from '@iconify/react';
 import { ImagePreview } from '@/components/elements/ImagePreview';
@@ -27,7 +29,7 @@ const MAX_FILES = 3;
 
 const HomePage = () => {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
-  const { register, handleSubmit, setValue } = useForm();
+  const { register, handleSubmit, setValue, reset } = useForm();
   const dark = colorScheme === 'dark';
   const openRef = useRef(null);
   const [files, setFiles] = useState([]);
@@ -47,7 +49,7 @@ const HomePage = () => {
           const fileReq = await axios.get(url, { responseType: 'blob' });
           return {
             name,
-            src: URL.createObjectURL(fileReq.data),
+            data: fileReq.data,
           };
         }),
       );
@@ -61,18 +63,23 @@ const HomePage = () => {
   }, []);
 
   const handleRemoveImageClick = (index) => {
+    // Remove file at index
     const newFiles = files.filter((file, i) => i !== index);
-    // setValue('data-image', newFiles);
+    setValue('data-image', newFiles);
     setFiles(newFiles);
   };
 
   const handleClearImageClick = () => {
+    // Reset form
+    reset();
+    // Clear files
     setFiles([]);
     setDetected(false);
   };
 
   const previews = files?.map((file, index) => {
-    const imageSrc = file.src || URL.createObjectURL(file);
+    // NOTE: Response image with have "Blob" type, Upload image will have "File" type
+    const imageSrc = URL.createObjectURL(file.data);
     return (
       <ImagePreview
         key={index}
@@ -93,7 +100,15 @@ const HomePage = () => {
     // NOTE: Have to set the value here because I can' get files from the
     // Dropzone component
     setValue('data-image', selectedFiles);
-    setFiles(selectedFiles);
+
+    const newFiles = selectedFiles.map((file) => {
+      return {
+        name: file.name,
+        data: file,
+      };
+    });
+
+    setFiles(newFiles);
   };
 
   const onSubmit = async (data) => {
@@ -171,6 +186,7 @@ const HomePage = () => {
         onSubmit={handleSubmit(onSubmit)}
       >
         <Dropzone
+          accept={['image/png', 'image/jpeg']}
           className="w-1/2"
           loading={loadingDetect}
           maxFiles={MAX_FILES}
@@ -194,7 +210,13 @@ const HomePage = () => {
                 width="48"
               />
             </Dropzone.Idle>
-            <Text>Drag images here or click to select files</Text>
+            <Text>
+              Drag images here or click to select files.
+              <Space />
+              Support only <Code color="rose">.PNG</Code> and{' '}
+              <Code color="rose">.JPG</Code> files
+            </Text>
+            <Text></Text>
           </Group>
         </Dropzone>
         {error && (
@@ -218,12 +240,12 @@ const HomePage = () => {
         </Button>
         {files?.length > 0 && (
           <>
-            <Button
-              className="self-end"
-              onClick={() => handleClearImageClick()}
-            >
-              Clear all images
-            </Button>
+            <Group className="self-end">
+              {detected && <DownloadMenu files={files} />}
+              <Button onClick={() => handleClearImageClick()}>
+                Clear all images
+              </Button>
+            </Group>
             <Text
               gradient={{ from: 'rose', to: 'orange' }}
               size="xl"
