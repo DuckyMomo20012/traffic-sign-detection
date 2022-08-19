@@ -112,10 +112,15 @@ const HomePage = () => {
   };
 
   const onSubmit = async (data) => {
-    setLoadingDetect(true);
-
     const formData = new FormData();
     const fileList = [...data['data-image']];
+
+    if (fileList.length === 0) {
+      setError("You haven't selected any files");
+      return;
+    }
+
+    setLoadingDetect(true);
 
     // NOTE: Append only one file to 'data-image' to the form data. Don't append
     // a list!
@@ -235,6 +240,7 @@ const HomePage = () => {
           loading={loadingDetect}
           size="xl"
           type="submit"
+          disabled={files.length === 0}
         >
           Detect
         </Button>
