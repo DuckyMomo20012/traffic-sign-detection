@@ -1,17 +1,45 @@
-import { Box, CloseButton, Image, Text } from '@mantine/core';
+import {
+  ActionIcon,
+  Box,
+  CloseButton,
+  Group,
+  Image,
+  Text,
+  Tooltip,
+} from '@mantine/core';
 
-const ImagePreview = ({ name, src, onClick, withCloseButton = true }) => {
+import { Icon } from '@iconify/react';
+
+const ImagePreview = ({
+  name,
+  src,
+  onCloseClick,
+  onDownloadClick,
+  withCloseButton = true,
+  withDownloadButton = false,
+}) => {
   return (
     <Box className="relative">
-      {withCloseButton && (
-        <CloseButton
-          className="z-1 absolute right-0 translate-x-1/2 -translate-y-1/2 transform active:-translate-y-1/2 active:translate-x-1/2 active:transform"
-          color="rose"
-          onClick={onClick}
-          radius="xl"
-          variant="filled"
-        />
-      )}
+      <Group
+        spacing="xs"
+        className="z-1 bg-white-500 absolute right-0 translate-x-1/2 -translate-y-1/2 transform active:translate-x-1/2 active:-translate-y-1/2 active:transform"
+      >
+        {withCloseButton && (
+          <CloseButton
+            color="rose"
+            onClick={onCloseClick}
+            radius="xl"
+            variant="filled"
+          />
+        )}
+        {withDownloadButton && (
+          <Tooltip label="Download">
+            <ActionIcon onClick={onDownloadClick} variant="filled" color="blue">
+              <Icon icon="ic:outline-sim-card-download" />
+            </ActionIcon>
+          </Tooltip>
+        )}
+      </Group>
       <Image src={src} withPlaceholder />
       <Text align="center">{name}</Text>
     </Box>

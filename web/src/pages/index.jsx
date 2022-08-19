@@ -23,6 +23,7 @@ import { Dropzone } from '@mantine/dropzone';
 import { Icon } from '@iconify/react';
 import { ImagePreview } from '@/components/elements/ImagePreview';
 import axios from 'axios';
+import { saveAs } from 'file-saver';
 import { socket } from '@/socket/socket.js';
 import { useForm } from 'react-hook-form';
 
@@ -70,6 +71,12 @@ const HomePage = () => {
     setFiles(newFiles);
   };
 
+  const handleDownloadImageClick = (index) => {
+    const file = files[index];
+    // NOTE: File already have Blob type as response from server
+    saveAs(file.data, file.name);
+  };
+
   const handleClearImageClick = () => {
     // Reset form
     reset();
@@ -85,9 +92,11 @@ const HomePage = () => {
       <ImagePreview
         key={index}
         name={file.name}
-        onClick={() => handleRemoveImageClick(index)}
+        onCloseClick={() => handleRemoveImageClick(index)}
+        onDownloadClick={() => handleDownloadImageClick(index)}
         src={imageSrc}
         withCloseButton={!detected}
+        withDownloadButton={detected}
       />
     );
   });
