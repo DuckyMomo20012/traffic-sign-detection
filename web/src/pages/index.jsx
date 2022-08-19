@@ -13,6 +13,7 @@ import {
   Stack,
   Text,
   Title,
+  Tooltip,
   useMantineColorScheme,
 } from '@mantine/core';
 import { useEffect, useRef, useState } from 'react';
@@ -156,18 +157,29 @@ const HomePage = () => {
       header={
         <Header className="flex items-center justify-end" height={48} p={24}>
           <Group>
-            <Icon icon="ant-design:github-filled" width="32" />
-            <ActionIcon
-              color="rose"
-              onClick={() => toggleColorScheme()}
-              variant="light"
-            >
-              <Icon
-                height={24}
-                icon={dark ? 'ic:outline-dark-mode' : 'ic:outline-light-mode'}
-                width={24}
-              />
-            </ActionIcon>
+            <Tooltip label="Source code">
+              <Anchor
+                href="https://github.com/DuckyMomo20012/traffic-sign-detection"
+                target="_blank"
+              >
+                <ActionIcon size="lg" variant="outline">
+                  <Icon width={24} icon="ant-design:github-filled" />
+                </ActionIcon>
+              </Anchor>
+            </Tooltip>
+            <Tooltip label={dark ? 'Light mode' : 'Dark mode'}>
+              <ActionIcon
+                size="lg"
+                color="rose"
+                onClick={() => toggleColorScheme()}
+                variant="outline"
+              >
+                <Icon
+                  width={24}
+                  icon={dark ? 'ic:outline-dark-mode' : 'ic:outline-light-mode'}
+                />
+              </ActionIcon>
+            </Tooltip>
           </Group>
         </Header>
       }
