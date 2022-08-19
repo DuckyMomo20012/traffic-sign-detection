@@ -100,7 +100,6 @@ const HomePage = () => {
   const handleDrop = (selectedFiles) => {
     // NOTE: Have to set the value here because I can' get files from the
     // Dropzone component
-    setValue('data-image', selectedFiles);
 
     const newFiles = selectedFiles.map((file) => {
       return {
@@ -109,6 +108,7 @@ const HomePage = () => {
       };
     });
 
+    setValue('data-image', newFiles);
     setFiles(newFiles);
     setDetected(false);
   };
@@ -127,7 +127,7 @@ const HomePage = () => {
     // NOTE: Append only one file to 'data-image' to the form data. Don't append
     // a list!
     fileList.forEach((file) => {
-      formData.append('data-image', file);
+      formData.append('data-image', file.data);
     });
 
     // NOTE: I have config proxy for Vite to forward the request to the targeted
