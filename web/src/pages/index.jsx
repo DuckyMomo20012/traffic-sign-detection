@@ -13,6 +13,7 @@ import {
   Stack,
   Text,
   Title,
+  Tooltip,
   useMantineColorScheme,
 } from '@mantine/core';
 import { useEffect, useRef, useState } from 'react';
@@ -22,6 +23,7 @@ import { Dropzone } from '@mantine/dropzone';
 import { Icon } from '@iconify/react';
 import { ImagePreview } from '@/components/elements/ImagePreview';
 import axios from 'axios';
+import { saveAs } from 'file-saver';
 import { socket } from '@/socket/socket.js';
 import { useForm } from 'react-hook-form';
 
@@ -69,6 +71,12 @@ const HomePage = () => {
     setFiles(newFiles);
   };
 
+  const handleDownloadImageClick = (index) => {
+    const file = files[index];
+    // NOTE: File already have Blob type as response from server
+    saveAs(file.data, file.name);
+  };
+
   const handleClearImageClick = () => {
     // Reset form
     reset();
@@ -84,9 +92,11 @@ const HomePage = () => {
       <ImagePreview
         key={index}
         name={file.name}
-        onClick={() => handleRemoveImageClick(index)}
+        onCloseClick={() => handleRemoveImageClick(index)}
+        onDownloadClick={() => handleDownloadImageClick(index)}
         src={imageSrc}
         withCloseButton={!detected}
+        withDownloadButton={detected}
       />
     );
   });
@@ -99,7 +109,6 @@ const HomePage = () => {
   const handleDrop = (selectedFiles) => {
     // NOTE: Have to set the value here because I can' get files from the
     // Dropzone component
-    setValue('data-image', selectedFiles);
 
     const newFiles = selectedFiles.map((file) => {
       return {
@@ -108,19 +117,26 @@ const HomePage = () => {
       };
     });
 
+    setValue('data-image', newFiles);
     setFiles(newFiles);
+    setDetected(false);
   };
 
   const onSubmit = async (data) => {
-    setLoadingDetect(true);
-
     const formData = new FormData();
     const fileList = [...data['data-image']];
+
+    if (fileList.length === 0) {
+      setError("You haven't selected any files");
+      return;
+    }
+
+    setLoadingDetect(true);
 
     // NOTE: Append only one file to 'data-image' to the form data. Don't append
     // a list!
     fileList.forEach((file) => {
-      formData.append('data-image', file);
+      formData.append('data-image', file.data);
     });
 
     // NOTE: I have config proxy for Vite to forward the request to the targeted
@@ -150,18 +166,29 @@ const HomePage = () => {
       header={
         <Header className="flex items-center justify-end" height={48} p={24}>
           <Group>
-            <Icon icon="ant-design:github-filled" width="32" />
-            <ActionIcon
-              color="rose"
-              onClick={() => toggleColorScheme()}
-              variant="light"
-            >
-              <Icon
-                height={24}
-                icon={dark ? 'ic:outline-dark-mode' : 'ic:outline-light-mode'}
-                width={24}
-              />
-            </ActionIcon>
+            <Tooltip label="Source code">
+              <Anchor
+                href="https://github.com/DuckyMomo20012/traffic-sign-detection"
+                target="_blank"
+              >
+                <ActionIcon size="lg" variant="outline">
+                  <Icon width={24} icon="ant-design:github-filled" />
+                </ActionIcon>
+              </Anchor>
+            </Tooltip>
+            <Tooltip label={dark ? 'Light mode' : 'Dark mode'}>
+              <ActionIcon
+                size="lg"
+                color="rose"
+                onClick={() => toggleColorScheme()}
+                variant="outline"
+              >
+                <Icon
+                  width={24}
+                  icon={dark ? 'ic:outline-dark-mode' : 'ic:outline-light-mode'}
+                />
+              </ActionIcon>
+            </Tooltip>
           </Group>
         </Header>
       }
@@ -235,6 +262,7 @@ const HomePage = () => {
           loading={loadingDetect}
           size="xl"
           type="submit"
+          disabled={files.length === 0 || detected}
         >
           Detect
         </Button>

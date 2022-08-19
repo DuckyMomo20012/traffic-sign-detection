@@ -5,33 +5,42 @@ const router = express.Router();
 const fs = require('fs-extra');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
-const { socket } = require('../socket/socket.js');
+const { socket } = require('../socket/client.js');
 const { uploadImage } = require('../services/multer');
 const { zipFolderSync } = require('../utils/zip.js');
 
-router.post('/run-model', uploadImage.array('data-image'), async (req, res) => {
-  if (!req.files) {
-    return createError(422, 'No file uploaded');
-  }
+router.post(
+  '/run-model',
+  uploadImage.array('data-image'),
+  async (req, res, next) => {
+    if (req.files.length === 0) {
+      return next(createError(422, 'No file uploaded'));
+    }
 
-  const idFolder = uuidv4();
+    const idFolder = uuidv4();
 
-  await Promise.all(
-    req.files.map(async (file) => {
-      await fs.move(
-        path.join(__dirname, '../public/img/', file.originalname),
-        path.join(__dirname, '../../yolo/upload/', idFolder, file.originalname),
-        {
-          overwrite: true,
-        },
-      );
-    }),
-  );
+    await Promise.all(
+      req.files.map(async (file) => {
+        await fs.move(
+          path.join(__dirname, '../public/img/', file.originalname),
+          path.join(
+            __dirname,
+            '../../yolo/upload/',
+            idFolder,
+            file.originalname,
+          ),
+          {
+            overwrite: true,
+          },
+        );
+      }),
+    );
 
-  socket.emit('detect', { idFolder });
+    socket.emit('detect', { idFolder });
 
-  return res.status(204).send('');
-});
+    return res.status(204).send('');
+  },
+);
 
 router.get('/result/:idFolder', async (req, res) => {
   const { idFolder } = req.params;
