@@ -109,6 +109,7 @@ const HomePage = () => {
     });
 
     setFiles(newFiles);
+    setDetected(false);
   };
 
   const onSubmit = async (data) => {
@@ -240,7 +241,7 @@ const HomePage = () => {
           loading={loadingDetect}
           size="xl"
           type="submit"
-          disabled={files.length === 0}
+          disabled={files.length === 0 || detected}
         >
           Detect
         </Button>
