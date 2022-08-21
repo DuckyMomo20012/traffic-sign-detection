@@ -8,6 +8,7 @@ import {
   Footer,
   Group,
   Header,
+  Loader,
   SimpleGrid,
   Space,
   Stack,
@@ -131,6 +132,7 @@ const HomePage = () => {
       return;
     }
 
+    setError('');
     setLoadingDetect(true);
 
     // NOTE: Append only one file to 'data-image' to the form data. Don't append
@@ -141,11 +143,17 @@ const HomePage = () => {
 
     // NOTE: I have config proxy for Vite to forward the request to the targeted
     // backend URL
-    await axios.post('/api/run-model', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
+    try {
+      await axios.post('/api/run-model', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        timeout: 3000, // timeout after 3 seconds
+      });
+    } catch (err) {
+      setError("Can't connect to the server. Please try again later");
+      setLoadingDetect(false);
+    }
   };
 
   return (
@@ -246,6 +254,12 @@ const HomePage = () => {
             <Text></Text>
           </Group>
         </Dropzone>
+        {loadingDetect && (
+          <Group>
+            <Text>Detecting... Please don't close this page</Text>
+            <Loader size="xs" />
+          </Group>
+        )}
         {error && (
           <Group spacing="sm">
             <Icon
