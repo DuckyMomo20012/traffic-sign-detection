@@ -38,7 +38,7 @@ const HomePage = () => {
   const [files, setFiles] = useState([]);
   // const files = useWatch({ control, name: 'data-image' });
   const [error, setError] = useState('');
-  const [loadingDetect, setLoadingDetect] = useState(false);
+  const [isDetecting, setIsDetecting] = useState(false);
   const [detected, setDetected] = useState(false);
 
   useEffect(() => {
@@ -58,7 +58,7 @@ const HomePage = () => {
       );
 
       setFiles(fileData);
-      setLoadingDetect(false);
+      setIsDetecting(false);
       setDetected(true);
     });
 
@@ -96,7 +96,7 @@ const HomePage = () => {
         onCloseClick={() => handleRemoveImageClick(index)}
         onDownloadClick={() => handleDownloadImageClick(index)}
         src={imageSrc}
-        withCloseButton={!detected && !loadingDetect}
+        withCloseButton={!detected && !isDetecting}
         withDownloadButton={detected}
       />
     );
@@ -133,7 +133,7 @@ const HomePage = () => {
     }
 
     setError('');
-    setLoadingDetect(true);
+    setIsDetecting(true);
 
     // NOTE: Append only one file to 'data-image' to the form data. Don't append
     // a list!
@@ -152,7 +152,7 @@ const HomePage = () => {
       });
     } catch (err) {
       setError("Can't connect to the server. Please try again later");
-      setLoadingDetect(false);
+      setIsDetecting(false);
     }
   };
 
@@ -223,7 +223,7 @@ const HomePage = () => {
         <Dropzone
           accept={['image/png', 'image/jpeg']}
           className="w-1/2"
-          loading={loadingDetect}
+          loading={isDetecting}
           maxFiles={MAX_FILES}
           onDragEnter={() => setError('')}
           onDrop={handleDrop}
@@ -254,7 +254,7 @@ const HomePage = () => {
             <Text></Text>
           </Group>
         </Dropzone>
-        {loadingDetect && (
+        {isDetecting && (
           <Group>
             <Text>Detecting... Please don't close this page</Text>
             <Loader size="xs" />
@@ -273,7 +273,7 @@ const HomePage = () => {
         <Space h="md" />
         <Button
           leftIcon={<Icon icon="codicon:wand" width="24" />}
-          loading={loadingDetect}
+          loading={isDetecting}
           size="xl"
           type="submit"
           disabled={files.length === 0 || detected}
@@ -285,7 +285,7 @@ const HomePage = () => {
             <Group className="self-end">
               {detected && <DownloadMenu files={files} />}
               <Button
-                disabled={loadingDetect}
+                disabled={isDetecting}
                 onClick={() => handleClearImageClick()}
               >
                 Clear all images
