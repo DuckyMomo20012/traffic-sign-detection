@@ -33,13 +33,16 @@ def detect(sid, data):
 def updateModel(sid, data):
     global model
 
-    fileName = data["file"]
+    idFolder = data.get("idFolder")
+    modelFileName = data.get("fileName")
 
-    modelFileName = glob(f"./upload/{fileName}")
+    modelFiles = glob(os.path.join("./upload/", idFolder, modelFileName))
 
-    if len(modelFileName) > 0:
+    if len(modelFiles) > 0:
+        modelFilePath = modelFiles[0]
+
         model = yolov5.load(
-            model_path=modelFileName[0],
+            model_path=modelFilePath,
             autoshape=True,
             verbose=True,
         )
