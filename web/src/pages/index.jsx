@@ -96,7 +96,7 @@ const HomePage = () => {
         onCloseClick={() => handleRemoveImageClick(index)}
         onDownloadClick={() => handleDownloadImageClick(index)}
         src={imageSrc}
-        withCloseButton={!detected}
+        withCloseButton={!detected && !loadingDetect}
         withDownloadButton={detected}
       />
     );
@@ -246,7 +246,7 @@ const HomePage = () => {
               />
             </Dropzone.Idle>
             <Text>
-              Drag images here or click to select files.
+              Drag images here or click to select files, maximum 3 files.
               <Space />
               Support only <Code color="rose">.PNG</Code> and{' '}
               <Code color="rose">.JPG</Code> files
@@ -284,7 +284,10 @@ const HomePage = () => {
           <>
             <Group className="self-end">
               {detected && <DownloadMenu files={files} />}
-              <Button onClick={() => handleClearImageClick()}>
+              <Button
+                disabled={loadingDetect}
+                onClick={() => handleClearImageClick()}
+              >
                 Clear all images
               </Button>
             </Group>
