@@ -1,11 +1,11 @@
 [tool.poetry]
-name = "nodejs-yolov5"
+name = "traffic-sign-detection"
 version = "0.1.0"
 description = "A website to detect traffic signs"
 authors = ["Duong Vinh <tienvinh.duong4@gmail.com>"]
 
 [tool.poe.tasks]
-dev = "python yolo.py"
+dev = "python app.py"
 lint = "flake8"
 "sort_import" = "isort ."
 pretty = "black ."
