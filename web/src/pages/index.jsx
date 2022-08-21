@@ -60,6 +60,8 @@ const HomePage = () => {
       setFiles(fileData);
       setIsDetecting(false);
       setDetected(true);
+
+      socket.emit('delete-folder', { idFolder });
     });
 
     socket.on('detect-status', (data) => {
