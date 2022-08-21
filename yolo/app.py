@@ -26,48 +26,53 @@ app.model = yolov5.load(  # type: ignore
 
 @sio.on("detect")
 async def detect(sid, data):
-    try:
-        idFolder = data.get("idFolder")
-        imgs = []
-        for ext in ("*.png", "*.jpeg", "*.jpg"):
-            imgs.extend(glob(os.path.join("./upload/", idFolder, ext)))
+    idFolder = data.get("idFolder")
+    imgs = []
+    for ext in ("*.png", "*.jpeg", "*.jpg"):
+        imgs.extend(glob(os.path.join("./upload/", idFolder, ext)))
 
-        # NOTE: I don't put this function outside of this event, because I want
-        # to make use of closure
-        async def detectImage():
-            try:
-                if imgs:
-                    results = app.model(imgs, size=640)  # batched inference
-                    results.print()
-                    results.save(save_dir=f"./result/{idFolder}")
+    # NOTE: I don't put this function outside of this event, because I want
+    # to make use of closure
 
-                    # NOTE: We only emit this event when we have finished
-                    await sio.emit("detect-finished", {"idFolder": idFolder})
+    async def detectImage():
+        try:
+            if imgs:
+                results = app.model(imgs, size=640)  # batched inference
+                results.print()
+                results.save(save_dir=f"./result/{idFolder}")
+                # NOTE: We only emit this event when we have finished
+                await sio.emit("detect-finished", {"idFolder": idFolder})
 
-            except Exception as err:
-                raise err
+        except Exception as err:
+            logging.error(err)
 
-            # NOTE: Finally, we have to cleanup the upload folder
-            finally:
-                shutil.rmtree(
-                    os.path.join("./upload/", idFolder),
-                    ignore_errors=True,
-                )
+            await sio.emit(
+                "detect-status",
+                {
+                    "error": True,
+                    "status": "error",
+                    "msg": "Error during detection",
+                },
+            )
 
-        # NOTE: Create task to keep running in background after we return
-        asyncio.create_task(
-            detectImage(),
-        )
+            raise err
 
-        # NOTE: We have to ACK back to client before timeout, because we don't
-        # know when the detection will finish
+        # NOTE: Finally, we have to cleanup the upload folder
+        finally:
+            shutil.rmtree(
+                os.path.join("./upload/", idFolder),
+                ignore_errors=True,
+            )
 
-        return {"msg": "Running detection"}
+    # NOTE: Create task to keep running in background after we return
+    asyncio.create_task(
+        detectImage(),
+    )
 
-    except (Exception, FileNotFoundError, ValueError) as err:
-        logging.error(err)
+    # NOTE: We have to ACK back to client before timeout, because we don't
+    # know when the detection will finish
 
-        return {"error": "Error during detection"}
+    return {"msg": "Running detection"}
 
 
 @sio.on("update-model")
