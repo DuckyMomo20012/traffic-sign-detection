@@ -19,4 +19,8 @@ socket.on('detect-finished', (data) => {
   socketServer.emit('detect-finished', { idFolder });
 });
 
+socket.on('detect-status', (data) => {
+  socketServer.emit('detect-status', data);
+});
+
 exports.socket = socket;

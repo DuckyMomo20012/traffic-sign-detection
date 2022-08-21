@@ -62,7 +62,19 @@ const HomePage = () => {
       setDetected(true);
     });
 
-    return () => socket.off('detect-finished');
+    socket.on('detect-status', (data) => {
+      const { status, msg } = data;
+
+      if (status === 'error') {
+        setError(msg);
+        setIsDetecting(false);
+      }
+    });
+
+    return () => {
+      socket.off('detect-finished');
+      socket.off('detect-status');
+    };
   }, []);
 
   const handleRemoveImageClick = (index) => {
