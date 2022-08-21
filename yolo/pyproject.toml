@@ -21,11 +21,12 @@ ignore_missing_imports = true
 python = ">=3.10,<3.12"
 environs = "^9.5.0"
 python-socketio = "^5.7.1"
-Flask = "^2.2.2"
 torch = "1.12.0"
 torchvision = "0.13.0"
 scipy = "1.9.0"
 yolov5 = "^6.1.7"
+fastapi = "^0.79.1"
+uvicorn = {extras = ["standard"], version = "^0.18.2"}
 
 
 [tool.poetry.dev-dependencies]

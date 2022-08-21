@@ -1,38 +1,77 @@
+import asyncio
+import logging
 import os
 import shutil
 from glob import glob
 
 import socketio
+import uvicorn
 import yolov5
-from flask import Flask
+from fastapi import FastAPI
 
-app = Flask(__name__)
-# create a Socket.IO server
-sio = socketio.Server(cors_allowed_origins="http://localhost:5173")
-app.wsgi_app = socketio.WSGIApp(sio, app.wsgi_app)
+app = FastAPI()
+
+# create a Socket.IO Async server
+sio = socketio.AsyncServer(async_mode="asgi")
+app = socketio.ASGIApp(sio)
+
+# NOTE: Have to put this here, so socket io events can read "app.model"
+modelFileName = "./model/best.pt"
+app.model = yolov5.load(  # type: ignore
+    model_path=modelFileName,
+    autoshape=True,
+    verbose=True,
+)
 
 
 @sio.on("detect")
-def detect(sid, data):
-    idFolder = data.get("idFolder")
-    imgs = []
-    for ext in ("*.png", "*.jpeg", "*.jpg"):
-        imgs.extend(glob(os.path.join("./upload/", idFolder, ext)))
+async def detect(sid, data):
+    try:
+        idFolder = data.get("idFolder")
+        imgs = []
+        for ext in ("*.png", "*.jpeg", "*.jpg"):
+            imgs.extend(glob(os.path.join("./upload/", idFolder, ext)))
 
-    if imgs:
-        results = model(imgs, size=640)  # batched inference
-        results.print()
-        results.save(save_dir=f"./result/{idFolder}")
+        # NOTE: I don't put this function outside of this event, because I want
+        # to make use of closure
+        async def detectImage():
+            try:
+                if imgs:
+                    results = app.model(imgs, size=640)  # batched inference
+                    results.print()
+                    results.save(save_dir=f"./result/{idFolder}")
 
-    shutil.rmtree(os.path.join("./upload/", idFolder), ignore_errors=True)
+                    # NOTE: We only emit this event when we have finished
+                    await sio.emit("detect-finished", {"idFolder": idFolder})
 
-    sio.emit("detect-finished", {"idFolder": idFolder})
+            except Exception as err:
+                raise err
+
+            # NOTE: Finally, we have to cleanup the upload folder
+            finally:
+                shutil.rmtree(
+                    os.path.join("./upload/", idFolder),
+                    ignore_errors=True,
+                )
+
+        # NOTE: Create task to keep running in background after we return
+        asyncio.create_task(
+            detectImage(),
+        )
+
+        # NOTE: We have to ACK back to client before timeout, because we don't
+        # know when the detection will finish
+
+        return {"msg": "Running detection"}
+
+    except (Exception, FileNotFoundError, ValueError) as err:
+        logging.error(err)
+
+        return {"error": "Error during detection"}
 
 
 @sio.on("update-model")
 def updateModel(sid, data):
-    global model
-
     idFolder = data.get("idFolder")
     modelFileName = data.get("fileName")
 
@@ -41,7 +80,7 @@ def updateModel(sid, data):
     if len(modelFiles) > 0:
         modelFilePath = modelFiles[0]
 
-        model = yolov5.load(
+        app.model = yolov5.load(
             model_path=modelFilePath,
             autoshape=True,
             verbose=True,
@@ -50,11 +89,10 @@ def updateModel(sid, data):
 
 if __name__ == "__main__":
 
-    modelFileName = "./model/best.pt"
-    model = yolov5.load(
-        model_path=modelFileName,
-        autoshape=True,
-        verbose=True,
-    )
-
-    app.run(host="127.0.0.1", port=1234)
+    uvicorn.run(
+        "app:app",
+        host="127.0.0.1",
+        port=1234,
+        reload=True,
+        debug=True,
+    )  # no qa
