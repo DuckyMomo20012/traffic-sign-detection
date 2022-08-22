@@ -127,7 +127,9 @@ const HomePage = () => {
 
   const handleReject = (rejectedFiles) => {
     if (rejectedFiles.length > MAX_FILES)
-      setError('Maximum file count exceeded. Please select less than 3 files.');
+      setError(
+        `Maximum file count exceeded. Please select less than ${MAX_FILES} files.`,
+      );
   };
 
   const handleDrop = (selectedFiles) => {
@@ -314,7 +316,8 @@ const HomePage = () => {
               />
             </Dropzone.Idle>
             <Text>
-              Drag images here or click to select files, maximum 3 files.
+              Drag images here or click to select files, maximum {MAX_FILES}{' '}
+              files.
               <Space />
               Support only <Code color="rose">.PNG</Code> and{' '}
               <Code color="rose">.JPG</Code> files
