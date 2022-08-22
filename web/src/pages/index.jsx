@@ -8,6 +8,7 @@ import {
   Footer,
   Group,
   Header,
+  Loader,
   SimpleGrid,
   Space,
   Stack,
@@ -37,7 +38,7 @@ const HomePage = () => {
   const [files, setFiles] = useState([]);
   // const files = useWatch({ control, name: 'data-image' });
   const [error, setError] = useState('');
-  const [loadingDetect, setLoadingDetect] = useState(false);
+  const [isDetecting, setIsDetecting] = useState(false);
   const [detected, setDetected] = useState(false);
 
   useEffect(() => {
@@ -57,11 +58,25 @@ const HomePage = () => {
       );
 
       setFiles(fileData);
-      setLoadingDetect(false);
+      setIsDetecting(false);
       setDetected(true);
+
+      socket.emit('delete-folder', { idFolder });
     });
 
-    return () => socket.off('detect-finished');
+    socket.on('detect-status', (data) => {
+      const { status, msg } = data;
+
+      if (status === 'error') {
+        setError(msg);
+        setIsDetecting(false);
+      }
+    });
+
+    return () => {
+      socket.off('detect-finished');
+      socket.off('detect-status');
+    };
   }, []);
 
   const handleRemoveImageClick = (index) => {
@@ -95,7 +110,7 @@ const HomePage = () => {
         onCloseClick={() => handleRemoveImageClick(index)}
         onDownloadClick={() => handleDownloadImageClick(index)}
         src={imageSrc}
-        withCloseButton={!detected}
+        withCloseButton={!detected && !isDetecting}
         withDownloadButton={detected}
       />
     );
@@ -131,7 +146,8 @@ const HomePage = () => {
       return;
     }
 
-    setLoadingDetect(true);
+    setError('');
+    setIsDetecting(true);
 
     // NOTE: Append only one file to 'data-image' to the form data. Don't append
     // a list!
@@ -141,11 +157,18 @@ const HomePage = () => {
 
     // NOTE: I have config proxy for Vite to forward the request to the targeted
     // backend URL
-    await axios.post('/api/run-model', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
+    try {
+      await axios.post('/api/run-model', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        // timeout after 5 seconds, this should be longer than socket timeout
+        timeout: 5000,
+      });
+    } catch (err) {
+      setError('Service is unavailable. Please try again later');
+      setIsDetecting(false);
+    }
   };
 
   return (
@@ -215,7 +238,7 @@ const HomePage = () => {
         <Dropzone
           accept={['image/png', 'image/jpeg']}
           className="w-1/2"
-          loading={loadingDetect}
+          loading={isDetecting}
           maxFiles={MAX_FILES}
           onDragEnter={() => setError('')}
           onDrop={handleDrop}
@@ -238,7 +261,7 @@ const HomePage = () => {
               />
             </Dropzone.Idle>
             <Text>
-              Drag images here or click to select files.
+              Drag images here or click to select files, maximum 3 files.
               <Space />
               Support only <Code color="rose">.PNG</Code> and{' '}
               <Code color="rose">.JPG</Code> files
@@ -246,6 +269,12 @@ const HomePage = () => {
             <Text></Text>
           </Group>
         </Dropzone>
+        {isDetecting && (
+          <Group>
+            <Text>Detecting... Please don't close this page</Text>
+            <Loader size="xs" />
+          </Group>
+        )}
         {error && (
           <Group spacing="sm">
             <Icon
@@ -259,7 +288,7 @@ const HomePage = () => {
         <Space h="md" />
         <Button
           leftIcon={<Icon icon="codicon:wand" width="24" />}
-          loading={loadingDetect}
+          loading={isDetecting}
           size="xl"
           type="submit"
           disabled={files.length === 0 || detected}
@@ -270,7 +299,10 @@ const HomePage = () => {
           <>
             <Group className="self-end">
               {detected && <DownloadMenu files={files} />}
-              <Button onClick={() => handleClearImageClick()}>
+              <Button
+                disabled={isDetecting}
+                onClick={() => handleClearImageClick()}
+              >
                 Clear all images
               </Button>
             </Group>

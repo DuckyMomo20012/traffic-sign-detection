@@ -1,11 +1,11 @@
 [tool.poetry]
-name = "nodejs-yolov5"
+name = "traffic-sign-detection"
 version = "0.1.0"
 description = "A website to detect traffic signs"
 authors = ["Duong Vinh <tienvinh.duong4@gmail.com>"]
 
 [tool.poe.tasks]
-dev = "python yolo.py"
+dev = "python run.py"
 lint = "flake8"
 "sort_import" = "isort ."
 pretty = "black ."
@@ -21,11 +21,12 @@ ignore_missing_imports = true
 python = ">=3.10,<3.12"
 environs = "^9.5.0"
 python-socketio = "^5.7.1"
-Flask = "^2.2.2"
 torch = "1.12.0"
 torchvision = "0.13.0"
 scipy = "1.9.0"
 yolov5 = "^6.1.7"
+fastapi = "^0.79.1"
+uvicorn = {extras = ["standard"], version = "^0.18.2"}
 
 
 [tool.poetry.dev-dependencies]

@@ -36,9 +36,22 @@ router.post(
       }),
     );
 
-    socket.emit('detect', { idFolder });
+    // NOTE: Set timeout 3s for waiting YOLO server to detect images
+    socket.timeout(3000).emit('detect', { idFolder }, async (err) => {
+      if (err) {
+        // NOTE: If YOLO server is not running, cleanup upload folder
+        await fs.remove(path.join(__dirname, '../../yolo/upload/', idFolder));
 
-    return res.status(204).send('');
+        // YOLO server is down
+
+        return next(
+          createError(503, 'Service is unavailable. Please try again later'),
+        );
+      }
+
+      // NOTE: Return here otherwise it will return before timeout
+      return res.status(204).send('');
+    });
   },
 );
 
@@ -85,9 +98,8 @@ router.get('/result/:idFolder/:fileName', async (req, res) => {
       path.join(__dirname, '../../yolo/result/', idFolder),
     );
 
-    // NOTE: Currently we don't know when the zipping process is done, we can
-    // emit an event to YOLO server, but then we have to emit that event back to
-    // client. We can refactor this later
+    // NOTE: We can emit an event to notify the client to fetch zip file. Might
+    // refactor this later
     // await zipFolderStream(
     //   path.join(__dirname, '../../yolo/result/', idFolder, `${idFolder}.zip`),
     //   path.join(__dirname, '../../yolo/result/', idFolder),
