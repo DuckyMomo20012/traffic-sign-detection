@@ -13,6 +13,7 @@ import {
   Space,
   Stack,
   Text,
+  Textarea,
   Title,
   Tooltip,
   useMantineColorScheme,
@@ -24,6 +25,7 @@ import { Dropzone } from '@mantine/dropzone';
 import { Icon } from '@iconify/react';
 import { ImagePreview } from '@/components/elements/ImagePreview';
 import axios from 'axios';
+import isURL from 'validator/es/lib/isURL';
 import { saveAs } from 'file-saver';
 import { socket } from '@/socket/socket.js';
 import { useForm } from 'react-hook-form';
@@ -32,7 +34,14 @@ const MAX_FILES = 3;
 
 const HomePage = () => {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
-  const { register, handleSubmit, setValue, reset } = useForm();
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    reset,
+    setError: setFormError,
+    formState: { errors: formErrors },
+  } = useForm({ criteriaMode: 'all', mode: 'onChange' });
   const dark = colorScheme === 'dark';
   const openRef = useRef(null);
   const [files, setFiles] = useState([]);
@@ -139,10 +148,54 @@ const HomePage = () => {
 
   const onSubmit = async (data) => {
     const formData = new FormData();
-    const fileList = [...data['data-image']];
+    const fileImages = [...data['data-image']];
+    // Filter out empty string
+    const dataURLs = data['data-url'].split('\n').filter((url) => url);
+    let fileURLs = [];
+    try {
+      fileURLs = await Promise.all(
+        dataURLs.map(async (url, index) => {
+          // Pull out the file name from the url
+          const fileName = url.split('/').pop();
+
+          const img = new Image();
+
+          img.src = url;
+          console.log('url', url);
+
+          try {
+            // NOTE: Check if we can decode image from this URL
+            await img.decode();
+
+            // NOTE: Check above might pass in some cases, so we have to fetch
+            // the image to validate again
+
+            const fileData = await axios.get(url, { responseType: 'blob' });
+
+            return {
+              name: fileName,
+              data: fileData.data,
+            };
+          } catch (err) {
+            throw Error(`Can't fetch image from URL at line ${index + 1}`);
+          }
+        }),
+      );
+    } catch (err) {
+      setFormError('data-url', {
+        type: 'validate',
+        message: err.message,
+      });
+
+      return;
+    }
+
+    const validFileURLs = fileURLs.filter((file) => file);
+
+    const fileList = [...fileImages, ...validFileURLs];
 
     if (fileList.length === 0) {
-      setError("You haven't selected any files");
+      setError("Please upload your images or enter image's URL");
       return;
     }
 
@@ -269,6 +322,45 @@ const HomePage = () => {
             <Text></Text>
           </Group>
         </Dropzone>
+        <Text>Or</Text>
+        <Textarea
+          className="w-1/2"
+          placeholder="One URL per line"
+          description={`Maximum ${MAX_FILES} URLs`}
+          label="Your image URLs:"
+          autosize
+          error={formErrors['data-url'] && formErrors['data-url'].message}
+          minRows={2}
+          {...register('data-url', {
+            validate: (value) => {
+              if (value === '') return true;
+
+              const urls = value.split('\n').filter((url) => url !== '');
+
+              if (urls.length > MAX_FILES) {
+                return `Maximum ${MAX_FILES} URLs`;
+              }
+
+              const errorLines = urls
+                .map((url, index) => {
+                  const isValid = isURL(url);
+
+                  if (!isValid) {
+                    // NOTE: Return error index, so we can join with the error
+                    // message later
+                    return index + 1;
+                  }
+                })
+                .filter((line) => line); // NOTE: Filter out undefined
+
+              if (errorLines.length > 0) {
+                return `Invalid URL at line ${errorLines.join(', ')}`;
+              }
+
+              return true;
+            },
+          })}
+        />
         {isDetecting && (
           <Group>
             <Text>Detecting... Please don't close this page</Text>
@@ -291,7 +383,7 @@ const HomePage = () => {
           loading={isDetecting}
           size="xl"
           type="submit"
-          disabled={files.length === 0 || detected}
+          disabled={detected}
         >
           Detect
         </Button>
