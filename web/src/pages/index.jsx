@@ -31,6 +31,8 @@ import { socket } from '@/socket/socket.js';
 import { useForm } from 'react-hook-form';
 
 const MAX_FILES = 3;
+const IMG_ACCEPT = ['.png', '.jpeg', '.jpg'];
+const MIME_TYPE_ACCEPT = ['image/png', 'image/jpeg'];
 
 const HomePage = () => {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
@@ -158,12 +160,10 @@ const HomePage = () => {
       fileURLs = await Promise.all(
         dataURLs.map(async (url, index) => {
           // Pull out the file name from the url
-          const fileName = url.split('/').pop();
+          let fileName = url.split('/').pop();
 
           const img = new Image();
-
           img.src = url;
-          console.log('url', url);
 
           try {
             // NOTE: Check if we can decode image from this URL
@@ -174,11 +174,38 @@ const HomePage = () => {
 
             const fileData = await axios.get(url, { responseType: 'blob' });
 
+            // NOTE: Check if extension is valid, image name might not have
+            // extension so we have to check the mime type as well
+            const isValidFile = [...IMG_ACCEPT, ...MIME_TYPE_ACCEPT].some(
+              (ext) => {
+                return (
+                  fileName.includes(ext) || fileData.data.type.includes(ext)
+                );
+              },
+            );
+
+            // NOTE: Append extension from MIME type if image name don't have
+            // extension
+            const fileExt = fileName.split('.').pop();
+            if (fileExt === fileName) {
+              // MIME types e.g: image/jpeg, image/png, image/svg+xml,
+              // image/gif, image/webp
+              const fileType = fileData.data.type;
+              fileName = fileName + '.' + fileType.split('/').pop();
+            }
+
+            if (!isValidFile) {
+              throw Error(
+                `URL has unsupported image type at line ${index + 1}`,
+              );
+            }
+
             return {
               name: fileName,
               data: fileData.data,
             };
           } catch (err) {
+            // REVIEW: Throw error message based on the error type
             throw Error(`Can't fetch image from URL at line ${index + 1}`);
           }
         }),
@@ -207,7 +234,8 @@ const HomePage = () => {
     // NOTE: Append only one file to 'data-image' to the form data. Don't append
     // a list!
     fileList.forEach((file) => {
-      formData.append('data-image', file.data);
+      // NOTE: Provide file name, if not Blob file with have filename "blob"
+      formData.append('data-image', file.data, file.name);
     });
 
     // NOTE: I have config proxy for Vite to forward the request to the targeted
