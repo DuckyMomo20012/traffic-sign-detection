@@ -162,10 +162,11 @@ const HomePage = () => {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
-        timeout: 3000, // timeout after 3 seconds
+        // timeout after 5 seconds, this should be longer than socket timeout
+        timeout: 5000,
       });
     } catch (err) {
-      setError("Can't connect to the server. Please try again later");
+      setError('Service is unavailable. Please try again later');
       setIsDetecting(false);
     }
   };
