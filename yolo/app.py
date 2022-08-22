@@ -41,6 +41,14 @@ async def detect(sid, data):
                 results.save(save_dir=f"./result/{idFolder}")
                 # NOTE: We only emit this event when we have finished
                 await sio.emit("detect-finished", {"idFolder": idFolder})
+            else:
+                await sio.emit(
+                    "detect-status",
+                    {
+                        "status": "error",
+                        "msg": "Error during detection. No images found",
+                    },
+                )
 
         except Exception as err:
             logging.error(err)
