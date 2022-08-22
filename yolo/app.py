@@ -46,10 +46,10 @@ async def detect(sid, data):
         except Exception as err:
             logging.error(err)
 
+            # Notify the client that we have errors
             await sio.emit(
                 "detect-status",
                 {
-                    "error": True,
                     "status": "error",
                     "msg": "Error during detection",
                 },
@@ -68,11 +68,6 @@ async def detect(sid, data):
     asyncio.create_task(
         detectImage(),
     )
-
-    # NOTE: We have to ACK back to client before timeout, because we don't
-    # know when the detection will finish
-
-    return {"msg": "Running detection"}
 
 
 @sio.on("update-model")

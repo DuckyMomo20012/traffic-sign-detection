@@ -37,13 +37,12 @@ router.post(
     );
 
     // NOTE: Set timeout 3s for waiting YOLO server to detect images
-    socket.timeout(3000).emit('detect', { idFolder }, (err, response) => {
+    socket.timeout(3000).emit('detect', { idFolder }, (err) => {
       if (err) {
         return next(
           createError(408, 'Request timeout. Please try again later'),
         );
       }
-      console.log(response);
 
       return res.status(204).send('');
     });
