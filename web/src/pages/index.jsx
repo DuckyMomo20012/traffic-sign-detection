@@ -179,13 +179,15 @@ const HomePage = () => {
             const isValidFile = [...IMG_ACCEPT, ...MIME_TYPE_ACCEPT].some(
               (ext) => {
                 return (
-                  fileName.includes(ext) || fileData.data.type.includes(ext)
+                  fileName.toLowerCase().includes(ext) ||
+                  fileData.data.type.includes(ext)
                 );
               },
             );
 
             // NOTE: Append extension from MIME type if image name don't have
             // extension
+            // REVIEW: Convert extension to lowercase to avoid error
             const fileExt = fileName.split('.').pop();
             if (fileExt === fileName) {
               // MIME types e.g: image/jpeg, image/png, image/svg+xml,
@@ -211,6 +213,7 @@ const HomePage = () => {
         }),
       );
     } catch (err) {
+      // REVIEW: Error message log stack trace, so we have to remove it
       setFormError('data-url', {
         type: 'validate',
         message: err.message,
