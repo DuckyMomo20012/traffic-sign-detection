@@ -5,7 +5,7 @@ description = "A website to detect traffic signs"
 authors = ["Duong Vinh <tienvinh.duong4@gmail.com>"]
 
 [tool.poe.tasks]
-dev = "python app.py"
+dev = "python run.py"
 lint = "flake8"
 "sort_import" = "isort ."
 pretty = "black ."

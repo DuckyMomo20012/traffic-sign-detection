@@ -5,7 +5,6 @@ import shutil
 from glob import glob
 
 import socketio
-import uvicorn
 import yolov5
 from fastapi import FastAPI
 
@@ -85,14 +84,3 @@ def updateModel(sid, data):
             autoshape=True,
             verbose=True,
         )
-
-
-if __name__ == "__main__":
-
-    uvicorn.run(
-        "app:app",
-        host="127.0.0.1",
-        port=1234,
-        reload=True,
-        debug=True,
-    )  # no qa
