@@ -18,13 +18,13 @@ import {
   Tooltip,
   useMantineColorScheme,
 } from '@mantine/core';
+import axios, { AxiosError } from 'axios';
 import { useEffect, useRef, useState } from 'react';
 
 import { DownloadMenu } from '@/components/modules/DownloadMenu';
 import { Dropzone } from '@mantine/dropzone';
 import { Icon } from '@iconify/react';
 import { ImagePreview } from '@/components/elements/ImagePreview';
-import axios from 'axios';
 import isURL from 'validator/es/lib/isURL';
 import { saveAs } from 'file-saver';
 import { socket } from '@/socket/socket.js';
@@ -185,6 +185,12 @@ const HomePage = () => {
               },
             );
 
+            if (!isValidFile) {
+              throw Error(
+                `URL has unsupported image type at line ${index + 1}`,
+              );
+            }
+
             // NOTE: Append extension from MIME type if image name don't have
             // extension
             // REVIEW: Convert extension to lowercase to avoid error
@@ -193,13 +199,7 @@ const HomePage = () => {
               // MIME types e.g: image/jpeg, image/png, image/svg+xml,
               // image/gif, image/webp
               const fileType = fileData.data.type;
-              fileName = fileName + '.' + fileType.split('/').pop();
-            }
-
-            if (!isValidFile) {
-              throw Error(
-                `URL has unsupported image type at line ${index + 1}`,
-              );
+              fileName = `${fileName}.${fileType.split('/').pop()}`;
             }
 
             return {
@@ -207,18 +207,24 @@ const HomePage = () => {
               data: fileData.data,
             };
           } catch (err) {
-            // REVIEW: Throw error message based on the error type
-            throw Error(`Can't fetch image from URL at line ${index + 1}`);
+            if (err instanceof AxiosError || err instanceof DOMException) {
+              throw Error(`Can't fetch image from URL at line ${index + 1}`);
+            } else if (err instanceof Error) {
+              throw err;
+            }
           }
         }),
       );
     } catch (err) {
-      // REVIEW: Error message log stack trace, so we have to remove it
-      setFormError('data-url', {
-        type: 'validate',
-        message: err.message,
-      });
+      // NOTE: We only set error message for our custom error
+      if (err instanceof Error) {
+        setFormError('data-url', {
+          type: 'validate',
+          message: err.message,
+        });
+      }
 
+      // NOTE: We don't want to submit the form if there is an error
       return;
     }
 
@@ -281,20 +287,20 @@ const HomePage = () => {
                 target="_blank"
               >
                 <ActionIcon size="lg" variant="outline">
-                  <Icon width={24} icon="ant-design:github-filled" />
+                  <Icon icon="ant-design:github-filled" width={24} />
                 </ActionIcon>
               </Anchor>
             </Tooltip>
             <Tooltip label={dark ? 'Light mode' : 'Dark mode'}>
               <ActionIcon
-                size="lg"
                 color="rose"
                 onClick={() => toggleColorScheme()}
+                size="lg"
                 variant="outline"
               >
                 <Icon
-                  width={24}
                   icon={dark ? 'ic:outline-dark-mode' : 'ic:outline-light-mode'}
+                  width={24}
                 />
               </ActionIcon>
             </Tooltip>
@@ -358,13 +364,13 @@ const HomePage = () => {
         </Dropzone>
         <Text>Or</Text>
         <Textarea
-          className="w-1/2"
-          placeholder="One URL per line"
-          description={`Maximum ${MAX_FILES} URLs`}
-          label="Your image URLs:"
           autosize
+          className="w-1/2"
+          description={`Maximum ${MAX_FILES} URLs`}
           error={formErrors['data-url'] && formErrors['data-url'].message}
+          label="Your image URLs:"
           minRows={2}
+          placeholder="One URL per line"
           {...register('data-url', {
             validate: (value) => {
               if (value === '') return true;
@@ -397,7 +403,7 @@ const HomePage = () => {
         />
         {isDetecting && (
           <Group>
-            <Text>Detecting... Please don't close this page</Text>
+            <Text>Detecting... Please don&apos;t close this page</Text>
             <Loader size="xs" />
           </Group>
         )}
@@ -413,11 +419,11 @@ const HomePage = () => {
         )}
         <Space h="md" />
         <Button
+          disabled={detected}
           leftIcon={<Icon icon="codicon:wand" width="24" />}
           loading={isDetecting}
           size="xl"
           type="submit"
-          disabled={detected}
         >
           Detect
         </Button>
