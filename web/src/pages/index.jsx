@@ -18,21 +18,20 @@ import {
   Tooltip,
   useMantineColorScheme,
 } from '@mantine/core';
-import axios, { AxiosError } from 'axios';
 import { useEffect, useRef, useState } from 'react';
 
 import { DownloadMenu } from '@/components/modules/DownloadMenu';
 import { Dropzone } from '@mantine/dropzone';
 import { Icon } from '@iconify/react';
 import { ImagePreview } from '@/components/elements/ImagePreview';
+import axios from 'axios';
+import { fetchImage } from '@/utils/fetchImage.js';
 import isURL from 'validator/es/lib/isURL';
 import { saveAs } from 'file-saver';
 import { socket } from '@/socket/socket.js';
 import { useForm } from 'react-hook-form';
 
 const MAX_FILES = 3;
-const IMG_ACCEPT = ['.png', '.jpeg', '.jpg'];
-const MIME_TYPE_ACCEPT = ['image/png', 'image/jpeg'];
 
 const HomePage = () => {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
@@ -159,63 +158,12 @@ const HomePage = () => {
     try {
       fileURLs = await Promise.all(
         dataURLs.map(async (url, index) => {
-          // NOTE: Pull out the file name from the url and convert extension to
-          // lowercase, because image filter only check lowercase extension.
-          // Even "multiline" filename 🤪. E.g: foo.SVG\nbar.JPEG =>
-          // foo.svg\nbar.jpeg
-          let fileName = url
-            .split('/')
-            .pop()
-            .replace(/([^.]+$)/gm, (match) => match.toLowerCase());
-
-          const img = new Image();
-          img.src = url;
-
           try {
-            // NOTE: Check if we can decode image from this URL
-            await img.decode();
-
-            // NOTE: The check above might pass in some cases, so we have to
-            // fetch the image to validate again
-
-            const fileData = await axios.get(url, { responseType: 'blob' });
-
-            // NOTE: Check if extension is valid, image name might not have
-            // extension so we have to check the mime type as well
-            const isValidFile = [...IMG_ACCEPT, ...MIME_TYPE_ACCEPT].some(
-              (ext) => {
-                return (
-                  fileName.toLowerCase().includes(ext) ||
-                  fileData.data.type.includes(ext)
-                );
-              },
-            );
-
-            if (!isValidFile) {
-              throw Error(
-                `URL has unsupported image type at line ${index + 1}`,
-              );
-            }
-
-            // NOTE: Append extension from MIME type if image name don't have
-            // extension, we don't have to convert extension to lowercase here
-            const fileExt = fileName.split('.').pop();
-            if (fileExt === fileName) {
-              // MIME types e.g: image/jpeg, image/png, image/svg+xml,
-              // image/gif, image/webp
-              const fileType = fileData.data.type;
-              fileName = `${fileName}.${fileType.split('/').pop()}`;
-            }
-
-            return {
-              name: fileName,
-              data: fileData.data,
-            };
+            const fileData = await fetchImage(url);
+            return fileData;
           } catch (err) {
-            if (err instanceof AxiosError || err instanceof DOMException) {
-              throw Error(`Can't fetch image from URL at line ${index + 1}`);
-            } else if (err instanceof Error) {
-              throw err;
+            if (err instanceof Error) {
+              throw Error(`Line ${index + 1}: ${err.message}`);
             }
           }
         }),
@@ -387,19 +335,20 @@ const HomePage = () => {
               }
 
               const errorLines = urls
-                .map((url, index) => {
+                .flatMap((url, index) => {
                   const isValid = isURL(url);
 
                   if (!isValid) {
                     // NOTE: Return error index, so we can join with the error
                     // message later
-                    return index + 1;
+                    return [index + 1];
                   }
+                  return [];
                 })
                 .filter((line) => line); // NOTE: Filter out undefined
 
               if (errorLines.length > 0) {
-                return `Invalid URL at line ${errorLines.join(', ')}`;
+                return `Line ${errorLines.join(', ')}: Invalid URL`;
               }
 
               return true;
