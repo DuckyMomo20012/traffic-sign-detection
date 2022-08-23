@@ -1,7 +1,5 @@
+import { IMG_ACCEPT, MIME_TYPE_ACCEPT } from '@/constants/constants.js';
 import axios, { AxiosError } from 'axios';
-
-const IMG_ACCEPT = ['.png', '.jpeg', '.jpg'];
-const MIME_TYPE_ACCEPT = ['image/png', 'image/jpeg'];
 
 const fetchImage = async (url) => {
   // NOTE: Pull out the file name from the url and convert extension to

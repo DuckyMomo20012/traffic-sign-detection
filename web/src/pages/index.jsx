@@ -18,6 +18,11 @@ import {
   Tooltip,
   useMantineColorScheme,
 } from '@mantine/core';
+import {
+  IMG_ACCEPT,
+  MAX_FILES,
+  MIME_TYPE_ACCEPT,
+} from '@/constants/constants.js';
 import { useEffect, useRef, useState } from 'react';
 
 import { DownloadMenu } from '@/components/modules/DownloadMenu';
@@ -31,8 +36,6 @@ import { saveAs } from 'file-saver';
 import { socket } from '@/socket/socket.js';
 import { useForm } from 'react-hook-form';
 import { v4 as uuidv4 } from 'uuid';
-
-const MAX_FILES = 3;
 
 const HomePage = () => {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
@@ -300,7 +303,7 @@ const HomePage = () => {
         onSubmit={handleSubmit(onSubmit)}
       >
         <Dropzone
-          accept={['image/png', 'image/jpeg']}
+          accept={MIME_TYPE_ACCEPT}
           className="w-1/2"
           loading={isDetecting}
           maxFiles={MAX_FILES}
@@ -325,15 +328,22 @@ const HomePage = () => {
               />
             </Dropzone.Idle>
             <Text>
-              Drag images here or click to select files, maximum {MAX_FILES}{' '}
-              files.
+              Drag images here or click to select files.
               <Space />
-              Support only <Code color="rose">.PNG</Code> and{' '}
-              <Code color="rose">.JPG</Code> files
+              Maximum {MAX_FILES} files.
             </Text>
-            <Text></Text>
           </Group>
         </Dropzone>
+        <Text>
+          Supports{' '}
+          {IMG_ACCEPT.map((ext, index) => {
+            return (
+              <Code color="rose" key={index}>
+                {ext}
+              </Code>
+            );
+          }).reduce((prev, curr) => [prev, ', ', curr])}
+        </Text>
         <Text>Or</Text>
         <Textarea
           autosize

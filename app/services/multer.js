@@ -1,6 +1,7 @@
 // SET STORAGE
 const multer = require('multer');
 const path = require('path');
+const { IMG_ACCEPT, MIME_TYPE_ACCEPT } = require('../constants/constants');
 
 const storageImage = multer.diskStorage({
   filename: (req, file, cb) => {
@@ -11,9 +12,6 @@ const storageImage = multer.diskStorage({
     cb(null, path.join(__dirname, '../public/img'));
   },
 });
-
-const IMG_ACCEPT = ['.png', '.jpeg', '.jpg'];
-const MIME_TYPE_ACCEPT = ['image/png', 'image/jpeg'];
 
 const filterImage = (req, file, cb) => {
   const isValid = [...IMG_ACCEPT, ...MIME_TYPE_ACCEPT].some((ext) => {

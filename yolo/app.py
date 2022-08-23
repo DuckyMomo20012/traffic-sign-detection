@@ -8,6 +8,8 @@ import socketio
 import yolov5
 from fastapi import FastAPI
 
+from constants import IMG_ACCEPT
+
 app = FastAPI()
 
 # create a Socket.IO Async server
@@ -27,8 +29,8 @@ app.model = yolov5.load(  # type: ignore
 async def detect(sid, data):
     idFolder = data.get("idFolder")
     imgs = []
-    for ext in ("*.png", "*.jpeg", "*.jpg"):
-        imgs.extend(glob(os.path.join("./upload/", idFolder, ext)))
+    for ext in IMG_ACCEPT:
+        imgs.extend(glob(os.path.join("./upload/", idFolder, "*" + ext)))
 
     # NOTE: I don't put this function outside of this event, because I want
     # to make use of closure
