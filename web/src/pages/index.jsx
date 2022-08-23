@@ -13,6 +13,7 @@ import {
   Space,
   Stack,
   Text,
+  Textarea,
   Title,
   Tooltip,
   useMantineColorScheme,
@@ -24,6 +25,8 @@ import { Dropzone } from '@mantine/dropzone';
 import { Icon } from '@iconify/react';
 import { ImagePreview } from '@/components/elements/ImagePreview';
 import axios from 'axios';
+import { fetchImage } from '@/utils/fetchImage.js';
+import isURL from 'validator/es/lib/isURL';
 import { saveAs } from 'file-saver';
 import { socket } from '@/socket/socket.js';
 import { useForm } from 'react-hook-form';
@@ -32,7 +35,14 @@ const MAX_FILES = 3;
 
 const HomePage = () => {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
-  const { register, handleSubmit, setValue, reset } = useForm();
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    reset,
+    setError: setFormError,
+    formState: { errors: formErrors },
+  } = useForm({ criteriaMode: 'all', mode: 'onChange' });
   const dark = colorScheme === 'dark';
   const openRef = useRef(null);
   const [files, setFiles] = useState([]);
@@ -118,12 +128,14 @@ const HomePage = () => {
 
   const handleReject = (rejectedFiles) => {
     if (rejectedFiles.length > MAX_FILES)
-      setError('Maximum file count exceeded. Please select less than 3 files.');
+      setError(
+        `Maximum file count exceeded. Please select less than ${MAX_FILES} files.`,
+      );
   };
 
   const handleDrop = (selectedFiles) => {
-    // NOTE: Have to set the value here because I can' get files from the
-    // Dropzone component
+    // NOTE: Have to set the value here because react-hook-form can't get files
+    // from the Dropzone component
 
     const newFiles = selectedFiles.map((file) => {
       return {
@@ -139,10 +151,42 @@ const HomePage = () => {
 
   const onSubmit = async (data) => {
     const formData = new FormData();
-    const fileList = [...data['data-image']];
+    const fileImages = [...data['data-image']];
+    // Filter out empty string
+    const dataURLs = data['data-url'].split('\n').filter((url) => url);
+    let fileURLs = [];
+    try {
+      fileURLs = await Promise.all(
+        dataURLs.map(async (url, index) => {
+          try {
+            const fileData = await fetchImage(url);
+            return fileData;
+          } catch (err) {
+            if (err instanceof Error) {
+              throw Error(`Line ${index + 1}: ${err.message}`);
+            }
+          }
+        }),
+      );
+    } catch (err) {
+      // NOTE: We only set error message for our custom error
+      if (err instanceof Error) {
+        setFormError('data-url', {
+          type: 'validate',
+          message: err.message,
+        });
+      }
+
+      // NOTE: We don't want to submit the form if there is an error
+      return;
+    }
+
+    const validFileURLs = fileURLs.filter((file) => file);
+
+    const fileList = [...fileImages, ...validFileURLs];
 
     if (fileList.length === 0) {
-      setError("You haven't selected any files");
+      setError("Please upload your images or enter image's URL");
       return;
     }
 
@@ -152,7 +196,8 @@ const HomePage = () => {
     // NOTE: Append only one file to 'data-image' to the form data. Don't append
     // a list!
     fileList.forEach((file) => {
-      formData.append('data-image', file.data);
+      // NOTE: Provide file name, if not Blob file with have filename "blob"
+      formData.append('data-image', file.data, file.name);
     });
 
     // NOTE: I have config proxy for Vite to forward the request to the targeted
@@ -195,20 +240,20 @@ const HomePage = () => {
                 target="_blank"
               >
                 <ActionIcon size="lg" variant="outline">
-                  <Icon width={24} icon="ant-design:github-filled" />
+                  <Icon icon="ant-design:github-filled" width={24} />
                 </ActionIcon>
               </Anchor>
             </Tooltip>
             <Tooltip label={dark ? 'Light mode' : 'Dark mode'}>
               <ActionIcon
-                size="lg"
                 color="rose"
                 onClick={() => toggleColorScheme()}
+                size="lg"
                 variant="outline"
               >
                 <Icon
-                  width={24}
                   icon={dark ? 'ic:outline-dark-mode' : 'ic:outline-light-mode'}
+                  width={24}
                 />
               </ActionIcon>
             </Tooltip>
@@ -261,7 +306,8 @@ const HomePage = () => {
               />
             </Dropzone.Idle>
             <Text>
-              Drag images here or click to select files, maximum 3 files.
+              Drag images here or click to select files, maximum {MAX_FILES}{' '}
+              files.
               <Space />
               Support only <Code color="rose">.PNG</Code> and{' '}
               <Code color="rose">.JPG</Code> files
@@ -269,9 +315,49 @@ const HomePage = () => {
             <Text></Text>
           </Group>
         </Dropzone>
+        <Text>Or</Text>
+        <Textarea
+          autosize
+          className="w-1/2"
+          description={`Maximum ${MAX_FILES} URLs`}
+          error={formErrors['data-url'] && formErrors['data-url'].message}
+          label="Your image URLs:"
+          minRows={2}
+          placeholder="One URL per line"
+          {...register('data-url', {
+            validate: (value) => {
+              if (value === '') return true;
+
+              const urls = value.split('\n').filter((url) => url !== '');
+
+              if (urls.length > MAX_FILES) {
+                return `Maximum ${MAX_FILES} URLs`;
+              }
+
+              const errorLines = urls
+                .flatMap((url, index) => {
+                  const isValid = isURL(url);
+
+                  if (!isValid) {
+                    // NOTE: Return error index, so we can join with the error
+                    // message later
+                    return [index + 1];
+                  }
+                  return [];
+                })
+                .filter((line) => line); // NOTE: Filter out undefined
+
+              if (errorLines.length > 0) {
+                return `Line ${errorLines.join(', ')}: Invalid URL`;
+              }
+
+              return true;
+            },
+          })}
+        />
         {isDetecting && (
           <Group>
-            <Text>Detecting... Please don't close this page</Text>
+            <Text>Detecting... Please don&apos;t close this page</Text>
             <Loader size="xs" />
           </Group>
         )}
@@ -287,11 +373,11 @@ const HomePage = () => {
         )}
         <Space h="md" />
         <Button
+          disabled={detected}
           leftIcon={<Icon icon="codicon:wand" width="24" />}
           loading={isDetecting}
           size="xl"
           type="submit"
-          disabled={files.length === 0 || detected}
         >
           Detect
         </Button>

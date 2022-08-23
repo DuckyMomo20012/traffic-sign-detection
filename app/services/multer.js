@@ -13,9 +13,17 @@ const storageImage = multer.diskStorage({
 });
 
 const IMG_ACCEPT = ['.png', '.jpeg', '.jpg'];
+const MIME_TYPE_ACCEPT = ['image/png', 'image/jpeg'];
 
 const filterImage = (req, file, cb) => {
-  cb(null, IMG_ACCEPT.includes(path.extname(file.originalname).toLowerCase()));
+  const isValid = [...IMG_ACCEPT, ...MIME_TYPE_ACCEPT].some((ext) => {
+    return (
+      path.extname(file.originalname).toLowerCase().includes(ext) ||
+      file.mimetype.includes(ext)
+    );
+  });
+
+  cb(null, isValid);
 };
 
 const storageModel = multer.diskStorage({
