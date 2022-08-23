@@ -261,7 +261,7 @@ const HomePage = () => {
         </Header>
       }
     >
-      <Center className="h-25 flex items-center justify-center">
+      <Center>
         <Title>
           Detect your{' '}
           <Text
@@ -274,6 +274,7 @@ const HomePage = () => {
           now
         </Title>
       </Center>
+      <Space h="xl" />
       <Stack
         align="center"
         component="form"
