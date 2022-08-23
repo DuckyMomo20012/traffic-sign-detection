@@ -353,6 +353,12 @@ const HomePage = () => {
                 return `Maximum ${MAX_FILES} URLs`;
               }
 
+              const uniqueURLs = [...new Set(urls)];
+
+              if (uniqueURLs.length !== urls.length) {
+                return 'Duplicate URLs are not allowed';
+              }
+
               const errorLines = urls
                 .flatMap((url, index) => {
                   const isValid = isURL(url);
