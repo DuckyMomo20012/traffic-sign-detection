@@ -135,8 +135,8 @@ const HomePage = () => {
   };
 
   const handleDrop = (selectedFiles) => {
-    // NOTE: Have to set the value here because I can' get files from the
-    // Dropzone component
+    // NOTE: Have to set the value here because react-hook-form can't get files
+    // from the Dropzone component
 
     const newFiles = selectedFiles.map((file) => {
       return {
@@ -159,8 +159,14 @@ const HomePage = () => {
     try {
       fileURLs = await Promise.all(
         dataURLs.map(async (url, index) => {
-          // Pull out the file name from the url
-          let fileName = url.split('/').pop();
+          // NOTE: Pull out the file name from the url and convert extension to
+          // lowercase, because image filter only check lowercase extension.
+          // Even "multiline" filename 🤪. E.g: foo.SVG\nbar.JPEG =>
+          // foo.svg\nbar.jpeg
+          let fileName = url
+            .split('/')
+            .pop()
+            .replace(/([^.]+$)/gm, (match) => match.toLowerCase());
 
           const img = new Image();
           img.src = url;
@@ -169,8 +175,8 @@ const HomePage = () => {
             // NOTE: Check if we can decode image from this URL
             await img.decode();
 
-            // NOTE: Check above might pass in some cases, so we have to fetch
-            // the image to validate again
+            // NOTE: The check above might pass in some cases, so we have to
+            // fetch the image to validate again
 
             const fileData = await axios.get(url, { responseType: 'blob' });
 
@@ -192,8 +198,7 @@ const HomePage = () => {
             }
 
             // NOTE: Append extension from MIME type if image name don't have
-            // extension
-            // REVIEW: Convert extension to lowercase to avoid error
+            // extension, we don't have to convert extension to lowercase here
             const fileExt = fileName.split('.').pop();
             if (fileExt === fileName) {
               // MIME types e.g: image/jpeg, image/png, image/svg+xml,
