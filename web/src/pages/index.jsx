@@ -30,6 +30,7 @@ import isURL from 'validator/es/lib/isURL';
 import { saveAs } from 'file-saver';
 import { socket } from '@/socket/socket.js';
 import { useForm } from 'react-hook-form';
+import { v4 as uuidv4 } from 'uuid';
 
 const MAX_FILES = 3;
 
@@ -181,7 +182,24 @@ const HomePage = () => {
       return;
     }
 
+    // NOTE: Filter out undefined or null, not really necessary because we
+    // already throw error
     const validFileURLs = fileURLs.filter((file) => file);
+    fileURLs
+      .map((file) => file.name) // Get array of file names
+      .forEach((fileName, index, arr) => {
+        if (arr.indexOf(fileName) !== index) {
+          // NOTE: Rename file to avoid duplicate name
+          const ext = fileName.split('.').pop();
+          const stem = fileName.split('.').slice(0, -1).join('.');
+
+          // Assign new name to file
+          validFileURLs[index] = {
+            ...validFileURLs[index],
+            name: `${stem}_${uuidv4()}.${ext}`,
+          };
+        }
+      });
 
     const fileList = [...fileImages, ...validFileURLs];
 
