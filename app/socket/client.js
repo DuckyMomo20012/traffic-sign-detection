@@ -14,9 +14,7 @@ socket.on('disconnect', () => {
 });
 
 socket.on('detect-finished', (data) => {
-  const { idFolder } = data;
-
-  socketServer.emit('detect-finished', { idFolder });
+  socketServer.emit('detect-finished', data);
 });
 
 socket.on('detect-status', (data) => {
