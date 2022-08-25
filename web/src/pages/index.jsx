@@ -28,7 +28,7 @@ import { useEffect, useRef, useState } from 'react';
 import { DownloadMenu } from '@/components/modules/DownloadMenu';
 import { Dropzone } from '@mantine/dropzone';
 import { Icon } from '@iconify/react';
-import { ImagePreview } from '@/components/elements/ImagePreview';
+import { ImagePreview } from '@/components/elements/ImagePreview/ImagePreview';
 import axios from 'axios';
 import { fetchImage } from '@/utils/fetchImage.js';
 import isURL from 'validator/es/lib/isURL';
@@ -416,6 +416,8 @@ const HomePage = () => {
         >
           Detect
         </Button>
+      </Stack>
+      <Stack align="center">
         {files?.length > 0 && (
           <>
             <Group className="self-end">
@@ -438,6 +440,7 @@ const HomePage = () => {
         )}
         <SimpleGrid
           breakpoints={[{ maxWidth: 'sm', cols: 1 }]}
+          className="w-full"
           cols={MAX_FILES}
           mt={previews ? 'xl' : 0}
           spacing="xl"
