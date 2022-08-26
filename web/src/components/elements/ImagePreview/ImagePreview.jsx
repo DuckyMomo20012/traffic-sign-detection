@@ -5,10 +5,10 @@ import { ImageMenu } from './ImageMenu.jsx';
 import { ImageResizer } from './ImageResizer.jsx';
 import { useElementSize } from '@mantine/hooks';
 
-const ImagePreview = ({ name, src, onCloseClick, onDownloadClick }) => {
+const ImagePreview = ({ caption, src, onCloseClick, onDownloadClick }) => {
   const { ref, width, height } = useElementSize();
 
-  const [withMenu, setWithMenu] = useState(false);
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
   const [withExtraMenu, setWithExtraMenu] = useState(false);
 
   const handleRef = (el) => {
@@ -20,7 +20,7 @@ const ImagePreview = ({ name, src, onCloseClick, onDownloadClick }) => {
 
     ref.current.onload = () => {
       // NOTE: Wait for image to fully load to show the menu
-      setWithMenu(true);
+      setIsImageLoaded(true);
     };
   };
 
@@ -33,14 +33,16 @@ const ImagePreview = ({ name, src, onCloseClick, onDownloadClick }) => {
   }, [width]);
 
   return (
-    <Stack>
+    <Stack className="overflow-y-visible">
       <ImageResizer>
-        {withMenu && <ImageMenu withExtraMenu={withExtraMenu} />}
+        {isImageLoaded && <ImageMenu withExtraMenu={withExtraMenu} />}
         <Image imageRef={handleRef} src={src} withPlaceholder />
-        <Text align="center" className="absolute w-full break-all">
-          {name}
-        </Text>
       </ImageResizer>
+      {isImageLoaded && (
+        <Text align="center" className="break-all" style={{ width }}>
+          {caption}
+        </Text>
+      )}
     </Stack>
   );
 };

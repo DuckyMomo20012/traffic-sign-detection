@@ -119,8 +119,8 @@ const HomePage = () => {
     const imageSrc = URL.createObjectURL(file.data);
     return (
       <ImagePreview
+        caption={file.name}
         key={index}
-        name={file.name}
         onCloseClick={() => handleRemoveImageClick(index)}
         onDownloadClick={() => handleDownloadImageClick(index)}
         src={imageSrc}
