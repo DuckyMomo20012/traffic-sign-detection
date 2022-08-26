@@ -1,14 +1,15 @@
-import { Image, Stack, Text } from '@mantine/core';
+import { Image, Modal, Stack, Text } from '@mantine/core';
+import { useDisclosure, useElementSize } from '@mantine/hooks';
 import { useEffect, useState } from 'react';
 
 import { ImageMenu } from './ImageMenu.jsx';
 import { ImageResizer } from './ImageResizer.jsx';
-import { useElementSize } from '@mantine/hooks';
 
 const ImagePreview = ({ caption, src, onRemoveClick, onDownloadClick }) => {
   const { ref, width, height } = useElementSize();
 
   const [isImageLoaded, setIsImageLoaded] = useState(false);
+  const [isModalOpened, modalHandlers] = useDisclosure(false);
   const [withExtraMenu, setWithExtraMenu] = useState(false);
   const [align, setAlign] = useState('center');
 
@@ -18,6 +19,9 @@ const ImagePreview = ({ caption, src, onRemoveClick, onDownloadClick }) => {
     remove: onRemoveClick,
     viewOriginal: () => {
       window.open(src, '_blank');
+    },
+    fullScreen: () => {
+      modalHandlers.open();
     },
   };
 
@@ -42,24 +46,37 @@ const ImagePreview = ({ caption, src, onRemoveClick, onDownloadClick }) => {
     }
   }, [width]);
 
+  // NOTE: Don't set placeHolder for Image Modal because the image already
+  // loaded
   return (
-    <Stack align={align}>
-      <ImageResizer>
+    <>
+      <Stack align={align}>
+        <ImageResizer>
+          {isImageLoaded && (
+            <ImageMenu
+              actions={actions}
+              align={align}
+              withExtraMenu={withExtraMenu}
+            />
+          )}
+          <Image imageRef={handleRef} src={src} withPlaceholder />
+        </ImageResizer>
         {isImageLoaded && (
-          <ImageMenu
-            actions={actions}
-            align={align}
-            withExtraMenu={withExtraMenu}
-          />
+          <Text align="center" className="break-all" style={{ width }}>
+            {caption}
+          </Text>
         )}
-        <Image imageRef={handleRef} src={src} withPlaceholder />
-      </ImageResizer>
-      {isImageLoaded && (
-        <Text align="center" className="break-all" style={{ width }}>
-          {caption}
-        </Text>
-      )}
-    </Stack>
+      </Stack>
+
+      <Modal
+        fullScreen
+        onClose={() => modalHandlers.close()}
+        opened={isModalOpened}
+        title={caption}
+      >
+        <Image src={src} />
+      </Modal>
+    </>
   );
 };
 

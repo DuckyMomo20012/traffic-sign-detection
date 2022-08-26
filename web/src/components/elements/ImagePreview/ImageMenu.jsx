@@ -10,11 +10,12 @@ const ImageMenu = ({ withExtraMenu, align, actions }) => {
   const [withMenu, menuHandlers] = useDisclosure(true);
   const alignRef = useClickOutside(() => alignHandlers.close());
 
+  // NOTE: Set delay-200 to prevent the menu flashing problem
   return (
     <Button.Group
-      className={`z-1 absolute right-0 justify-end children:${
-        withMenu ? 'visible' : 'invisible'
-      } `}
+      className={`z-1 invisible absolute right-0 justify-end delay-200 ${
+        withMenu ? 'group-hover:visible' : ''
+      }`}
     >
       {withExtraMenu && (
         <>

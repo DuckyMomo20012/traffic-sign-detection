@@ -21,8 +21,12 @@ const ImageResizer = ({ children }) => {
         left: 'justify-center flex items-center transform translate-x-2 group-hover:children:visible group-active:children:visible',
       }}
       handleComponent={{
-        right: <Box className="invisible h-1/4 w-1.5 rounded-md bg-gray-500" />,
-        left: <Box className="invisible h-1/4 w-1.5 rounded-md bg-gray-500" />,
+        right: (
+          <Box className="invisible h-1/4 w-1.5 rounded-md bg-gray-500 delay-200" />
+        ),
+        left: (
+          <Box className="invisible h-1/4 w-1.5 rounded-md bg-gray-500 delay-200" />
+        ),
       }}
       lockAspectRatio={true}
       minWidth="52px"
