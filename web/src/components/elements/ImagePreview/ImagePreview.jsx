@@ -5,12 +5,21 @@ import { ImageMenu } from './ImageMenu.jsx';
 import { ImageResizer } from './ImageResizer.jsx';
 import { useElementSize } from '@mantine/hooks';
 
-const ImagePreview = ({ caption, src, onCloseClick, onDownloadClick }) => {
+const ImagePreview = ({ caption, src, onRemoveClick, onDownloadClick }) => {
   const { ref, width, height } = useElementSize();
 
   const [isImageLoaded, setIsImageLoaded] = useState(false);
   const [withExtraMenu, setWithExtraMenu] = useState(false);
   const [align, setAlign] = useState('center');
+
+  const actions = {
+    align: setAlign,
+    download: onDownloadClick,
+    remove: onRemoveClick,
+    viewOriginal: () => {
+      window.open(src, '_blank');
+    },
+  };
 
   const handleRef = (el) => {
     if (!el) {
@@ -38,8 +47,8 @@ const ImagePreview = ({ caption, src, onCloseClick, onDownloadClick }) => {
       <ImageResizer>
         {isImageLoaded && (
           <ImageMenu
+            actions={actions}
             align={align}
-            setAlign={setAlign}
             withExtraMenu={withExtraMenu}
           />
         )}

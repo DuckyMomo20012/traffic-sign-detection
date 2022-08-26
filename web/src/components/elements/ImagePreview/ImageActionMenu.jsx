@@ -2,7 +2,7 @@ import { Button, Menu, Text, Tooltip } from '@mantine/core';
 
 import { Icon } from '@iconify/react';
 
-const ImageActionMenu = ({ menuHandlers, setAlign }) => {
+const ImageActionMenu = ({ menuHandlers, actions }) => {
   return (
     <Menu
       closeOnItemClick={false}
@@ -24,7 +24,10 @@ const ImageActionMenu = ({ menuHandlers, setAlign }) => {
           Result
         </Menu.Item>
         <Menu.Divider />
-        <Menu.Item icon={<Icon icon="ic:baseline-close" width={18} />}>
+        <Menu.Item
+          icon={<Icon icon="ic:baseline-close" width={18} />}
+          onClick={() => actions.remove()}
+        >
           Remove
         </Menu.Item>
         <Menu.Divider />
@@ -32,15 +35,14 @@ const ImageActionMenu = ({ menuHandlers, setAlign }) => {
           Full screen
         </Menu.Item>
         <Menu.Item
-          component="a"
-          href=""
           icon={<Icon icon="ic:outline-north-east" width={18} />}
-          target="_blank"
+          onClick={() => actions.viewOriginal()}
         >
           View original
         </Menu.Item>
         <Menu.Item
           icon={<Icon icon="ic:outline-download-for-offline" width={18} />}
+          onClick={() => actions.download()}
         >
           Download
         </Menu.Item>
@@ -56,19 +58,19 @@ const ImageActionMenu = ({ menuHandlers, setAlign }) => {
               <Menu.Label>ALIGN</Menu.Label>
               <Menu.Item
                 icon={<Icon icon="ic:outline-format-align-left" width={18} />}
-                onClick={() => setAlign('flex-start')}
+                onClick={() => actions.align('flex-start')}
               >
                 Align left
               </Menu.Item>
               <Menu.Item
                 icon={<Icon icon="ic:outline-format-align-center" width={18} />}
-                onClick={() => setAlign('center')}
+                onClick={() => actions.align('center')}
               >
                 Align center
               </Menu.Item>
               <Menu.Item
                 icon={<Icon icon="ic:outline-format-align-right" width={18} />}
-                onClick={() => setAlign('flex-end')}
+                onClick={() => actions.align('flex-end')}
               >
                 Align right
               </Menu.Item>

@@ -1,10 +1,10 @@
-import { Button, Menu, Popover, Text, Tooltip } from '@mantine/core';
+import { Button, Popover, Text, Tooltip } from '@mantine/core';
 import { useClickOutside, useDisclosure } from '@mantine/hooks';
 
 import { Icon } from '@iconify/react';
 import { ImageActionMenu } from './ImageActionMenu.jsx';
 
-const ImageMenu = ({ withExtraMenu, align, setAlign }) => {
+const ImageMenu = ({ withExtraMenu, align, actions }) => {
   const [isResultOpened, resultHandlers] = useDisclosure(false);
   const [isAlignOpened, alignHandlers] = useDisclosure(false);
   const [withMenu, menuHandlers] = useDisclosure(true);
@@ -82,7 +82,7 @@ const ImageMenu = ({ withExtraMenu, align, setAlign }) => {
                   color="dark"
                   compact
                   onClick={() => {
-                    setAlign('flex-start');
+                    actions.align('flex-start');
                     alignHandlers.close();
                   }}
                   size="sm"
@@ -94,7 +94,7 @@ const ImageMenu = ({ withExtraMenu, align, setAlign }) => {
                   color="dark"
                   compact
                   onClick={() => {
-                    setAlign('center');
+                    actions.align('center');
                     alignHandlers.close();
                   }}
                   size="sm"
@@ -106,7 +106,7 @@ const ImageMenu = ({ withExtraMenu, align, setAlign }) => {
                   color="dark"
                   compact
                   onClick={() => {
-                    setAlign('flex-end');
+                    actions.align('flex-end');
                     alignHandlers.close();
                   }}
                   size="sm"
@@ -118,18 +118,30 @@ const ImageMenu = ({ withExtraMenu, align, setAlign }) => {
             </Popover.Dropdown>
           </Popover>
           <Tooltip label="Download" position="top">
-            <Button color="dark" compact size="sm" variant="filled">
+            <Button
+              color="dark"
+              compact
+              onClick={() => actions.download()}
+              size="sm"
+              variant="filled"
+            >
               <Icon icon="ic:outline-download-for-offline" width={18} />
             </Button>
           </Tooltip>
           <Tooltip label="Remove" position="top">
-            <Button color="dark" compact size="sm" variant="filled">
+            <Button
+              color="dark"
+              compact
+              onClick={() => actions.remove()}
+              size="sm"
+              variant="filled"
+            >
               <Icon icon="ic:baseline-close" width={18} />
             </Button>
           </Tooltip>
         </>
       )}
-      <ImageActionMenu menuHandlers={menuHandlers} setAlign={setAlign} />
+      <ImageActionMenu actions={actions} menuHandlers={menuHandlers} />
     </Button.Group>
   );
 };

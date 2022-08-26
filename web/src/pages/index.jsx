@@ -121,11 +121,9 @@ const HomePage = () => {
       <ImagePreview
         caption={file.name}
         key={index}
-        onCloseClick={() => handleRemoveImageClick(index)}
         onDownloadClick={() => handleDownloadImageClick(index)}
+        onRemoveClick={() => handleRemoveImageClick(index)}
         src={imageSrc}
-        withCloseButton={!detected && !isDetecting}
-        withDownloadButton={detected}
       />
     );
   });
