@@ -20,25 +20,6 @@ const ImageMenu = ({ withExtraMenu, align, actions }) => {
       {withExtraMenu && (
         <>
           <Popover
-            onMouseLeave={() => resultHandlers.close()}
-            onOpen={() => resultHandlers.open()}
-          >
-            <Popover.Target>
-              <Tooltip
-                label="Result"
-                opened={isResultOpened ? false : undefined}
-                position="top"
-              >
-                <Button color="dark" compact size="sm" variant="filled">
-                  <Icon icon="ic:outline-info" width={18} />
-                </Button>
-              </Tooltip>
-            </Popover.Target>
-            <Popover.Dropdown>
-              <Text size="xs">foo bar</Text>
-            </Popover.Dropdown>
-          </Popover>
-          <Popover
             onClick={() => alignHandlers.toggle()}
             opened={isAlignOpened}
           >

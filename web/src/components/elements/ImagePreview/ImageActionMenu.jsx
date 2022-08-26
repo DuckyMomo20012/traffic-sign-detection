@@ -19,10 +19,7 @@ const ImageActionMenu = ({ menuHandlers, actions }) => {
       </Menu.Target>
 
       <Menu.Dropdown className="-translate-x-7 translate-y-3 transform last:visible">
-        <Menu.Item icon={<Icon icon="ic:outline-info" width={18} />}>
-          Result
-        </Menu.Item>
-        <Menu.Divider />
+        <Menu.Label>Actions</Menu.Label>
         <Menu.Item
           icon={<Icon icon="ic:baseline-close" width={18} />}
           onClick={() => actions.remove()}
@@ -69,7 +66,7 @@ const ImageActionMenu = ({ menuHandlers, actions }) => {
               <Text>Align</Text>
             </Menu.Target>
             <Menu.Dropdown className="translate-x-4 transform" p={4}>
-              <Menu.Label>ALIGN</Menu.Label>
+              <Menu.Label>Align</Menu.Label>
               <Menu.Item
                 component={Box}
                 icon={<Icon icon="ic:outline-format-align-left" width={18} />}
