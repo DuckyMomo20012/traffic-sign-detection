@@ -10,6 +10,7 @@ const ImagePreview = ({ caption, src, onCloseClick, onDownloadClick }) => {
 
   const [isImageLoaded, setIsImageLoaded] = useState(false);
   const [withExtraMenu, setWithExtraMenu] = useState(false);
+  const [align, setAlign] = useState('center');
 
   const handleRef = (el) => {
     if (!el) {
@@ -33,9 +34,15 @@ const ImagePreview = ({ caption, src, onCloseClick, onDownloadClick }) => {
   }, [width]);
 
   return (
-    <Stack className="overflow-y-visible">
+    <Stack align={align}>
       <ImageResizer>
-        {isImageLoaded && <ImageMenu withExtraMenu={withExtraMenu} />}
+        {isImageLoaded && (
+          <ImageMenu
+            align={align}
+            setAlign={setAlign}
+            withExtraMenu={withExtraMenu}
+          />
+        )}
         <Image imageRef={handleRef} src={src} withPlaceholder />
       </ImageResizer>
       {isImageLoaded && (
