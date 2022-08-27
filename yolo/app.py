@@ -1,12 +1,17 @@
 import asyncio
+import contextlib
+import io
 import logging
 import os
+import re
 import shutil
 from glob import glob
 
 import socketio
 import yolov5
 from fastapi import FastAPI
+
+from constants import IMG_ACCEPT
 
 app = FastAPI()
 
@@ -27,8 +32,8 @@ app.model = yolov5.load(  # type: ignore
 async def detect(sid, data):
     idFolder = data.get("idFolder")
     imgs = []
-    for ext in ("*.png", "*.jpeg", "*.jpg"):
-        imgs.extend(glob(os.path.join("./upload/", idFolder, ext)))
+    for ext in IMG_ACCEPT:
+        imgs.extend(glob(os.path.join("./upload/", idFolder, "*" + ext)))
 
     # NOTE: I don't put this function outside of this event, because I want
     # to make use of closure
@@ -37,10 +42,44 @@ async def detect(sid, data):
         try:
             if imgs:
                 results = app.model(imgs, size=640)  # batched inference
+                # Capture result output
+                f = io.StringIO()
+                with contextlib.redirect_stdout(f):
+                    results.print()
+                output = f.getvalue()
+
                 results.print()
                 results.save(save_dir=f"./result/{idFolder}")
+
+                pattern = r"(image\s\d+/\d+):\s(\d+x\d+)\s(.*)"
+
+                *detects, speed = output.splitlines()
+
+                def parseRes():
+                    for index, filePath in enumerate(imgs):
+                        fileName = os.path.basename(filePath)
+
+                        _imgIdx, imgSize, imgClass = re.match(
+                            pattern, detects[index]
+                        ).groups()
+
+                        yield {
+                            "fileName": fileName,
+                            "imgSize": imgSize,
+                            "imgClass": imgClass,
+                        }
+
+                detectRes = list(parseRes())
+
                 # NOTE: We only emit this event when we have finished
-                await sio.emit("detect-finished", {"idFolder": idFolder})
+                await sio.emit(
+                    "detect-finished",
+                    {
+                        "idFolder": idFolder,
+                        "detection": detectRes,
+                        "speed": speed.replace("Speed: ", ""),
+                    },
+                )
             else:
                 await sio.emit(
                     "detect-status",

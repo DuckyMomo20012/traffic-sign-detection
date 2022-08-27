@@ -18,20 +18,24 @@ import {
   Tooltip,
   useMantineColorScheme,
 } from '@mantine/core';
+import {
+  IMG_ACCEPT,
+  MAX_FILES,
+  MIME_TYPE_ACCEPT,
+} from '@/constants/constants.js';
 import { useEffect, useRef, useState } from 'react';
 
 import { DownloadMenu } from '@/components/modules/DownloadMenu';
 import { Dropzone } from '@mantine/dropzone';
 import { Icon } from '@iconify/react';
-import { ImagePreview } from '@/components/elements/ImagePreview';
+import { ImagePreview } from '@/components/elements/ImagePreview/ImagePreview';
 import axios from 'axios';
 import { fetchImage } from '@/utils/fetchImage.js';
 import isURL from 'validator/es/lib/isURL';
 import { saveAs } from 'file-saver';
 import { socket } from '@/socket/socket.js';
 import { useForm } from 'react-hook-form';
-
-const MAX_FILES = 3;
+import { v4 as uuidv4 } from 'uuid';
 
 const HomePage = () => {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
@@ -115,13 +119,11 @@ const HomePage = () => {
     const imageSrc = URL.createObjectURL(file.data);
     return (
       <ImagePreview
+        caption={file.name}
         key={index}
-        name={file.name}
-        onCloseClick={() => handleRemoveImageClick(index)}
         onDownloadClick={() => handleDownloadImageClick(index)}
+        onRemoveClick={() => handleRemoveImageClick(index)}
         src={imageSrc}
-        withCloseButton={!detected && !isDetecting}
-        withDownloadButton={detected}
       />
     );
   });
@@ -181,7 +183,24 @@ const HomePage = () => {
       return;
     }
 
+    // NOTE: Filter out undefined or null, not really necessary because we
+    // already throw error
     const validFileURLs = fileURLs.filter((file) => file);
+    fileURLs
+      .map((file) => file.name) // Get array of file names
+      .forEach((fileName, index, arr) => {
+        if (arr.indexOf(fileName) !== index) {
+          // NOTE: Rename file to avoid duplicate name
+          const ext = fileName.split('.').pop();
+          const stem = fileName.split('.').slice(0, -1).join('.');
+
+          // Assign new name to file
+          validFileURLs[index] = {
+            ...validFileURLs[index],
+            name: `${stem}_${uuidv4()}.${ext}`,
+          };
+        }
+      });
 
     const fileList = [...fileImages, ...validFileURLs];
 
@@ -261,7 +280,7 @@ const HomePage = () => {
         </Header>
       }
     >
-      <Center className="h-25 flex items-center justify-center">
+      <Center>
         <Title>
           Detect your{' '}
           <Text
@@ -274,6 +293,7 @@ const HomePage = () => {
           now
         </Title>
       </Center>
+      <Space h="xl" />
       <Stack
         align="center"
         component="form"
@@ -281,7 +301,7 @@ const HomePage = () => {
         onSubmit={handleSubmit(onSubmit)}
       >
         <Dropzone
-          accept={['image/png', 'image/jpeg']}
+          accept={MIME_TYPE_ACCEPT}
           className="w-1/2"
           loading={isDetecting}
           maxFiles={MAX_FILES}
@@ -306,15 +326,22 @@ const HomePage = () => {
               />
             </Dropzone.Idle>
             <Text>
-              Drag images here or click to select files, maximum {MAX_FILES}{' '}
-              files.
+              Drag images here or click to select files.
               <Space />
-              Support only <Code color="rose">.PNG</Code> and{' '}
-              <Code color="rose">.JPG</Code> files
+              Maximum {MAX_FILES} files.
             </Text>
-            <Text></Text>
           </Group>
         </Dropzone>
+        <Text>
+          Supports{' '}
+          {IMG_ACCEPT.map((ext, index) => {
+            return (
+              <Code color="rose" key={index}>
+                {ext}
+              </Code>
+            );
+          }).reduce((prev, curr) => [prev, ', ', curr])}
+        </Text>
         <Text>Or</Text>
         <Textarea
           autosize
@@ -332,6 +359,12 @@ const HomePage = () => {
 
               if (urls.length > MAX_FILES) {
                 return `Maximum ${MAX_FILES} URLs`;
+              }
+
+              const uniqueURLs = [...new Set(urls)];
+
+              if (uniqueURLs.length !== urls.length) {
+                return 'Duplicate URLs are not allowed';
               }
 
               const errorLines = urls
@@ -381,6 +414,8 @@ const HomePage = () => {
         >
           Detect
         </Button>
+      </Stack>
+      <Stack align="center">
         {files?.length > 0 && (
           <>
             <Group className="self-end">
@@ -403,6 +438,7 @@ const HomePage = () => {
         )}
         <SimpleGrid
           breakpoints={[{ maxWidth: 'sm', cols: 1 }]}
+          className="w-full"
           cols={MAX_FILES}
           mt={previews ? 'xl' : 0}
           spacing="xl"
