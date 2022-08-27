@@ -5,6 +5,7 @@ import logging
 import os
 import re
 import shutil
+import threading
 from glob import glob
 
 import socketio
@@ -49,16 +50,21 @@ async def detect(sid, data):
                 output = f.getvalue()
 
                 results.print()
+                # NOTE: YOLOv5 may rename the output file name, so be careful
                 results.save(save_dir=f"./result/{idFolder}")
 
                 pattern = r"(image\s\d+/\d+):\s(\d+x\d+)\s(.*)"
 
                 *detects, speed = output.splitlines()
 
+                # NOTE: Parse detection results
                 def parseRes():
                     for index, filePath in enumerate(imgs):
                         fileName = os.path.basename(filePath)
 
+                        # NOTE: Image index of YOLOv5 printed result is still
+                        # maintain the order of "imgs" array we passed in the
+                        # model call
                         _imgIdx, imgSize, imgClass = re.match(
                             pattern, detects[index]
                         ).groups()
@@ -110,9 +116,31 @@ async def detect(sid, data):
                 ignore_errors=True,
             )
 
-    # NOTE: Create task to keep running in background after we return
-    asyncio.create_task(
-        detectImage(),
+    # NOTE: After a very LONG time, I found a way to run this function in
+    # background AND ACK back before timeout. I start a thread but not call
+    # "join" to wait for its result (like "fire and forget")
+
+    # NOTE: Alternative way is you can create a FastAPI route and pass a param
+    # "background_tasks" to it, add "detectImage" as task. Then Express will
+    # request the route
+
+    # NOTE: I can't use starlette.background because socketio can't serialize
+    # its "JSONResponse" 😭
+
+    # NOTE: Using "Celery" is a good way to run this function in background but
+    # it is not necessary and complicated. "Dramatiq" is more simple and
+    # promising.
+    def handleThread():
+        asyncio.run(detectImage())
+
+    thread = threading.Thread(target=handleThread)
+    thread.start()
+
+    return (
+        {
+            "status": "ok",
+            "msg": "Detection started",
+        },
     )
 
 
