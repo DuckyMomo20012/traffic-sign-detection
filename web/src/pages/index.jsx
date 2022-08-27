@@ -1,5 +1,6 @@
 import {
   ActionIcon,
+  Alert,
   Anchor,
   AppShell,
   Button,
@@ -54,10 +55,11 @@ const HomePage = () => {
   const [error, setError] = useState('');
   const [isDetecting, setIsDetecting] = useState(false);
   const [detected, setDetected] = useState(false);
+  const [detectedResult, setDetectedResult] = useState([]);
 
   useEffect(() => {
     socket.on('detect-finished', async (data) => {
-      const { idFolder } = data;
+      const { idFolder, detection } = data;
       const req = await axios.get(`/api/result/${idFolder}`);
 
       const fileInfo = req.data;
@@ -72,6 +74,7 @@ const HomePage = () => {
       );
 
       setFiles(fileData);
+      setDetectedResult(detection);
       setIsDetecting(false);
       setDetected(true);
 
@@ -117,14 +120,47 @@ const HomePage = () => {
   const previews = files?.map((file, index) => {
     // NOTE: Response image with have "Blob" type, Upload image will have "File" type
     const imageSrc = URL.createObjectURL(file.data);
+
+    let detectedClasses = '';
+    let isNoDetection = false;
+    if (detected) {
+      detectedClasses = detectedResult.find(({ fileName }) => {
+        // NOTE: Detected result file name may be different from uploaded file
+        // name when YOLOv5 save file to directory
+        const resultFileStem = fileName.split('.').slice(0, -1).join('.');
+        const imgFileStem = file.name.split('.').slice(0, -1).join('.');
+        return resultFileStem === imgFileStem;
+      })?.imgClass;
+
+      isNoDetection = detectedClasses.includes('(no detections)');
+    }
     return (
-      <ImagePreview
-        caption={file.name}
-        key={index}
-        onDownloadClick={() => handleDownloadImageClick(index)}
-        onRemoveClick={() => handleRemoveImageClick(index)}
-        src={imageSrc}
-      />
+      <Stack key={index}>
+        {detected && (
+          <Alert
+            color={isNoDetection ? 'red' : 'green'}
+            icon={
+              <Icon
+                icon={
+                  isNoDetection
+                    ? 'ic:outline-error-outline'
+                    : 'ic:outline-check-circle-outline'
+                }
+                width={24}
+              />
+            }
+            title="Result"
+          >
+            {detectedClasses}
+          </Alert>
+        )}
+        <ImagePreview
+          caption={file.name}
+          onDownloadClick={() => handleDownloadImageClick(index)}
+          onRemoveClick={() => handleRemoveImageClick(index)}
+          src={imageSrc}
+        />
+      </Stack>
     );
   });
 
