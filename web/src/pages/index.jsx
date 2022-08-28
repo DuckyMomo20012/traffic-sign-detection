@@ -16,6 +16,7 @@ import {
   Textarea,
   Title,
   Tooltip,
+  Footer as AppShellFooter,
   useMantineColorScheme,
 } from '@mantine/core';
 import { useEffect, useRef, useState } from 'react';
@@ -274,6 +275,11 @@ const HomePage = () => {
 
   return (
     <AppShell
+      footer={
+        <AppShellFooter className="static">
+          <Footer />
+        </AppShellFooter>
+      }
       header={
         <Header className="flex items-center justify-end" height={48} p={24}>
           <Group>
@@ -305,17 +311,26 @@ const HomePage = () => {
       }
     >
       <Center>
-        <Title className="text-5xl">
-          Detect your{' '}
-          <Text
-            component="span"
-            gradient={{ from: 'rose', to: 'orange' }}
-            variant="gradient"
-          >
-            traffic sign
-          </Text>{' '}
-          now
-        </Title>
+        <Stack align="center">
+          <Title className="text-5xl">
+            Detect your{' '}
+            <Text
+              component="span"
+              gradient={{ from: 'rose', to: 'orange' }}
+              variant="gradient"
+            >
+              traffic sign
+            </Text>{' '}
+            now
+          </Title>
+          <Text size="lg">
+            Detect up to{' '}
+            <Text color="red" size="xl" span weight={700}>
+              36
+            </Text>{' '}
+            traffic signs
+          </Text>
+        </Stack>
       </Center>
       <Space h="xl" />
       <Stack
@@ -356,16 +371,6 @@ const HomePage = () => {
             </Text>
           </Group>
         </Dropzone>
-        <Text>
-          Supports{' '}
-          {IMG_ACCEPT.map((ext, index) => {
-            return (
-              <Code color="rose" key={index}>
-                {ext}
-              </Code>
-            );
-          }).reduce((prev, curr) => [prev, ', ', curr])}
-        </Text>
         <Text>Or</Text>
         <Textarea
           autosize
@@ -412,6 +417,16 @@ const HomePage = () => {
             },
           })}
         />
+        <Text>
+          Supports{' '}
+          {IMG_ACCEPT.map((ext, index) => {
+            return (
+              <Code color="rose" key={index}>
+                {ext}
+              </Code>
+            );
+          }).reduce((prev, curr) => [prev, ', ', curr])}
+        </Text>
         {isDetecting && (
           <Group>
             <Text>Detecting... Please don&apos;t close this page</Text>
@@ -471,7 +486,6 @@ const HomePage = () => {
         </SimpleGrid>
       </Stack>
       <Faq />
-      <Footer />
     </AppShell>
   );
 };

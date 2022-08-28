@@ -16,7 +16,10 @@ const Footer = () => {
   const dark = colorScheme === 'dark';
 
   return (
-    <Stack align="stretch" className="children:w-1/2 items-center">
+    <Stack
+      align="stretch"
+      className="children:w-1/2 items-center bg-gray-100 py-20"
+    >
       <SimpleGrid cols={3}>
         <Stack align="flex-start">
           <Text color="dimmed">Built with</Text>
