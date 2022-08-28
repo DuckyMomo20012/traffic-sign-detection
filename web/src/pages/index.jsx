@@ -18,26 +18,26 @@ import {
   Tooltip,
   useMantineColorScheme,
 } from '@mantine/core';
+import { useEffect, useRef, useState } from 'react';
+
+import { Dropzone } from '@mantine/dropzone';
+import { Icon } from '@iconify/react';
+import axios from 'axios';
+import isURL from 'validator/es/lib/isURL';
+import { saveAs } from 'file-saver';
+import { useForm } from 'react-hook-form';
+import { v4 as uuidv4 } from 'uuid';
+import { socket } from '@/socket/socket.js';
+import { fetchImage } from '@/utils/fetchImage.js';
+import { ImagePreview } from '@/components/elements/ImagePreview/ImagePreview';
+import { Footer } from '@/components/modules/Footer';
+import { Faq } from '@/components/modules/Faq';
+import { DownloadMenu } from '@/components/modules/DownloadMenu';
 import {
   IMG_ACCEPT,
   MAX_FILES,
   MIME_TYPE_ACCEPT,
 } from '@/constants/constants.js';
-import { useEffect, useRef, useState } from 'react';
-
-import { DownloadMenu } from '@/components/modules/DownloadMenu';
-import { Dropzone } from '@mantine/dropzone';
-import { Faq } from '@/components/modules/Faq';
-import { Footer } from '@/components/modules/Footer';
-import { Icon } from '@iconify/react';
-import { ImagePreview } from '@/components/elements/ImagePreview/ImagePreview';
-import axios from 'axios';
-import { fetchImage } from '@/utils/fetchImage.js';
-import isURL from 'validator/es/lib/isURL';
-import { saveAs } from 'file-saver';
-import { socket } from '@/socket/socket.js';
-import { useForm } from 'react-hook-form';
-import { v4 as uuidv4 } from 'uuid';
 
 const HomePage = () => {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
