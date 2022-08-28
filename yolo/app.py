@@ -10,9 +10,14 @@ from glob import glob
 
 import socketio
 import yolov5
+from environs import Env
 from fastapi import FastAPI
 
 from constants import IMG_ACCEPT
+
+env = Env()
+# Read .env into os.environ
+env.read_env()
 
 app = FastAPI()
 
