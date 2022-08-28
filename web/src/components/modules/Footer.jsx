@@ -18,7 +18,7 @@ const Footer = () => {
   return (
     <Stack align="stretch" className="children:w-1/2 items-center">
       <SimpleGrid cols={3}>
-        <Stack>
+        <Stack align="flex-start">
           <Text color="dimmed">Built with</Text>
           <Anchor href="https://mantine.dev/">
             <img alt="Mantine Logo" className="h-8" src={mantineLogo} />
@@ -28,6 +28,9 @@ const Footer = () => {
               <Image src="https://socket.io/images/logo.svg" width={32} />
               <Text>Socket.IO</Text>
             </Group>
+          </Anchor>
+          <Anchor href="https://github.com/ultralytics/yolov5">
+            <Text>YOLOv5</Text>
           </Anchor>
         </Stack>
         <Stack>
