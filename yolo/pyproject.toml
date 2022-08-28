@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "traffic-sign-detection"
-version = "0.1.0"
+version = "0.0.1"
 description = "A website to detect traffic signs"
 authors = ["Duong Vinh <tienvinh.duong4@gmail.com>"]
 

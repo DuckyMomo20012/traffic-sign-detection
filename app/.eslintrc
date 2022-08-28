@@ -9,6 +9,7 @@
     "plugin:import/recommended",
     "plugin:prettier/recommended"
   ],
+  "parser": "@babel/eslint-parser",
   "plugins": ["import"],
   "rules": {
     "eqeqeq": "warn",
