@@ -1,11 +1,10 @@
-import { Button, Popover, Text, Tooltip } from '@mantine/core';
+import { Button, Popover, Tooltip } from '@mantine/core';
 import { useClickOutside, useDisclosure } from '@mantine/hooks';
 
 import { Icon } from '@iconify/react';
 import { ImageActionMenu } from './ImageActionMenu.jsx';
 
 const ImageMenu = ({ withExtraMenu, align, actions }) => {
-  const [isResultOpened, resultHandlers] = useDisclosure(false);
   const [isAlignOpened, alignHandlers] = useDisclosure(false);
   const [withMenu, menuHandlers] = useDisclosure(true);
   const alignRef = useClickOutside(() => alignHandlers.close());

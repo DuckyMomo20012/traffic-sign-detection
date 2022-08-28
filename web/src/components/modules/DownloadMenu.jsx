@@ -28,7 +28,7 @@ const DownloadMenu = ({ files }) => {
   const handleZIPClick = () => {
     const zipped = zipSync(zipFolder);
 
-    const zipName = uuidv4() + '.zip';
+    const zipName = `${uuidv4()}.zip`;
 
     saveAs(new Blob([zipped]), zipName);
   };
