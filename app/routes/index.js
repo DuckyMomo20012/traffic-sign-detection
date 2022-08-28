@@ -49,7 +49,8 @@ router.post(
         );
       }
 
-      // NOTE: Return here otherwise it will return before timeout
+      // NOTE: Return here otherwise it will return before timeout. We can
+      // check ACK to response to client
       return res.status(204).send('');
     });
   },
