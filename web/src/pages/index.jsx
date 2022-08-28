@@ -6,7 +6,6 @@ import {
   Button,
   Center,
   Code,
-  Footer,
   Group,
   Header,
   Loader,
@@ -28,6 +27,8 @@ import { useEffect, useRef, useState } from 'react';
 
 import { DownloadMenu } from '@/components/modules/DownloadMenu';
 import { Dropzone } from '@mantine/dropzone';
+import { Faq } from '@/components/modules/Faq';
+import { Footer } from '@/components/modules/Footer';
 import { Icon } from '@iconify/react';
 import { ImagePreview } from '@/components/elements/ImagePreview/ImagePreview';
 import axios from 'axios';
@@ -273,19 +274,6 @@ const HomePage = () => {
 
   return (
     <AppShell
-      footer={
-        <Footer>
-          <Group position="center">
-            <Text size="sm">
-              Made with {dark ? '☕️' : '❤️'} by{' '}
-              <Anchor href="https://github.com/DuckyMomo20012">
-                DuckyMomo20012
-              </Anchor>{' '}
-              and <Anchor href="https://github.com/lntvan166">Tu Van</Anchor>
-            </Text>
-          </Group>
-        </Footer>
-      }
       header={
         <Header className="flex items-center justify-end" height={48} p={24}>
           <Group>
@@ -317,7 +305,7 @@ const HomePage = () => {
       }
     >
       <Center>
-        <Title>
+        <Title className="text-5xl">
           Detect your{' '}
           <Text
             component="span"
@@ -482,7 +470,8 @@ const HomePage = () => {
           {previews}
         </SimpleGrid>
       </Stack>
-      <Space h="xl" />
+      <Faq />
+      <Footer />
     </AppShell>
   );
 };
