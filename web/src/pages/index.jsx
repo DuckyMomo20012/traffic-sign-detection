@@ -2,7 +2,6 @@ import {
   Alert,
   AppShell,
   Button,
-  Center,
   Code,
   Group,
   Header as AppShellHeader,
@@ -318,30 +317,27 @@ const HomePage = () => {
         </AppShellHeader>
       }
     >
-      <Center>
-        <Stack align="center">
-          <Title className="text-5xl">
-            Detect your{' '}
-            <Text
-              component="span"
-              gradient={{ from: 'rose', to: 'orange' }}
-              variant="gradient"
-            >
-              traffic sign
-            </Text>{' '}
-            now
-          </Title>
-          <Text size="lg">
-            Detect up to{' '}
-            <Text color="red" size="xl" span weight={700}>
-              36
-            </Text>{' '}
-            traffic signs
-          </Text>
-        </Stack>
-      </Center>
-      <Space h="xl" />
-      <Stack align="center" className="my-10">
+      <Stack align="center">
+        <Title className="text-5xl">
+          Detect your{' '}
+          <Text
+            component="span"
+            gradient={{ from: 'rose', to: 'orange' }}
+            variant="gradient"
+          >
+            traffic sign
+          </Text>{' '}
+          now
+        </Title>
+        <Text size="lg">
+          Detect up to{' '}
+          <Text color="red" size="xl" span weight={700}>
+            36
+          </Text>{' '}
+          traffic signs
+        </Text>
+      </Stack>
+      <Stack align="center" className="my-20">
         <StepProgress />
         {error && (
           <Alert
