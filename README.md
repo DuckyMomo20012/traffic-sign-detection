@@ -1,5 +1,6 @@
 <div align="center">
 
+  <img src="web/src/logo.svg" alt="logo" width="200" height="auto" />
   <h1>Traffic sign object detection</h1>
 
   <p>
@@ -8,34 +9,34 @@
 
 <!-- Badges -->
 <p>
-  <a href="https://github.com/DuckyMomo20012/nodejs-yolov5/graphs/contributors">
-    <img src="https://img.shields.io/github/contributors/DuckyMomo20012/nodejs-yolov5" alt="contributors" />
+  <a href="https://github.com/DuckyMomo20012/traffic-sign-detection/graphs/contributors">
+    <img src="https://img.shields.io/github/contributors/DuckyMomo20012/traffic-sign-detection" alt="contributors" />
   </a>
   <a href="">
-    <img src="https://img.shields.io/github/last-commit/DuckyMomo20012/nodejs-yolov5" alt="last update" />
+    <img src="https://img.shields.io/github/last-commit/DuckyMomo20012/traffic-sign-detection" alt="last update" />
   </a>
-  <a href="https://github.com/DuckyMomo20012/nodejs-yolov5/network/members">
-    <img src="https://img.shields.io/github/forks/DuckyMomo20012/nodejs-yolov5" alt="forks" />
+  <a href="https://github.com/DuckyMomo20012/traffic-sign-detection/network/members">
+    <img src="https://img.shields.io/github/forks/DuckyMomo20012/traffic-sign-detection" alt="forks" />
   </a>
-  <a href="https://github.com/DuckyMomo20012/nodejs-yolov5/stargazers">
-    <img src="https://img.shields.io/github/stars/DuckyMomo20012/nodejs-yolov5" alt="stars" />
+  <a href="https://github.com/DuckyMomo20012/traffic-sign-detection/stargazers">
+    <img src="https://img.shields.io/github/stars/DuckyMomo20012/traffic-sign-detection" alt="stars" />
   </a>
-  <a href="https://github.com/DuckyMomo20012/nodejs-yolov5/issues/">
-    <img src="https://img.shields.io/github/issues/DuckyMomo20012/nodejs-yolov5" alt="open issues" />
+  <a href="https://github.com/DuckyMomo20012/traffic-sign-detection/issues/">
+    <img src="https://img.shields.io/github/issues/DuckyMomo20012/traffic-sign-detection" alt="open issues" />
   </a>
-  <a href="https://github.com/DuckyMomo20012/nodejs-yolov5/blob/main/LICENSE">
-    <img src="https://img.shields.io/github/license/DuckyMomo20012/nodejs-yolov5.svg" alt="license" />
+  <a href="https://github.com/DuckyMomo20012/traffic-sign-detection/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/DuckyMomo20012/traffic-sign-detection.svg" alt="license" />
   </a>
 </p>
 
 <h4>
-    <a href="https://github.com/DuckyMomo20012/nodejs-yolov5/">View Demo</a>
+    <a href="https://github.com/DuckyMomo20012/traffic-sign-detection/">View Demo</a>
   <span> · </span>
-    <a href="https://github.com/DuckyMomo20012/nodejs-yolov5">Documentation</a>
+    <a href="https://github.com/DuckyMomo20012/traffic-sign-detection">Documentation</a>
   <span> · </span>
-    <a href="https://github.com/DuckyMomo20012/nodejs-yolov5/issues/">Report Bug</a>
+    <a href="https://github.com/DuckyMomo20012/traffic-sign-detection/issues/">Report Bug</a>
   <span> · </span>
-    <a href="https://github.com/DuckyMomo20012/nodejs-yolov5/issues/">Request Feature</a>
+    <a href="https://github.com/DuckyMomo20012/traffic-sign-detection/issues/">Request Feature</a>
   </h4>
 </div>
 
@@ -71,7 +72,7 @@
 ### :camera: Screenshots
 
 <div align="center">
-  <img src="https://user-images.githubusercontent.com/64480713/182522564-d872a2d6-646d-4223-9a2f-fe5ba3d12d66.png" alt="screenshot" />
+  <img src="https://user-images.githubusercontent.com/64480713/187239535-185cf6f2-6e64-42d1-bad1-76409278fd77.jpg" alt="screenshot" />
 </div>
 
 <!-- TechStack -->
@@ -79,10 +80,27 @@
 ### :space_invader: Tech Stack
 
 <details>
+  <summary>Client</summary>
+  <ul>
+    <li><a href="https://www.javascript.com/">Javascript</a></li>
+    <li><a href="https://reactjs.org/">React.js</a></li>
+    <li><a href="https://reactrouter.com/">React Router</a></li>
+    <li><a href="https://windicss.org/">WindiCSS</a></li>
+    <li><a href="https://mantine.dev/">Mantine</a></li>
+    <li><a href="https://eslint.org/">ESLint</a></li>
+    <li><a href="https://prettier.io/">Prettier</a></li>
+    <li><a href="https://vitejs.dev/">Vite</a></li>
+    <li><a href="https://iconify.design/">Iconify</a></li>
+  </ul>
+</details>
+
+<details>
   <summary>Server</summary>
   <ul>
     <li><a href="https://expressjs.com/">Express.js</a></li>
-    <li><a href="https://www.python.org/">Python</a></li>
+    <li><a href="https://socket.io/">SocketIO</a></li>
+    <li><a href="https://fastapi.tiangolo.com/">FastAPI</a></li>
+    <li><a href="https://github.com/ultralytics/yolov5">YOLOv5</a></li>
   </ul>
 </details>
 
@@ -90,7 +108,10 @@
 
 ### :dart: Features
 
-- Detect traffic sign objects.
+- Detect traffic sign objects:
+  - Using uploaded images.
+  - Using URLs.
+- Save the results as a .zip file.
 
 <!-- Getting Started -->
 
@@ -134,20 +155,24 @@
 
 Clone the project:
 
-[yolov5](https://github.com/ultralytics/yolov5) is a submodule, so you have to
-clone repo recursively:
-
 ```bash
-git clone --recursive https://github.com/DuckyMomo20012/nodejs-yolov5.git
+git clone https://github.com/DuckyMomo20012/traffic-sign-detection.git
 ```
 
 Go to the project directory:
 
 ```bash
-cd nodejs-yolov5
+cd traffic-sign-detection
 ```
 
 Install dependencies:
+
+- **web:**
+
+  ```bash
+  cd ./web
+  yarn
+  ```
 
 - **app:**
 
@@ -165,14 +190,6 @@ Install dependencies:
   poetry install
   ```
 
-  OR:
-
-  Install dependencies with `pip`:
-
-  ```bash
-  pip install -r requirements.txt
-  ```
-
 Running script to start the server:
 
 - **Windows:**
@@ -181,7 +198,7 @@ Running script to start the server:
   run.bat
   ```
 
-- **Linux and macOS:** Requires zx tool to be installed.
+- **Linux:** Requires zx tool to be installed.
 
   ```bash
   chmod +x ./run.mjs
@@ -190,13 +207,20 @@ Running script to start the server:
 
 Start server manually:
 
-> NOTE: `app` and `yolo` needs to be **run concurrently**.
+> NOTE: `web`, `app`, and `yolo` needs to be **run concurrently**.
+
+- **web:**
+
+  ```bash
+  cd ./web
+  yarn dev
+  ```
 
 - **app:**
 
   ```bash
   cd ./app
-  yarn start
+  yarn dev
   ```
 
 - **yolo:**
@@ -211,28 +235,29 @@ Start server manually:
 
 ## :eyes: Usage
 
-> NOTE: The model still needs more training, so the result may not be accurate.
+- You can detect traffic sign objects using uploaded images or URLs.
 
-- Go to the tab "UPLOAD MODEL", and upload the model to detect (you can use a
-  sample file `yolo/best.pt`).
+  - Supports `.png`, `.jpg`, `.jpeg` and `.webp` images.
 
-  > NOTE: This function is not "working" because the server will load the model
-  > name `best.pt` from folder `app/public/model/` automatically.
+  - Upload images:
 
-- Go to the tab "UPLOAD IMAGE", and upload the image to detect (you can use a
-  sample file `yolo/sample/traffic-sign.jpg`).
+  - Maximum 3 images per request.
+  - Drag and drop image files to the Dropzone field.
+  - Click on the Dropzone field to open the file browser.
 
-  - Accept image formats: `.png`, `.jpeg`, `.jpg`.
+    > **Note**: On Linux, you will have some issues when clicking the file
+    > browser.
 
-  - After uploading the image, the image will be renamed to `image.png`.
+  - Image URLs:
 
-- Go to tab `HOME`, click `Run model`.
+  - Maximum 3 URLs per request.
+  - The Textarea field will check for **invalid** or **duplicate** URLs.
 
-  > NOTE: If you don't see any detection, check in folder `app/public/model`
-  > whether it has file `best.pt`. If not, then you have to copy the sample
-  > model file from `yolo/best.pt` to `app/public/model/` manually.
+- It usually takes about 1-2 minutes to detect the traffic signs.
 
-- Traffic signs detectable by the model:
+- You can download the results as a .zip file.
+
+- Detect up to **36** traffic signs:
 
   <details>
   <summary>List</summary>
@@ -278,31 +303,32 @@ Start server manually:
 
   </details>
 
-- If you want to detect using other models, you can rename the model file to
-  `best.pt` and copy it to `app/public/model/`.
+> **Note**: If you want to detect using other models, you can rename the model
+> file to `best.pt` and copy it to the folder `yolo/model/`.
 
 <!-- Training -->
 
 ## :rocket: Training
 
-Please go to folder `training` and read `README.md` file.
+Please go to folder [training](training/) and read the `README.md` file.
 
 <!-- Roadmap -->
 
 ## :compass: Roadmap
 
-- [ ] Fix server writing file problem.
-- [ ] Fix fixed model and image name problem.
-- [ ] Fix fixed uploading model problem.
-- [ ] Update UI.
+- [x] Fix server writing file problem.
+- [x] Fix fixed model and image name problem.
+- [x] Fix fixed uploading model problem.
+- [x] Update UI.
 - [ ] Improve model for detection.
+- [ ] Video support.
 
 <!-- Contributing -->
 
 ## :wave: Contributing
 
-<a href="https://github.com/DuckyMomo20012/nodejs-yolov5/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=DuckyMomo20012/nodejs-yolov5" />
+<a href="https://github.com/DuckyMomo20012/traffic-sign-detection/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=DuckyMomo20012/traffic-sign-detection" />
 </a>
 
 Contributions are always welcome!
@@ -311,7 +337,7 @@ Contributions are always welcome!
 
 ### :scroll: Code of Conduct
 
-Please read the [Code of Conduct](https://github.com/DuckyMomo20012/nodejs-yolov5/blob/main/CODE_OF_CONDUCT.md).
+Please read the [Code of Conduct](https://github.com/DuckyMomo20012/traffic-sign-detection/blob/main/CODE_OF_CONDUCT.md).
 
 <!-- FAQ -->
 
@@ -319,29 +345,53 @@ Please read the [Code of Conduct](https://github.com/DuckyMomo20012/nodejs-yolov
 
 - Is this project still maintained?
 
-  - No, but I will only update documentation.
+  - Yes, but I will only update documentation.
 
-- Can't detect traffic signs:
+- Why do you have to setup Express server between client and YOLOv5 server?
 
-  - Make sure that you run both `app` and `yolo`.
-  - Check if `app/public/model/best.pt` exists.
-  - The model can't detect that traffic sign :man_shrugging:.
+  - This project was first structured using Express as SSR server, it will open
+    a `child_process` to run the detection using Python code. I just don't want
+    to change the structure too much.
+
+- Why does you limit the number of images per request to 3 for both image upload
+  and image URLs?
+
+  - We haven't optimize the code for better performance. So, we have to limit
+    the number of images per request to 3.
+
+- Why does the server only accept `.png`, `.jpg`, `.jpeg` or `.webp` images?
+
+  - YOLOv5 supports many image extensions: `.bmp`, `.jpg`, `.jpeg`, `.png`,
+    `.tif`, `.tiff`, `.dng`, `.webp`, `.mpo`. But for **security reasons**, we
+    only accept `.png`, `.jpg`, `.jpeg` and `.webp` images.
+
+- I have issues when installing `yolo` dependencies. How can I fix it?
+
+  - DO NOT press `CTRL + C` when installing dependencies.
+  - To fix the issue, you will have to remove the folder `.venv` and file
+    `poetry.lock`. Then run these commands and reinstall the dependencies:
+
+    ```bash
+    rm -rf ~/.cache/pypoetry/cache/
+    rm -rf ~/.cache/pypoetry/artifacts/
+    ```
 
 <!-- License -->
 
 ## :warning: License
 
 Distributed under Apache-2.0 license. See
-[LICENSE](https://github.com/DuckyMomo20012/nodejs-yolov5/blob/main/LICENSE)
+[LICENSE](https://github.com/DuckyMomo20012/traffic-sign-detection/blob/main/LICENSE)
 for more information.
 
 <!-- Contact -->
 
 ## :handshake: Contact
 
-Duong Vinh - [@duckymomo20012](https://twitter.com/duckymomo20012) - tienvinh.duong4@gmail.com
+Duong Vinh - [@duckymomo20012](https://twitter.com/duckymomo20012) -
+tienvinh.duong4@gmail.com
 
-Project Link: [https://github.com/DuckyMomo20012/nodejs-yolov5](https://github.com/DuckyMomo20012/nodejs-yolov5).
+Project Link: [https://github.com/DuckyMomo20012/traffic-sign-detection](https://github.com/DuckyMomo20012/traffic-sign-detection).
 
 <!-- Acknowledgments -->
 
