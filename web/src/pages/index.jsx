@@ -1,24 +1,21 @@
 import {
-  ActionIcon,
   Alert,
-  Anchor,
   AppShell,
   Button,
-  Center,
   Code,
   Group,
-  Header,
-  Loader,
+  Header as AppShellHeader,
   SimpleGrid,
   Space,
   Stack,
   Text,
   Textarea,
   Title,
-  Tooltip,
+  Footer as AppShellFooter,
   useMantineColorScheme,
 } from '@mantine/core';
 import { useEffect, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { Dropzone } from '@mantine/dropzone';
 import { Icon } from '@iconify/react';
@@ -27,12 +24,20 @@ import isURL from 'validator/es/lib/isURL';
 import { saveAs } from 'file-saver';
 import { useForm } from 'react-hook-form';
 import { v4 as uuidv4 } from 'uuid';
+import { Header } from '@/components/modules/Header';
+import {
+  nextStep,
+  setStepLoading,
+  setStepError,
+  resetStepper,
+} from '@/store/slice/stepperSlice';
 import { socket } from '@/socket/socket.js';
 import { fetchImage } from '@/utils/fetchImage.js';
 import { ImagePreview } from '@/components/elements/ImagePreview/ImagePreview';
 import { Footer } from '@/components/modules/Footer';
 import { Faq } from '@/components/modules/Faq';
 import { DownloadMenu } from '@/components/modules/DownloadMenu';
+import { StepProgress } from '@/components/elements/StepProgress';
 import {
   IMG_ACCEPT,
   MAX_FILES,
@@ -57,29 +62,40 @@ const HomePage = () => {
   const [isDetecting, setIsDetecting] = useState(false);
   const [detected, setDetected] = useState(false);
   const [detectedResult, setDetectedResult] = useState([]);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     socket.on('detect-finished', async (data) => {
-      const { idFolder, detection } = data;
-      const req = await axios.get(`/api/result/${idFolder}`);
+      // Result step
+      dispatch(nextStep());
+      dispatch(setStepLoading({ step: 2 }));
+      try {
+        const { idFolder, detection } = data;
+        const req = await axios.get(`/api/result/${idFolder}`);
 
-      const fileInfo = req.data;
-      const fileData = await Promise.all(
-        fileInfo.map(async ({ name, url }) => {
-          const fileReq = await axios.get(url, { responseType: 'blob' });
-          return {
-            name,
-            data: fileReq.data,
-          };
-        }),
-      );
+        const fileInfo = req.data;
+        const fileData = await Promise.all(
+          fileInfo.map(async ({ name, url }) => {
+            const fileReq = await axios.get(url, { responseType: 'blob' });
+            return {
+              name,
+              data: fileReq.data,
+            };
+          }),
+        );
+        dispatch(nextStep());
+        setFiles(fileData);
+        setDetectedResult(detection);
+        setIsDetecting(false);
+        setDetected(true);
 
-      setFiles(fileData);
-      setDetectedResult(detection);
-      setIsDetecting(false);
-      setDetected(true);
-
-      socket.emit('delete-folder', { idFolder });
+        socket.emit('delete-folder', { idFolder });
+      } catch (err) {
+        // Set error for Result step
+        dispatch(setStepError({ step: 2 }));
+        setError('Service is unavailable. Please try again later.');
+        setIsDetecting(false);
+      }
     });
 
     socket.on('detect-status', (data) => {
@@ -88,6 +104,8 @@ const HomePage = () => {
       if (status === 'error') {
         setError(msg);
         setIsDetecting(false);
+        // Set error for Detect step
+        dispatch(setStepError({ step: 1 }));
       }
     });
 
@@ -95,7 +113,7 @@ const HomePage = () => {
       socket.off('detect-finished');
       socket.off('detect-status');
     };
-  }, []);
+  }, [dispatch]);
 
   const handleRemoveImageClick = (index) => {
     // Remove file at index
@@ -185,10 +203,15 @@ const HomePage = () => {
 
     setValue('data-image', newFiles);
     setFiles(newFiles);
+    // Reset initial state
     setDetected(false);
+    dispatch(resetStepper());
   };
 
   const onSubmit = async (data) => {
+    // Submit step
+    dispatch(setStepLoading({ step: 0 }));
+
     const formData = new FormData();
     const fileImages = [...data['data-image']];
     // Filter out empty string
@@ -266,45 +289,35 @@ const HomePage = () => {
         // timeout after 5 seconds, this should be longer than socket timeout
         timeout: 5000,
       });
+      // Detect step
+      dispatch(nextStep());
+      dispatch(setStepLoading({ step: 1 }));
     } catch (err) {
-      setError('Service is unavailable. Please try again later');
+      // Set error for Submit step
+      dispatch(setStepError({ step: 0 }));
+      setError('Service is unavailable. Please try again later.');
       setIsDetecting(false);
     }
   };
 
   return (
     <AppShell
+      footer={
+        <AppShellFooter className="static">
+          <Footer />
+        </AppShellFooter>
+      }
       header={
-        <Header className="flex items-center justify-end" height={48} p={24}>
-          <Group>
-            <Tooltip label="Source code">
-              <Anchor
-                href="https://github.com/DuckyMomo20012/traffic-sign-detection"
-                target="_blank"
-              >
-                <ActionIcon size="lg" variant="outline">
-                  <Icon icon="ant-design:github-filled" width={24} />
-                </ActionIcon>
-              </Anchor>
-            </Tooltip>
-            <Tooltip label={dark ? 'Light mode' : 'Dark mode'}>
-              <ActionIcon
-                color="rose"
-                onClick={() => toggleColorScheme()}
-                size="lg"
-                variant="outline"
-              >
-                <Icon
-                  icon={dark ? 'ic:outline-dark-mode' : 'ic:outline-light-mode'}
-                  width={24}
-                />
-              </ActionIcon>
-            </Tooltip>
-          </Group>
-        </Header>
+        <AppShellHeader
+          className="flex items-center justify-end"
+          height={48}
+          p={24}
+        >
+          <Header />
+        </AppShellHeader>
       }
     >
-      <Center>
+      <Stack align="center">
         <Title className="text-5xl">
           Detect your{' '}
           <Text
@@ -316,8 +329,26 @@ const HomePage = () => {
           </Text>{' '}
           now
         </Title>
-      </Center>
-      <Space h="xl" />
+        <Text size="lg">
+          Detect up to{' '}
+          <Text color="red" size="xl" span weight={700}>
+            36
+          </Text>{' '}
+          traffic signs
+        </Text>
+      </Stack>
+      <Stack align="center" className="my-20">
+        <StepProgress />
+        {error && (
+          <Alert
+            color="red"
+            icon={<Icon icon="ic:outline-error-outline" width={24} />}
+            title="Error"
+          >
+            {error}
+          </Alert>
+        )}
+      </Stack>
       <Stack
         align="center"
         component="form"
@@ -356,16 +387,6 @@ const HomePage = () => {
             </Text>
           </Group>
         </Dropzone>
-        <Text>
-          Supports{' '}
-          {IMG_ACCEPT.map((ext, index) => {
-            return (
-              <Code color="rose" key={index}>
-                {ext}
-              </Code>
-            );
-          }).reduce((prev, curr) => [prev, ', ', curr])}
-        </Text>
         <Text>Or</Text>
         <Textarea
           autosize
@@ -412,22 +433,16 @@ const HomePage = () => {
             },
           })}
         />
-        {isDetecting && (
-          <Group>
-            <Text>Detecting... Please don&apos;t close this page</Text>
-            <Loader size="xs" />
-          </Group>
-        )}
-        {error && (
-          <Group spacing="sm">
-            <Icon
-              className="text-red-600"
-              icon="material-symbols:close"
-              width="24"
-            />
-            <Text color="red">{error}</Text>
-          </Group>
-        )}
+        <Text>
+          Supports{' '}
+          {IMG_ACCEPT.map((ext, index) => {
+            return (
+              <Code color="rose" key={index}>
+                {ext}
+              </Code>
+            );
+          }).reduce((prev, curr) => [prev, ', ', curr])}
+        </Text>
         <Space h="md" />
         <Button
           disabled={detected}
@@ -471,7 +486,6 @@ const HomePage = () => {
         </SimpleGrid>
       </Stack>
       <Faq />
-      <Footer />
     </AppShell>
   );
 };
