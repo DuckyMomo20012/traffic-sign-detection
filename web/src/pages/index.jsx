@@ -1,20 +1,17 @@
 import {
-  ActionIcon,
   Alert,
-  Anchor,
   AppShell,
   Button,
   Center,
   Code,
   Group,
-  Header,
+  Header as AppShellHeader,
   SimpleGrid,
   Space,
   Stack,
   Text,
   Textarea,
   Title,
-  Tooltip,
   Footer as AppShellFooter,
   useMantineColorScheme,
 } from '@mantine/core';
@@ -28,6 +25,7 @@ import isURL from 'validator/es/lib/isURL';
 import { saveAs } from 'file-saver';
 import { useForm } from 'react-hook-form';
 import { v4 as uuidv4 } from 'uuid';
+import { Header } from '@/components/modules/Header';
 import {
   nextStep,
   setStepLoading,
@@ -311,33 +309,13 @@ const HomePage = () => {
         </AppShellFooter>
       }
       header={
-        <Header className="flex items-center justify-end" height={48} p={24}>
-          <Group>
-            <Tooltip label="Source code">
-              <Anchor
-                href="https://github.com/DuckyMomo20012/traffic-sign-detection"
-                target="_blank"
-              >
-                <ActionIcon size="lg" variant="outline">
-                  <Icon icon="ant-design:github-filled" width={24} />
-                </ActionIcon>
-              </Anchor>
-            </Tooltip>
-            <Tooltip label={dark ? 'Light mode' : 'Dark mode'}>
-              <ActionIcon
-                color="rose"
-                onClick={() => toggleColorScheme()}
-                size="lg"
-                variant="outline"
-              >
-                <Icon
-                  icon={dark ? 'ic:outline-dark-mode' : 'ic:outline-light-mode'}
-                  width={24}
-                />
-              </ActionIcon>
-            </Tooltip>
-          </Group>
-        </Header>
+        <AppShellHeader
+          className="flex items-center justify-end"
+          height={48}
+          p={24}
+        >
+          <Header />
+        </AppShellHeader>
       }
     >
       <Center>
