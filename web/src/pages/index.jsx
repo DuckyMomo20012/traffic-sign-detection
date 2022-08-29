@@ -193,6 +193,8 @@ const HomePage = () => {
   };
 
   const onSubmit = async (data) => {
+    // Reset stepper
+    dispatch(resetStepper());
     // Submit step
     dispatch(setStepLoading({ step: 0 }));
 
