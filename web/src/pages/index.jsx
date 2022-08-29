@@ -2,25 +2,20 @@ import {
   Alert,
   AppShell,
   Button,
-  Code,
   Group,
   Header as AppShellHeader,
   SimpleGrid,
-  Space,
   Stack,
   Text,
-  Textarea,
   Title,
   Footer as AppShellFooter,
   useMantineColorScheme,
 } from '@mantine/core';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { Dropzone } from '@mantine/dropzone';
 import { Icon } from '@iconify/react';
 import axios from 'axios';
-import isURL from 'validator/es/lib/isURL';
 import { saveAs } from 'file-saver';
 import { useForm } from 'react-hook-form';
 import { v4 as uuidv4 } from 'uuid';
@@ -38,24 +33,13 @@ import { Footer } from '@/components/modules/Footer';
 import { Faq } from '@/components/modules/Faq';
 import { DownloadMenu } from '@/components/modules/DownloadMenu';
 import { StepProgress } from '@/components/elements/StepProgress';
-import {
-  IMG_ACCEPT,
-  MAX_FILES,
-  MIME_TYPE_ACCEPT,
-} from '@/constants/constants.js';
+import { SubmitForm } from '@/components/modules/SubmitForm';
+import { MAX_FILES } from '@/constants/constants.js';
 
 const HomePage = () => {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    reset,
-    setError: setFormError,
-    formState: { errors: formErrors },
-  } = useForm({ criteriaMode: 'all', mode: 'onChange' });
+  const form = useForm({ criteriaMode: 'all', mode: 'onChange' });
   const dark = colorScheme === 'dark';
-  const openRef = useRef(null);
   const [files, setFiles] = useState([]);
   // const files = useWatch({ control, name: 'data-image' });
   const [error, setError] = useState('');
@@ -118,7 +102,7 @@ const HomePage = () => {
   const handleRemoveImageClick = (index) => {
     // Remove file at index
     const newFiles = files.filter((file, i) => i !== index);
-    setValue('data-image', newFiles);
+    form.setValue('data-image', newFiles);
     setFiles(newFiles);
   };
 
@@ -130,7 +114,7 @@ const HomePage = () => {
 
   const handleClearImageClick = () => {
     // Reset form
-    reset();
+    form.reset();
     // Clear files
     setFiles([]);
     setDetected(false);
@@ -201,7 +185,7 @@ const HomePage = () => {
       };
     });
 
-    setValue('data-image', newFiles);
+    form.setValue('data-image', newFiles);
     setFiles(newFiles);
     // Reset initial state
     setDetected(false);
@@ -209,6 +193,8 @@ const HomePage = () => {
   };
 
   const onSubmit = async (data) => {
+    // Reset stepper
+    dispatch(resetStepper());
     // Submit step
     dispatch(setStepLoading({ step: 0 }));
 
@@ -233,7 +219,7 @@ const HomePage = () => {
     } catch (err) {
       // NOTE: We only set error message for our custom error
       if (err instanceof Error) {
-        setFormError('data-url', {
+        form.setError('data-url', {
           type: 'validate',
           message: err.message,
         });
@@ -349,111 +335,15 @@ const HomePage = () => {
           </Alert>
         )}
       </Stack>
-      <Stack
-        align="center"
-        component="form"
-        mt="md"
-        onSubmit={handleSubmit(onSubmit)}
-      >
-        <Dropzone
-          accept={MIME_TYPE_ACCEPT}
-          className="w-1/2"
-          loading={isDetecting}
-          maxFiles={MAX_FILES}
-          onDragEnter={() => setError('')}
-          onDrop={handleDrop}
-          onFileDialogOpen={() => setError('')}
-          onReject={handleReject}
-          openRef={openRef}
-          {...register('data-image')}
-        >
-          <Group position="center">
-            <Dropzone.Accept>
-              <Icon icon="material-symbols:upload-rounded" width="48" />
-            </Dropzone.Accept>
-            <Dropzone.Reject>
-              <Icon icon="material-symbols:close" width="48" />
-            </Dropzone.Reject>
-            <Dropzone.Idle>
-              <Icon
-                icon="material-symbols:add-photo-alternate-outline"
-                width="48"
-              />
-            </Dropzone.Idle>
-            <Text>
-              Drag images here or click to select files.
-              <Space />
-              Maximum {MAX_FILES} files.
-            </Text>
-          </Group>
-        </Dropzone>
-        <Text>Or</Text>
-        <Textarea
-          autosize
-          className="w-1/2"
-          description={`Maximum ${MAX_FILES} URLs`}
-          error={formErrors['data-url'] && formErrors['data-url'].message}
-          label="Your image URLs:"
-          minRows={2}
-          placeholder="One URL per line"
-          {...register('data-url', {
-            validate: (value) => {
-              if (value === '') return true;
-
-              const urls = value.split('\n').filter((url) => url !== '');
-
-              if (urls.length > MAX_FILES) {
-                return `Maximum ${MAX_FILES} URLs`;
-              }
-
-              const uniqueURLs = [...new Set(urls)];
-
-              if (uniqueURLs.length !== urls.length) {
-                return 'Duplicate URLs are not allowed';
-              }
-
-              const errorLines = urls
-                .flatMap((url, index) => {
-                  const isValid = isURL(url);
-
-                  if (!isValid) {
-                    // NOTE: Return error index, so we can join with the error
-                    // message later
-                    return [index + 1];
-                  }
-                  return [];
-                })
-                .filter((line) => line); // NOTE: Filter out undefined
-
-              if (errorLines.length > 0) {
-                return `Line ${errorLines.join(', ')}: Invalid URL`;
-              }
-
-              return true;
-            },
-          })}
-        />
-        <Text>
-          Supports{' '}
-          {IMG_ACCEPT.map((ext, index) => {
-            return (
-              <Code color="rose" key={index}>
-                {ext}
-              </Code>
-            );
-          }).reduce((prev, curr) => [prev, ', ', curr])}
-        </Text>
-        <Space h="md" />
-        <Button
-          disabled={detected}
-          leftIcon={<Icon icon="codicon:wand" width="24" />}
-          loading={isDetecting}
-          size="xl"
-          type="submit"
-        >
-          Detect
-        </Button>
-      </Stack>
+      <SubmitForm
+        detected={detected}
+        form={form}
+        handleDrop={handleDrop}
+        handleReject={handleReject}
+        isDetecting={isDetecting}
+        onSubmit={onSubmit}
+        setError={setError}
+      />
       <Stack align="center">
         {files?.length > 0 && (
           <>
