@@ -53,8 +53,8 @@ const HomePage = () => {
       // Result step
       dispatch(nextStep());
       dispatch(setStepLoading({ step: 2 }));
+      const { idFolder, detection } = data;
       try {
-        const { idFolder, detection } = data;
         const req = await axios.get(`/api/result/${idFolder}`);
 
         const fileInfo = req.data;
@@ -72,13 +72,13 @@ const HomePage = () => {
         setDetectedResult(detection);
         setIsDetecting(false);
         setDetected(true);
-
-        socket.emit('delete-folder', { idFolder });
       } catch (err) {
         // Set error for Result step
         dispatch(setStepError({ step: 2 }));
         setError('Service is unavailable. Please try again later.');
         setIsDetecting(false);
+      } finally {
+        socket.emit('delete-folder', { idFolder });
       }
     });
 
@@ -225,6 +225,9 @@ const HomePage = () => {
         });
       }
 
+      // Set error for Submit step
+      dispatch(setStepError({ step: 0 }));
+
       // NOTE: We don't want to submit the form if there is an error
       return;
     }
@@ -252,6 +255,9 @@ const HomePage = () => {
 
     if (fileList.length === 0) {
       setError("Please upload your images or enter image's URL");
+      // Set error for Submit step
+      dispatch(setStepError({ step: 0 }));
+
       return;
     }
 
@@ -329,7 +335,9 @@ const HomePage = () => {
           <Alert
             color="red"
             icon={<Icon icon="ic:outline-error-outline" width={24} />}
+            onClose={() => setError('')}
             title="Error"
+            withCloseButton
           >
             {error}
           </Alert>

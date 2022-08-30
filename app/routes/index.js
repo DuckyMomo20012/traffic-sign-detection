@@ -56,37 +56,41 @@ router.post(
   },
 );
 
-router.get('/result/:idFolder', async (req, res) => {
+router.get('/result/:idFolder', async (req, res, next) => {
   const { idFolder } = req.params;
 
-  const files = await fs.readdir(
-    path.join(__dirname, '../../yolo/result/', idFolder),
-  );
-
-  const filesResponse = files.map((fileName) => {
-    const idFile = uuidv4();
-
-    const ext = path.extname(fileName);
-
-    // Rename file
-    fs.move(
-      path.join(__dirname, '../../yolo/result/', idFolder, fileName),
-      path.join(__dirname, '../../yolo/result/', idFolder, idFile + ext),
-      {
-        overwrite: true,
-      },
+  try {
+    const files = await fs.readdir(
+      path.join(__dirname, '../../yolo/result/', idFolder),
     );
 
-    return {
-      name: fileName,
-      url: `api/result/${idFolder}/${idFile + ext}`,
-    };
-  });
+    const filesResponse = files.map((fileName) => {
+      const idFile = uuidv4();
 
-  res.status(200).send(filesResponse);
+      const ext = path.extname(fileName);
+
+      // Rename file
+      fs.move(
+        path.join(__dirname, '../../yolo/result/', idFolder, fileName),
+        path.join(__dirname, '../../yolo/result/', idFolder, idFile + ext),
+        {
+          overwrite: true,
+        },
+      );
+
+      return {
+        name: fileName,
+        url: `api/result/${idFolder}/${idFile + ext}`,
+      };
+    });
+
+    res.status(200).send(filesResponse);
+  } catch (err) {
+    return next(createError(404));
+  }
 });
 
-router.get('/result/:idFolder/:fileName', async (req, res) => {
+router.get('/result/:idFolder/:fileName', async (req, res, next) => {
   const { idFolder, fileName } = req.params;
 
   const opts = {
@@ -94,17 +98,21 @@ router.get('/result/:idFolder/:fileName', async (req, res) => {
   };
 
   if (fileName.includes('.zip')) {
-    await zipFolderSync(
-      path.join(__dirname, '../../yolo/result/', idFolder, `${idFolder}.zip`),
-      path.join(__dirname, '../../yolo/result/', idFolder),
-    );
+    try {
+      await zipFolderSync(
+        path.join(__dirname, '../../yolo/result/', idFolder, `${idFolder}.zip`),
+        path.join(__dirname, '../../yolo/result/', idFolder),
+      );
 
-    // NOTE: We can emit an event to notify the client to fetch zip file. Might
-    // refactor this later
-    // await zipFolderStream(
-    //   path.join(__dirname, '../../yolo/result/', idFolder, `${idFolder}.zip`),
-    //   path.join(__dirname, '../../yolo/result/', idFolder),
-    // );
+      // NOTE: We can emit an event to notify the client to fetch zip file. Might
+      // refactor this later
+      // await zipFolderStream(
+      //   path.join(__dirname, '../../yolo/result/', idFolder, `${idFolder}.zip`),
+      //   path.join(__dirname, '../../yolo/result/', idFolder),
+      // );
+    } catch (err) {
+      return next(createError(500));
+    }
   }
 
   res.status(200).sendFile(fileName, opts);
