@@ -335,7 +335,9 @@ const HomePage = () => {
           <Alert
             color="red"
             icon={<Icon icon="ic:outline-error-outline" width={24} />}
+            onClose={() => setError('')}
             title="Error"
+            withCloseButton
           >
             {error}
           </Alert>
