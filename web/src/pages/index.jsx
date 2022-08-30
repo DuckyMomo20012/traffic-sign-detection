@@ -53,8 +53,8 @@ const HomePage = () => {
       // Result step
       dispatch(nextStep());
       dispatch(setStepLoading({ step: 2 }));
+      const { idFolder, detection } = data;
       try {
-        const { idFolder, detection } = data;
         const req = await axios.get(`/api/result/${idFolder}`);
 
         const fileInfo = req.data;
@@ -72,13 +72,13 @@ const HomePage = () => {
         setDetectedResult(detection);
         setIsDetecting(false);
         setDetected(true);
-
-        socket.emit('delete-folder', { idFolder });
       } catch (err) {
         // Set error for Result step
         dispatch(setStepError({ step: 2 }));
         setError('Service is unavailable. Please try again later.');
         setIsDetecting(false);
+      } finally {
+        socket.emit('delete-folder', { idFolder });
       }
     });
 
