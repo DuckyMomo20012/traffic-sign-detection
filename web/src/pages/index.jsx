@@ -225,6 +225,9 @@ const HomePage = () => {
         });
       }
 
+      // Set error for Submit step
+      dispatch(setStepError({ step: 0 }));
+
       // NOTE: We don't want to submit the form if there is an error
       return;
     }
@@ -252,6 +255,9 @@ const HomePage = () => {
 
     if (fileList.length === 0) {
       setError("Please upload your images or enter image's URL");
+      // Set error for Submit step
+      dispatch(setStepError({ step: 0 }));
+
       return;
     }
 
