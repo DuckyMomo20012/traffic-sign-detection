@@ -1,9 +1,15 @@
 #!/usr/bin/env zx
 
+const web = within(async () => {
+  cd("./web");
+
+  await $`yarn dev`;
+});
+
 const app = within(async () => {
   cd("./app");
 
-  await $`yarn start`;
+  await $`yarn dev`;
 });
 
 const yolo = within(async () => {
@@ -12,4 +18,4 @@ const yolo = within(async () => {
   await $`python3 script.py`;
 });
 
-await Promise.all([app, yolo]);
+await Promise.all([web, app, yolo]);
