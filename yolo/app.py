@@ -149,18 +149,19 @@ async def detect(sid, data):
     )
 
 
-@sio.on("update-model")
-def updateModel(sid, data):
-    idFolder = data.get("idFolder")
-    modelFileName = data.get("fileName")
+# NOTE: I think users shouldn't be able to update the model manually 🤔
+# @sio.on("update-model")
+# def updateModel(sid, data):
+#     idFolder = data.get("idFolder")
+#     modelFileName = data.get("fileName")
 
-    modelFiles = glob(os.path.join("./upload/", idFolder, modelFileName))
+#     modelFiles = glob(os.path.join("./upload/", idFolder, modelFileName))
 
-    if len(modelFiles) > 0:
-        modelFilePath = modelFiles[0]
+#     if len(modelFiles) > 0:
+#         modelFilePath = modelFiles[0]
 
-        app.model = yolov5.load(
-            model_path=modelFilePath,
-            autoshape=True,
-            verbose=True,
-        )
+#         app.model = yolov5.load(
+#             model_path=modelFilePath,
+#             autoshape=True,
+#             verbose=True,
+#         )
