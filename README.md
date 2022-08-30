@@ -85,6 +85,7 @@
     <li><a href="https://www.javascript.com/">Javascript</a></li>
     <li><a href="https://reactjs.org/">React.js</a></li>
     <li><a href="https://reactrouter.com/">React Router</a></li>
+    <li><a href="https://redux-toolkit.js.org/">Redux Toolkit</a></li>
     <li><a href="https://windicss.org/">WindiCSS</a></li>
     <li><a href="https://mantine.dev/">Mantine</a></li>
     <li><a href="https://eslint.org/">ESLint</a></li>
@@ -111,7 +112,7 @@
 - Detect traffic sign objects:
   - Using uploaded images.
   - Using URLs.
-- Save the results as a .zip file.
+- Save the results as a `.zip` file.
 
 <!-- Getting Started -->
 
@@ -207,7 +208,7 @@ Running script to start the server:
 
 Start server manually:
 
-> NOTE: `web`, `app`, and `yolo` needs to be **run concurrently**.
+> **Note**: `web`, `app`, and `yolo` needs to be **run concurrently**.
 
 - **web:**
 
@@ -241,21 +242,21 @@ Start server manually:
 
   - Upload images:
 
-  - Maximum 3 images per request.
-  - Drag and drop image files to the Dropzone field.
-  - Click on the Dropzone field to open the file browser.
+    - Maximum 3 images per request.
+    - Drag and drop image files to the Dropzone field.
+    - Click on the Dropzone field to open the file browser.
 
-    > **Note**: On Linux, you will have some issues when clicking the file
-    > browser.
+      > **Note**: On Linux, you will have some issues when clicking to open the
+      > file browser.
 
   - Image URLs:
 
-  - Maximum 3 URLs per request.
-  - The Textarea field will check for **invalid** or **duplicate** URLs.
+    - Maximum 3 URLs per request.
+    - The Textarea field will check for **invalid** or **duplicate** URLs.
 
 - It usually takes about 1-2 minutes to detect the traffic signs.
 
-- You can download the results as a .zip file.
+- You can download the results as a `.zip` file or download each image manually.
 
 - Detect up to **36** traffic signs:
 
@@ -358,6 +359,11 @@ Please read the [Code of Conduct](https://github.com/DuckyMomo20012/traffic-sign
 
   - We haven't optimize the code for better performance. So, we have to limit
     the number of images per request to 3.
+
+- Can I upload my model file to the server?
+
+  - No, you can't. Because the model is loaded ONE TIME by the server when the
+    server starts, update the model might conflicts with other users.
 
 - Why does the server only accept `.png`, `.jpg`, `.jpeg` or `.webp` images?
 
