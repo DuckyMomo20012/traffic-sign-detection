@@ -25,7 +25,7 @@ const Header = () => {
       </Tooltip>
       <Tooltip label={dark ? 'Light mode' : 'Dark mode'}>
         <ActionIcon
-          color="rose"
+          color="blue"
           onClick={() => toggleColorScheme()}
           size="lg"
           variant="outline"

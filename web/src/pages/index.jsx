@@ -314,7 +314,7 @@ const HomePage = () => {
           Detect your{' '}
           <Text
             component="span"
-            gradient={{ from: 'rose', to: 'orange' }}
+            gradient={{ from: 'blue', to: 'fuchsia' }}
             variant="gradient"
           >
             traffic sign
@@ -323,7 +323,7 @@ const HomePage = () => {
         </Title>
         <Text size="lg">
           Detect up to{' '}
-          <Text color="red" size="xl" span weight={700}>
+          <Text color="blue" size="xl" span weight={700}>
             36
           </Text>{' '}
           traffic signs
@@ -365,7 +365,7 @@ const HomePage = () => {
               </Button>
             </Group>
             <Text
-              gradient={{ from: 'rose', to: 'orange' }}
+              gradient={{ from: 'blue', to: 'fuchsia' }}
               size="xl"
               variant="gradient"
             >
