@@ -123,7 +123,7 @@ const SubmitForm = ({
         Supports{' '}
         {IMG_ACCEPT.map((ext, index) => {
           return (
-            <Code color="rose" key={index}>
+            <Code color="blue" key={index}>
               {ext}
             </Code>
           );
