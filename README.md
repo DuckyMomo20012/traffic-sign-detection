@@ -72,7 +72,7 @@
 ### :camera: Screenshots
 
 <div align="center">
-  <img src="https://user-images.githubusercontent.com/64480713/187239535-185cf6f2-6e64-42d1-bad1-76409278fd77.jpg" alt="screenshot" />
+  <img src="https://user-images.githubusercontent.com/64480713/187664331-35ef209d-3cf9-4eae-b649-414562f7ff06.png" alt="screenshot" />
 </div>
 
 <!-- TechStack -->
@@ -346,30 +346,32 @@ Please read the [Code of Conduct](https://github.com/DuckyMomo20012/traffic-sign
 
 - Is this project still maintained?
 
-  - Yes, but I will only update documentation.
+  - Yes, but we will only update documentation.
 
-- Why do you have to setup Express server between client and YOLOv5 server?
+- Why do you have to set up an Express server between the client and the YOLOv5
+  server?
 
-  - This project was first structured using Express as SSR server, it will open
-    a `child_process` to run the detection using Python code. I just don't want
-    to change the structure too much.
+  - This project was first structured using Express as an SSR server, it will
+    open a `child_process` to run the detection using Python code. We just don't
+    want to change the structure too much.
 
-- Why does you limit the number of images per request to 3 for both image upload
+- Why do you limit the number of images per request to 3 for both image upload
   and image URLs?
 
-  - We haven't optimize the code for better performance. So, we have to limit
+  - We haven't optimized the code for better performance. So, we have to limit
     the number of images per request to 3.
 
 - Can I upload my model file to the server?
 
   - No, you can't. Because the model is loaded ONE TIME by the server when the
-    server starts, update the model might conflicts with other users.
+    server starts, updating the model might conflict with other users.
 
 - Why does the server only accept `.png`, `.jpg`, `.jpeg` or `.webp` images?
 
-  - YOLOv5 supports many image extensions: `.bmp`, `.jpg`, `.jpeg`, `.png`,
-    `.tif`, `.tiff`, `.dng`, `.webp`, `.mpo`. But for **security reasons**, we
-    only accept `.png`, `.jpg`, `.jpeg` and `.webp` images.
+  - It's about **security reasons**. We think we should only serve common image
+    extensions. YOLOv5 supports many image extensions: `.bmp`, `.jpg`, `.jpeg`,
+    `.png`, `.tif`, `.tiff`, `.dng`, `.webp`, `.mpo`, so we may extend the list
+    later.
 
 - I have issues when installing `yolo` dependencies. How can I fix it?
 
