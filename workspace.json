@@ -3,6 +3,7 @@
   "version": 2,
   "projects": {
     "api": "apps/api",
-    "webapp": "apps/webapp"
+    "webapp": "apps/webapp",
+    "yolo": "apps/yolo"
   }
 }
