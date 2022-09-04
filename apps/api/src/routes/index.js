@@ -25,27 +25,29 @@ router.post(
           path.join(__dirname, '../public/img/', file.originalname),
           path.join(
             __dirname,
-            '../../yolo/upload/',
+            '../../../shared/assets/upload/',
             idFolder,
-            file.originalname,
+            file.originalname
           ),
           {
             overwrite: true,
-          },
+          }
         );
-      }),
+      })
     );
 
     // NOTE: Set timeout 3s for waiting YOLO server to detect images
     socket.timeout(3000).emit('detect', { idFolder }, async (err) => {
       if (err) {
         // NOTE: If YOLO server is not running, cleanup upload folder
-        await fs.remove(path.join(__dirname, '../../yolo/upload/', idFolder));
+        await fs.remove(
+          path.join(__dirname, '../../../shared/assets/upload/', idFolder)
+        );
 
         // YOLO server is down
 
         return next(
-          createError(503, 'Service is unavailable. Please try again later'),
+          createError(503, 'Service is unavailable. Please try again later')
         );
       }
 
@@ -53,7 +55,7 @@ router.post(
       // check ACK to response to client
       return res.status(204).send('');
     });
-  },
+  }
 );
 
 router.get('/result/:idFolder', async (req, res, next) => {
@@ -61,7 +63,7 @@ router.get('/result/:idFolder', async (req, res, next) => {
 
   try {
     const files = await fs.readdir(
-      path.join(__dirname, '../../yolo/result/', idFolder),
+      path.join(__dirname, '../../../shared/assets/result/', idFolder)
     );
 
     const filesResponse = files.map((fileName) => {
@@ -71,11 +73,21 @@ router.get('/result/:idFolder', async (req, res, next) => {
 
       // Rename file
       fs.move(
-        path.join(__dirname, '../../yolo/result/', idFolder, fileName),
-        path.join(__dirname, '../../yolo/result/', idFolder, idFile + ext),
+        path.join(
+          __dirname,
+          '../../../shared/assets/result/',
+          idFolder,
+          fileName
+        ),
+        path.join(
+          __dirname,
+          '../../../shared/assets/result/',
+          idFolder,
+          idFile + ext
+        ),
         {
           overwrite: true,
-        },
+        }
       );
 
       return {
@@ -94,14 +106,19 @@ router.get('/result/:idFolder/:fileName', async (req, res, next) => {
   const { idFolder, fileName } = req.params;
 
   const opts = {
-    root: path.join(__dirname, '../../yolo/result/', idFolder),
+    root: path.join(__dirname, '../../../shared/assets/result/', idFolder),
   };
 
   if (fileName.includes('.zip')) {
     try {
       await zipFolderSync(
-        path.join(__dirname, '../../yolo/result/', idFolder, `${idFolder}.zip`),
-        path.join(__dirname, '../../yolo/result/', idFolder),
+        path.join(
+          __dirname,
+          '../../../shared/assets/result/',
+          idFolder,
+          `${idFolder}.zip`
+        ),
+        path.join(__dirname, '../../../shared/assets/result/', idFolder)
       );
 
       // NOTE: We can emit an event to notify the client to fetch zip file. Might

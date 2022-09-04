@@ -15,7 +15,9 @@ io.on('connect', (socket) => {
   socket.on('delete-folder', async (data) => {
     const { idFolder } = data;
 
-    await fs.remove(path.join(__dirname, '../../yolo/result/', idFolder));
+    await fs.remove(
+      path.join(__dirname, '../../../shared/assets/result/', idFolder)
+    );
   });
 });
 

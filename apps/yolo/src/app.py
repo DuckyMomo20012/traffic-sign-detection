@@ -10,10 +10,9 @@ from glob import glob
 
 import socketio
 import yolov5
+from constants import IMG_ACCEPT
 from environs import Env
 from fastapi import FastAPI
-
-from constants import IMG_ACCEPT
 
 env = Env()
 # Read .env into os.environ
@@ -39,7 +38,9 @@ async def detect(sid, data):
     idFolder = data.get("idFolder")
     imgs = []
     for ext in IMG_ACCEPT:
-        imgs.extend(glob(os.path.join("./upload/", idFolder, "*" + ext)))
+        imgs.extend(
+            glob(os.path.join("../../shared/assets/upload/", idFolder, "*" + ext))
+        )
 
     # NOTE: I don't put this function outside of this event, because I want
     # to make use of closure
@@ -56,7 +57,7 @@ async def detect(sid, data):
 
                 results.print()
                 # NOTE: YOLOv5 may rename the output file name, so be careful
-                results.save(save_dir=f"./result/{idFolder}")
+                results.save(save_dir=f"../../shared/assets/result/{idFolder}")
 
                 pattern = r"(image\s\d+/\d+):\s(\d+x\d+)\s(.*)"
 
@@ -117,7 +118,7 @@ async def detect(sid, data):
         # NOTE: Finally, we have to cleanup the upload folder
         finally:
             shutil.rmtree(
-                os.path.join("./upload/", idFolder),
+                os.path.join("../../shared/assets/upload/", idFolder),
                 ignore_errors=True,
             )
 
