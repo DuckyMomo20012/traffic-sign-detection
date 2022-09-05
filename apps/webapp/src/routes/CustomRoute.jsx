@@ -1,7 +1,7 @@
 import { Route, Routes } from 'react-router-dom';
 
-import { HomePage } from '@/pages/index.jsx';
 import { NotFound } from '@/pages/404.jsx';
+import { HomePage } from '@/pages/index.jsx';
 
 const CustomRoute = () => {
   return (

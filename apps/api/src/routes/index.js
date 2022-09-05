@@ -1,14 +1,14 @@
+const path = require('path');
 const express = require('express');
+const fs = require('fs-extra');
 const createError = require('http-errors');
 
 const router = express.Router();
-const fs = require('fs-extra');
-const path = require('path');
 const { v4: uuidv4 } = require('uuid');
-const { socket } = require('../socket/client.js');
-const { uploadImage } = require('../services/multer');
-const { zipFolderSync } = require('../utils/zip.js');
 const { UPLOAD_DIR, RESULT_DIR } = require('../constants/constants');
+const { uploadImage } = require('../services/multer');
+const { socket } = require('../socket/client.js');
+const { zipFolderSync } = require('../utils/zip.js');
 
 router.post(
   '/run-model',

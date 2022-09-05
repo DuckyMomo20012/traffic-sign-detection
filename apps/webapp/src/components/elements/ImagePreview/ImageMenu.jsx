@@ -1,7 +1,7 @@
+import { Icon } from '@iconify/react';
 import { Button, Popover, Tooltip } from '@mantine/core';
 import { useClickOutside, useDisclosure } from '@mantine/hooks';
 
-import { Icon } from '@iconify/react';
 import { ImageActionMenu } from './ImageActionMenu.jsx';
 
 const ImageMenu = ({ withExtraMenu, align, actions }) => {

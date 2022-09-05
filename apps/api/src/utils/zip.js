@@ -1,6 +1,6 @@
+const path = require('path');
 const { Zip, zipSync, AsyncZipDeflate } = require('fflate');
 const fs = require('fs-extra');
-const path = require('path');
 
 async function zipFolderStream(outputFilePath, folderPath) {
   const zippedFile = fs.createWriteStream(outputFilePath);

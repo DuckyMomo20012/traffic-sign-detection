@@ -1,3 +1,4 @@
+import { Icon } from '@iconify/react';
 import {
   ActionIcon,
   Anchor,
@@ -5,7 +6,6 @@ import {
   Tooltip,
   useMantineColorScheme,
 } from '@mantine/core';
-import { Icon } from '@iconify/react';
 
 const Header = () => {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();

@@ -1,5 +1,5 @@
-import { IMG_ACCEPT, MIME_TYPE_ACCEPT } from '@/constants/constants.js';
 import axios, { AxiosError } from 'axios';
+import { IMG_ACCEPT, MIME_TYPE_ACCEPT } from '@/constants/constants.js';
 
 const fetchImage = async (url) => {
   // NOTE: Pull out the file name from the url and convert extension to
@@ -54,6 +54,8 @@ const fetchImage = async (url) => {
       throw Error("Can't fetch image from URL");
     } else if (err instanceof Error) {
       throw err;
+    } else {
+      return undefined;
     }
   }
 };
