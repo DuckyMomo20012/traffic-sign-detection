@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
-  "npmScope": "duckymomo20012",
+  "npmScope": "traffic-sign-detection",
   "affected": {
     "defaultBase": "main"
   },

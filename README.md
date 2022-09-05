@@ -173,7 +173,7 @@ Install dependencies:
   poetry install
   ```
 
-Start the server:
+Start all apps:
 
 > **Note**: Install `nx` globally to invoke the command directly using `nx`, or
 > use `yarn nx`.
@@ -182,7 +182,7 @@ Start the server:
 nx run-many --target=serve
 ```
 
-Start server manually:
+Start each app manually:
 
 > **Note**: `webapp`, `api`, and `yolo` needs to be **run concurrently**.
 
@@ -296,7 +296,8 @@ Please go to folder [training](training/) and read the `README.md` file.
 - [x] Fix fixed model and image name problem.
 - [x] Fix fixed uploading model problem.
 - [x] Update UI.
-- [ ] Improve model for detection.
+- [ ] Improve model for better detection.
+- [ ] Optimize image preview render performance.
 - [ ] Video support.
 
 <!-- Contributing -->

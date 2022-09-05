@@ -1,6 +1,7 @@
 const { Server } = require('socket.io');
 const fs = require('fs-extra');
 const path = require('path');
+const { RESULT_DIR } = require('../constants/constants');
 
 const io = new Server({
   cors: {
@@ -15,9 +16,7 @@ io.on('connect', (socket) => {
   socket.on('delete-folder', async (data) => {
     const { idFolder } = data;
 
-    await fs.remove(
-      path.join(__dirname, '../../../shared/assets/result/', idFolder)
-    );
+    await fs.remove(path.join(RESULT_DIR, idFolder));
   });
 });
 
