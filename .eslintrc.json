@@ -20,6 +20,15 @@
     "import/extensions": "off",
     "import/no-unresolved": "off",
     "import/prefer-default-export": "off",
+    "import/order": [
+      "warn",
+      {
+        "alphabetize": {
+          "order": "asc"
+        }
+      }
+    ],
+    "import/no-extraneous-dependencies": ["warn", { "devDependencies": true }],
     "no-var": "error",
     "prefer-destructuring": [
       "warn",

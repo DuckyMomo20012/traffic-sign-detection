@@ -1,6 +1,6 @@
-const { Server } = require('socket.io');
-const fs = require('fs-extra');
 const path = require('path');
+const fs = require('fs-extra');
+const { Server } = require('socket.io');
 const { RESULT_DIR } = require('../constants/constants');
 
 const io = new Server({

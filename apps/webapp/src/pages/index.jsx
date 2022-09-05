@@ -1,3 +1,4 @@
+import { Icon } from '@iconify/react';
 import {
   Alert,
   AppShell,
@@ -11,30 +12,28 @@ import {
   Footer as AppShellFooter,
   useMantineColorScheme,
 } from '@mantine/core';
-import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
-
-import { Icon } from '@iconify/react';
 import axios from 'axios';
 import { saveAs } from 'file-saver';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
+import { ImagePreview } from '@/components/elements/ImagePreview/ImagePreview';
+import { StepProgress } from '@/components/elements/StepProgress';
+import { DownloadMenu } from '@/components/modules/DownloadMenu';
+import { Faq } from '@/components/modules/Faq';
+import { Footer } from '@/components/modules/Footer';
 import { Header } from '@/components/modules/Header';
+import { SubmitForm } from '@/components/modules/SubmitForm';
+import { MAX_FILES } from '@/constants/constants.js';
+import { socket } from '@/socket/socket.js';
 import {
   nextStep,
   setStepLoading,
   setStepError,
   resetSteps,
 } from '@/store/slice/stepperSlice';
-import { socket } from '@/socket/socket.js';
 import { fetchImage } from '@/utils/fetchImage.js';
-import { ImagePreview } from '@/components/elements/ImagePreview/ImagePreview';
-import { Footer } from '@/components/modules/Footer';
-import { Faq } from '@/components/modules/Faq';
-import { DownloadMenu } from '@/components/modules/DownloadMenu';
-import { StepProgress } from '@/components/elements/StepProgress';
-import { SubmitForm } from '@/components/modules/SubmitForm';
-import { MAX_FILES } from '@/constants/constants.js';
 
 const HomePage = () => {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
@@ -215,6 +214,7 @@ const HomePage = () => {
             if (err instanceof Error) {
               throw Error(`Line ${index + 1}: ${err.message}`);
             }
+            return undefined;
           }
         }),
       );

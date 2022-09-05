@@ -12,5 +12,6 @@
       }
     }
   },
-  "tags": []
+  "implicitDependencies": ["shared-assets"],
+  "tags": ["type:app", "scope:server"]
 }

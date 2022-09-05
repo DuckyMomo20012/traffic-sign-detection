@@ -50,6 +50,7 @@
   - [Screenshots](#camera-screenshots)
   - [Tech Stack](#space_invader-tech-stack)
   - [Features](#dart-features)
+  - [Color Reference](#art-color-reference)
 - [Getting Started](#toolbox-getting-started)
   - [Prerequisites](#bangbang-prerequisites)
   - [Run Locally](#running-run-locally)
@@ -113,6 +114,14 @@
   - Using uploaded images.
   - Using URLs.
 - Save the results as a `.zip` file.
+
+<!-- Color Reference -->
+
+### :art: Color Reference
+
+| Color         | Hex                                                              |
+| ------------- | ---------------------------------------------------------------- |
+| Primary Color | ![#2563EB](https://placehold.jp/2563EB/2563EB/10x10.png) #2563EB |
 
 <!-- Getting Started -->
 
@@ -299,6 +308,7 @@ Please go to folder [training](training/) and read the `README.md` file.
 - [ ] Improve model for better detection.
 - [ ] Optimize image preview render performance.
 - [ ] Video support.
+- [ ] Dark mode styling.
 
 <!-- Contributing -->
 

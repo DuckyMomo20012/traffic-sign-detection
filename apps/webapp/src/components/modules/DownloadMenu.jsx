@@ -1,10 +1,10 @@
+import { Icon } from '@iconify/react';
 import { Button, Menu } from '@mantine/core';
 
-import { Icon } from '@iconify/react';
+import { zipSync } from 'fflate';
 import { saveAs } from 'file-saver';
 import { useMemo } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { zipSync } from 'fflate';
 
 const DownloadMenu = ({ files }) => {
   const zipFolder = useMemo(() => {

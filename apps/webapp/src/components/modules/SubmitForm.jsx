@@ -1,3 +1,4 @@
+import { Icon } from '@iconify/react';
 import {
   Button,
   Code,
@@ -8,9 +9,8 @@ import {
   Textarea,
 } from '@mantine/core';
 
-import { useRef } from 'react';
 import { Dropzone } from '@mantine/dropzone';
-import { Icon } from '@iconify/react';
+import { useRef } from 'react';
 import isURL from 'validator/es/lib/isURL';
 import {
   IMG_ACCEPT,

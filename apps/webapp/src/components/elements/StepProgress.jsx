@@ -1,6 +1,6 @@
+import { Icon } from '@iconify/react';
 import { Stepper } from '@mantine/core';
 import { useSelector } from 'react-redux';
-import { Icon } from '@iconify/react';
 
 const StepProgress = () => {
   const activeStep = useSelector((state) => state.stepper.activeStep);

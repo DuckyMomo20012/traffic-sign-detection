@@ -1,6 +1,5 @@
-import { Box, Button, Menu, Text, Tooltip } from '@mantine/core';
-
 import { Icon } from '@iconify/react';
+import { Box, Button, Menu, Text, Tooltip } from '@mantine/core';
 
 const ImageActionMenu = ({ menuHandlers, actions }) => {
   return (

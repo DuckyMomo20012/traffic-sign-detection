@@ -1,3 +1,4 @@
+import { Icon } from '@iconify/react';
 import {
   Accordion,
   Anchor,
@@ -9,8 +10,6 @@ import {
   Space,
   ScrollArea,
 } from '@mantine/core';
-
-import { Icon } from '@iconify/react';
 
 const Faq = () => {
   return (

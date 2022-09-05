@@ -1,15 +1,15 @@
 import 'virtual:windi-devtools';
 import 'virtual:windi.css';
 
-import { BrowserRouter } from 'react-router-dom';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { CustomRoute } from '@/routes/CustomRoute.jsx';
+import { BrowserRouter } from 'react-router-dom';
 import {
   CustomMantineProvider,
   CustomQueryClientProvider,
   CustomReduxProvider,
 } from '@/context/index.js';
+import { CustomRoute } from '@/routes/CustomRoute.jsx';
 
 const container = document.getElementById('root');
 const root = createRoot(container);
