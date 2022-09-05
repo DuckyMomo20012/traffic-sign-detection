@@ -24,7 +24,7 @@ import {
   nextStep,
   setStepLoading,
   setStepError,
-  resetStepper,
+  resetSteps,
 } from '@/store/slice/stepperSlice';
 import { socket } from '@/socket/socket.js';
 import { fetchImage } from '@/utils/fetchImage.js';
@@ -75,6 +75,7 @@ const HomePage = () => {
       } catch (err) {
         // Set error for Result step
         dispatch(setStepError({ step: 2 }));
+        dispatch(nextStep());
         setError('Service is unavailable. Please try again later.');
         setIsDetecting(false);
       } finally {
@@ -90,6 +91,7 @@ const HomePage = () => {
         setIsDetecting(false);
         // Set error for Detect step
         dispatch(setStepError({ step: 1 }));
+        dispatch(nextStep());
       }
     });
 
@@ -189,12 +191,12 @@ const HomePage = () => {
     setFiles(newFiles);
     // Reset initial state
     setDetected(false);
-    dispatch(resetStepper());
+    dispatch(resetSteps());
   };
 
   const onSubmit = async (data) => {
     // Reset stepper
-    dispatch(resetStepper());
+    dispatch(resetSteps());
     // Submit step
     dispatch(setStepLoading({ step: 0 }));
 
@@ -227,6 +229,7 @@ const HomePage = () => {
 
       // Set error for Submit step
       dispatch(setStepError({ step: 0 }));
+      dispatch(nextStep());
 
       // NOTE: We don't want to submit the form if there is an error
       return;
@@ -257,6 +260,7 @@ const HomePage = () => {
       setError("Please upload your images or enter image's URL");
       // Set error for Submit step
       dispatch(setStepError({ step: 0 }));
+      dispatch(nextStep());
 
       return;
     }
@@ -287,6 +291,7 @@ const HomePage = () => {
     } catch (err) {
       // Set error for Submit step
       dispatch(setStepError({ step: 0 }));
+      dispatch(nextStep());
       setError('Service is unavailable. Please try again later.');
       setIsDetecting(false);
     }
