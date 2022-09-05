@@ -6,11 +6,10 @@ import os
 import re
 import shutil
 import threading
-from glob import glob
 
 import socketio
 import yolov5
-from constants import IMG_ACCEPT
+from constants.constants import IMG_ACCEPT, RESULT_DIR, UPLOAD_DIR
 from environs import Env
 from fastapi import FastAPI
 
@@ -38,9 +37,7 @@ async def detect(sid, data):
     idFolder = data.get("idFolder")
     imgs = []
     for ext in IMG_ACCEPT:
-        imgs.extend(
-            glob(os.path.join("../../shared/assets/upload/", idFolder, "*" + ext))
-        )
+        imgs.extend(UPLOAD_DIR.joinpath(idFolder).glob("*" + ext))
 
     # NOTE: I don't put this function outside of this event, because I want
     # to make use of closure
@@ -57,7 +54,7 @@ async def detect(sid, data):
 
                 results.print()
                 # NOTE: YOLOv5 may rename the output file name, so be careful
-                results.save(save_dir=f"../../shared/assets/result/{idFolder}")
+                results.save(save_dir=RESULT_DIR.joinpath(idFolder))
 
                 pattern = r"(image\s\d+/\d+):\s(\d+x\d+)\s(.*)"
 
@@ -118,7 +115,7 @@ async def detect(sid, data):
         # NOTE: Finally, we have to cleanup the upload folder
         finally:
             shutil.rmtree(
-                os.path.join("../../shared/assets/upload/", idFolder),
+                UPLOAD_DIR.joinpath(idFolder),
                 ignore_errors=True,
             )
 
