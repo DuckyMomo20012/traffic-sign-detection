@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import subprocess
 
 venv_python = "../../../.venv/bin/python3"
