@@ -1,6 +1,6 @@
 <div align="center">
 
-  <img src="web/src/logo.svg" alt="logo" width="200" height="auto" />
+  <img src="apps/webapp/src/logo.svg" alt="logo" width="200" height="auto" />
   <h1>Traffic sign object detection</h1>
 
   <p>
@@ -141,15 +141,6 @@
   Read more about installation on
   [Poetry documentation](https://python-poetry.org/docs/master/#installation).
 
-- To run the script, you need to install [zx](https://github.com/google/zx)
-  tool:
-
-  **Requirement**: Node version >= 16.0.0
-
-  ```bash
-  npm install --global zx
-  ```
-
 <!-- Run Locally -->
 
 ### :running: Run Locally
@@ -168,17 +159,9 @@ cd traffic-sign-detection
 
 Install dependencies:
 
-- **web:**
+- **webapp and api:**
 
   ```bash
-  cd ./web
-  yarn
-  ```
-
-- **app:**
-
-  ```bash
-  cd ./app
   yarn
   ```
 
@@ -187,49 +170,41 @@ Install dependencies:
   Install dependencies with `Poetry`:
 
   ```bash
-  cd ./yolo
   poetry install
   ```
 
-Running script to start the server:
+Start the server:
 
-- **Windows:**
+> **Note**: Install `nx` globally to invoke the command directly using `nx`, or
+> use `yarn nx`.
 
-  ```console
-  run.bat
-  ```
-
-- **Linux:** Requires zx tool to be installed.
-
-  ```bash
-  chmod +x ./run.mjs
-  ./run.mjs
-  ```
+```bash
+nx run-many --target=serve
+```
 
 Start server manually:
 
-> **Note**: `web`, `app`, and `yolo` needs to be **run concurrently**.
+> **Note**: `webapp`, `api`, and `yolo` needs to be **run concurrently**.
+
+> **Note**: Install `nx` globally to invoke the command directly using `nx`, or
+> use `yarn nx`.
 
 - **web:**
 
   ```bash
-  cd ./web
-  yarn dev
+  nx run webapp:serve
   ```
 
-- **app:**
+- **api:**
 
   ```bash
-  cd ./app
-  yarn dev
+  nx run api:serve
   ```
 
 - **yolo:**
 
   ```bash
-  cd ./yolo
-  poetry shell
-  poe dev
+  nx run yolo:serve
   ```
 
 <!-- Usage -->
@@ -305,7 +280,7 @@ Start server manually:
   </details>
 
 > **Note**: If you want to detect using other models, you can rename the model
-> file to `best.pt` and copy it to the folder `yolo/model/`.
+> file to `best.pt` and copy it to the folder `apps/yolo/src/model/`.
 
 <!-- Training -->
 
