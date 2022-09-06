@@ -1,6 +1,5 @@
 {
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "root": "apps/yolo",
   "sourceRoot": "apps/yolo/src",
   "projectType": "application",
   "targets": {

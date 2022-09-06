@@ -3,8 +3,8 @@
   "version": 2,
   "projects": {
     "api": "apps/api",
+    "shared-assets": "libs/shared/assets",
     "webapp": "apps/webapp",
-    "yolo": "apps/yolo",
-    "shared-assets": "libs/shared/assets"
+    "yolo": "apps/yolo"
   }
 }
