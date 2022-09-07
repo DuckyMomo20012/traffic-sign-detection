@@ -6,7 +6,7 @@
     "serve": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "nodemon ./src/bin/www",
+        "command": "nodemon ./src/bin/www.js",
         "cwd": "apps/api"
       }
     },

@@ -8,6 +8,7 @@
     "test": "nx test",
     "prepare": "husky install"
   },
+  "type": "module",
   "private": true,
   "dependencies": {
     "@emotion/react": "11.10.4",

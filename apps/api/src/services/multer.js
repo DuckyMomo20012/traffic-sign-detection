@@ -1,15 +1,15 @@
 // SET STORAGE
-const multer = require('multer');
-const path = require('path');
-const { IMG_ACCEPT, MIME_TYPE_ACCEPT } = require('../constants/constants');
+import path from 'path';
+import { fileURLToPath } from 'url';
+import multer from 'multer';
+import { IMG_ACCEPT, MIME_TYPE_ACCEPT } from '../constants/constants.js';
 
 const storageImage = multer.diskStorage({
   filename: (req, file, cb) => {
     cb(null, file.originalname);
   },
   destination: (req, file, cb) => {
-    // const str = path.join(__dirname, '../public/img/')
-    cb(null, path.join(__dirname, '../public/img'));
+    cb(null, fileURLToPath(new URL('../public/img', import.meta.url)));
   },
 });
 
@@ -26,7 +26,7 @@ const filterImage = (req, file, cb) => {
 
 const storageModel = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, '../public/model'));
+    cb(null, fileURLToPath(new URL('../public/model', import.meta.url)));
   },
   filename: (req, file, cb) => {
     cb(null, file.originalname);
@@ -42,11 +42,11 @@ const filterModel = (req, file, cb) => {
   );
 };
 
-exports.uploadImage = multer({
+export const uploadImage = multer({
   storage: storageImage,
   fileFilter: filterImage,
 });
-exports.uploadModel = multer({
+export const uploadModel = multer({
   storage: storageModel,
   fileFilter: filterModel,
 });
