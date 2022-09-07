@@ -13,7 +13,7 @@ import {
 
 const Faq = () => {
   return (
-    <Stack align="stretch" className="children:w-1/2 my-40 items-center">
+    <Stack align="center" className="children:w-1/2 my-40 items-center">
       <Title align="center">Frequently Asked Questions</Title>
       <Accordion radius="md" variant="separated">
         <Accordion.Item value="detect-time">

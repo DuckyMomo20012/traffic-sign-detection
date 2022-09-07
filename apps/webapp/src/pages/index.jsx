@@ -300,7 +300,7 @@ const HomePage = () => {
   return (
     <AppShell
       footer={
-        <AppShellFooter className="static">
+        <AppShellFooter className="!static">
           <Footer />
         </AppShellFooter>
       }
