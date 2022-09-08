@@ -1,3 +1,3 @@
 export default {
-  '*.md': 'prettier --write',
+  '*.{md,html,css}': 'prettier --write',
 };
