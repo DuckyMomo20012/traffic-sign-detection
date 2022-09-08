@@ -1,18 +1,20 @@
-const path = require('path');
-const express = require('express');
-const fs = require('fs-extra');
-const createError = require('http-errors');
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { Router } from 'express';
+import fs from 'fs-extra';
+import createError from 'http-errors';
+import { v4 as uuidv4 } from 'uuid';
+import { UPLOAD_DIR, RESULT_DIR } from '../constants/constants.js';
+import { uploadImage } from '../services/multer.js';
+import { socket } from '../socket/client.js';
+import { zipFolderSync } from '../utils/zip.js';
 
-const router = express.Router();
-const { v4: uuidv4 } = require('uuid');
-const { UPLOAD_DIR, RESULT_DIR } = require('../constants/constants');
-const { uploadImage } = require('../services/multer');
-const { socket } = require('../socket/client.js');
-const { zipFolderSync } = require('../utils/zip.js');
+const router = Router();
 
 router.post(
   '/run-model',
   uploadImage.array('data-image'),
+  // eslint-disable-next-line consistent-return
   async (req, res, next) => {
     if (req.files.length === 0) {
       return next(createError(422, 'No file uploaded'));
@@ -23,7 +25,9 @@ router.post(
     await Promise.all(
       req.files.map(async (file) => {
         await fs.move(
-          path.join(__dirname, '../public/img/', file.originalname),
+          fileURLToPath(
+            new URL(`../public/img/${file.originalname}`, import.meta.url),
+          ),
           path.join(UPLOAD_DIR, idFolder, file.originalname),
           {
             overwrite: true,
@@ -52,6 +56,7 @@ router.post(
   },
 );
 
+// eslint-disable-next-line consistent-return
 router.get('/result/:idFolder', async (req, res, next) => {
   const { idFolder } = req.params;
 
@@ -84,6 +89,7 @@ router.get('/result/:idFolder', async (req, res, next) => {
   }
 });
 
+// eslint-disable-next-line consistent-return
 router.get('/result/:idFolder/:fileName', async (req, res, next) => {
   const { idFolder, fileName } = req.params;
 
@@ -112,4 +118,4 @@ router.get('/result/:idFolder/:fileName', async (req, res, next) => {
   res.status(200).sendFile(fileName, opts);
 });
 
-module.exports = router;
+export default router;

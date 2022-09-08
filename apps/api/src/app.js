@@ -1,17 +1,17 @@
-const path = require('path');
-const cookieParser = require('cookie-parser');
-const express = require('express');
-const createError = require('http-errors');
-const logger = require('morgan');
+import { fileURLToPath } from 'url';
+import cookieParser from 'cookie-parser';
+import express from 'express';
+import createError from 'http-errors';
+import logger from 'morgan';
 
-const indexRouter = require('./routes/index');
+import indexRouter from './routes/index.js';
 
 const app = express();
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(fileURLToPath(new URL('./public', import.meta.url))));
 
 app.use('/api', indexRouter);
 
@@ -30,4 +30,4 @@ app.use((err, req, res, next) => {
   res.status(err.status || 500).send('');
 });
 
-module.exports = app;
+export default app;

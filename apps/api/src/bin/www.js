@@ -4,41 +4,16 @@
  * Module dependencies.
  */
 
-const debug = require('debug')('yolo:server');
-const http = require('http');
-const dotenv = require('dotenv');
-const app = require('../app');
+import http from 'http';
+import Debug from 'debug';
+import dotenv from 'dotenv';
+import app from '../app.js';
+
+import { io } from '../socket/server.js';
+
+const debug = Debug('yolo:server');
 
 dotenv.config();
-
-/**
- * Get port from environment and store in Express.
- */
-
-const port = normalizePort(process.env.PORT || '3000');
-app.set('port', port);
-
-/**
- * Create HTTP server.
- */
-
-const server = http.createServer(app);
-
-/**
- * Socket.io
- */
-
-const { io } = require('../socket/server.js');
-
-io.attach(server);
-
-/**
- * Listen on provided port, on all network interfaces.
- */
-
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
 
 /**
  * Normalize a port into a number, string, or false.
@@ -59,6 +34,25 @@ function normalizePort(val) {
 
   return false;
 }
+
+/**
+ * Get port from environment and store in Express.
+ */
+
+const port = normalizePort(process.env.PORT || '3000');
+app.set('port', port);
+
+/**
+ * Create HTTP server.
+ */
+
+const server = http.createServer(app);
+
+/**
+ * Socket.io
+ */
+
+io.attach(server);
 
 /**
  * Event listener for HTTP server "error" event.
@@ -95,3 +89,11 @@ function onListening() {
   const bind = typeof addr === 'string' ? `pipe ${addr}` : `port ${addr.port}`;
   debug(`Listening on ${bind}`);
 }
+
+/**
+ * Listen on provided port, on all network interfaces.
+ */
+
+server.listen(port);
+server.on('error', onError);
+server.on('listening', onListening);

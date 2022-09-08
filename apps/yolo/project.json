@@ -1,13 +1,19 @@
 {
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "root": "apps/yolo",
   "sourceRoot": "apps/yolo/src",
   "projectType": "application",
   "targets": {
     "serve": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "./script.py",
+        "command": "poetry run python run.py",
+        "cwd": "apps/yolo/src"
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "poetry run flake8 .",
         "cwd": "apps/yolo/src"
       }
     }

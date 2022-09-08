@@ -19,12 +19,12 @@ torch = "^1.12.1"
 torchvision = "^0.13.1"
 scipy = "^1.9.1"
 yolov5 = "^6.1.8"
-fastapi = "^0.81.0"
+fastapi = "^0.82.0"
 uvicorn = {extras = ["standard"], version = "^0.18.3"}
 
 
 [tool.poetry.dev-dependencies]
-black = {version = "^22.6.0", allow-prereleases = true}
+black = "^22.8.0"
 isort = "^5.10.1"
 flake8 = "^5.0.4"
 mypy = "^0.971"

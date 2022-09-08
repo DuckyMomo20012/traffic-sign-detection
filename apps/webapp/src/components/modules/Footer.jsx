@@ -17,7 +17,7 @@ const Footer = () => {
 
   return (
     <Stack
-      align="stretch"
+      align="center"
       className="children:w-1/2 items-center bg-gray-100 py-20"
     >
       <SimpleGrid cols={3}>

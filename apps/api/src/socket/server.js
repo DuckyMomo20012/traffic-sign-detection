@@ -1,7 +1,7 @@
-const path = require('path');
-const fs = require('fs-extra');
-const { Server } = require('socket.io');
-const { RESULT_DIR } = require('../constants/constants');
+import path from 'path';
+import fs from 'fs-extra';
+import { Server } from 'socket.io';
+import { RESULT_DIR } from '../constants/constants.js';
 
 const io = new Server({
   cors: {
@@ -20,4 +20,4 @@ io.on('connect', (socket) => {
   });
 });
 
-exports.io = io;
+export { io };
