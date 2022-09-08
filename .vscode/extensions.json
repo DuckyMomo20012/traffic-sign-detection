@@ -2,6 +2,11 @@
   "recommendations": [
     "nrwl.angular-console",
     "esbenp.prettier-vscode",
-    "dbaeumer.vscode-eslint"
+    "dbaeumer.vscode-eslint",
+    "voorjaar.windicss-intellisense",
+    "editorconfig.editorconfig",
+    "stkb.rewrap",
+    "ms-python.vscode-pylance",
+    "ms-python.python"
   ]
 }
