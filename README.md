@@ -309,6 +309,8 @@ Please go to folder [training](training/) and read the `README.md` file.
 - [ ] Optimize image preview render performance.
 - [ ] Video support.
 - [ ] Dark mode styling.
+- [ ] Setup Docker.
+- [ ] Deploy the app.
 
 <!-- Contributing -->
 
