@@ -308,7 +308,7 @@ const HomePage = () => {
         <AppShellHeader
           className="flex items-center justify-end"
           height={48}
-          p={24}
+          px={24}
         >
           <Header />
         </AppShellHeader>
