@@ -1,5 +1,25 @@
 {
-  "extends": ["plugin:@nrwl/nx/react", "../../.eslintrc.json"],
+  "extends": [
+    "plugin:@nrwl/nx/react",
+    "plugin:import/typescript",
+    "plugin:jsx-a11y/recommended",
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended",
+    "plugin:react/jsx-runtime",
+    "plugin:@typescript-eslint/recommended",
+    "../../.eslintrc.json"
+  ],
+  "parserOptions": {
+    "babelOptions": {
+      "presets": ["@babel/preset-react"]
+    },
+    "ecmaFeatures": {
+      "ecmaVersion": 2022,
+      "jsx": true
+    },
+    "requireConfigFile": false,
+    "sourceType": "module"
+  },
   "ignorePatterns": ["!**/*"],
   "overrides": [
     {
