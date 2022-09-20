@@ -13,7 +13,7 @@ import {
 import mantineLogo from '@/imgs/mantine-logo-full.svg';
 
 const Footer = () => {
-  const { colorScheme, toggleColorScheme } = useMantineColorScheme();
+  const { colorScheme } = useMantineColorScheme();
   const dark = colorScheme === 'dark';
 
   return (

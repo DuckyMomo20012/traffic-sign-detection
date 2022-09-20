@@ -4,7 +4,7 @@ import { Router } from 'express';
 import fs from 'fs-extra';
 import createError from 'http-errors';
 import { v4 as uuidv4 } from 'uuid';
-import { UPLOAD_DIR, RESULT_DIR } from '../constants/constants.js';
+import { RESULT_DIR, UPLOAD_DIR } from '../constants/constants.js';
 import { uploadImage } from '../services/multer.js';
 import { socket } from '../socket/client.js';
 import { zipFolderSync } from '../utils/zip.js';

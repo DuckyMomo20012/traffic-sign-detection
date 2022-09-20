@@ -1,5 +1,5 @@
 import path from 'path';
-import { Zip, zipSync, AsyncZipDeflate } from 'fflate';
+import { AsyncZipDeflate, Zip, zipSync } from 'fflate';
 import fs from 'fs-extra';
 
 async function zipFolderStream(outputFilePath, folderPath) {

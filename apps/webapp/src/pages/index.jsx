@@ -7,7 +7,6 @@ import {
   Stack,
   Text,
   Title,
-  useMantineColorScheme,
 } from '@mantine/core';
 import axios from 'axios';
 import { saveAs } from 'file-saver';
@@ -31,9 +30,7 @@ import {
 import { fetchImage } from '@/utils/fetchImage.js';
 
 const HomePage = () => {
-  const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const form = useForm({ criteriaMode: 'all', mode: 'onChange' });
-  const dark = colorScheme === 'dark';
   const [files, setFiles] = useState([]);
   // const files = useWatch({ control, name: 'data-image' });
   const [error, setError] = useState('');
