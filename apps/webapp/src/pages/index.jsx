@@ -1,15 +1,12 @@
 import { Icon } from '@iconify/react';
 import {
   Alert,
-  AppShell,
   Button,
   Group,
-  Header as AppShellHeader,
   SimpleGrid,
   Stack,
   Text,
   Title,
-  Footer as AppShellFooter,
   useMantineColorScheme,
 } from '@mantine/core';
 import axios from 'axios';
@@ -20,8 +17,6 @@ import { useDispatch } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 import { ImagePreview } from '@/components/elements/ImagePreview/ImagePreview';
 import { StepProgress } from '@/components/elements/StepProgress';
-import { Footer } from '@/components/layouts/Footer';
-import { Header } from '@/components/layouts/Header';
 import { DownloadMenu } from '@/components/modules/DownloadMenu';
 import { Faq } from '@/components/modules/Faq';
 import { SubmitForm } from '@/components/modules/SubmitForm';
@@ -29,9 +24,9 @@ import { MAX_FILES } from '@/constants/constants.js';
 import { socket } from '@/socket/socket.js';
 import {
   nextStep,
-  setStepLoading,
-  setStepError,
   resetSteps,
+  setStepError,
+  setStepLoading,
 } from '@/store/slice/stepperSlice';
 import { fetchImage } from '@/utils/fetchImage.js';
 
@@ -298,22 +293,7 @@ const HomePage = () => {
   };
 
   return (
-    <AppShell
-      footer={
-        <AppShellFooter className="!static">
-          <Footer />
-        </AppShellFooter>
-      }
-      header={
-        <AppShellHeader
-          className="flex items-center justify-end"
-          height={48}
-          px={24}
-        >
-          <Header />
-        </AppShellHeader>
-      }
-    >
+    <>
       <Stack align="center">
         <Title className="text-5xl">
           Detect your{' '}
@@ -389,7 +369,7 @@ const HomePage = () => {
         </SimpleGrid>
       </Stack>
       <Faq />
-    </AppShell>
+    </>
   );
 };
 
