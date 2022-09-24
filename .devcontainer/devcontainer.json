@@ -1,0 +1,43 @@
+{
+  "name": "my-project-devcontainer",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu", // Any generic, debian-based image.
+  // 5173 port for Vite
+  "forwardPorts": [5173],
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {
+      "version": "latest"
+    },
+    "ghcr.io/devcontainers/features/python:1": {
+      "version": "3.9"
+    },
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "lts"
+    }
+  },
+  "postCreateCommand": "curl -sSL https://install.python-poetry.org | python3 -",
+  "customizations": {
+    // Configure properties specific to VS Code.
+    "vscode": {
+      "settings": {},
+      // Add the IDs of extensions you want installed when the container is created.
+      "extensions": [
+        "nrwl.angular-console",
+        "editorconfig.editorconfig",
+        "ms-python.vscode-pylance",
+        "ms-python.python",
+        "formulahendry.auto-rename-tag",
+        "ms-playwright.playwright",
+        "esbenp.prettier-vscode",
+        "stkb.rewrap",
+        "zixuanchen.vitest-explorer",
+        "voorjaar.windicss-intellisense",
+        "eamodio.gitlens",
+        "dbaeumer.vscode-eslint",
+        "usernamehw.errorlens",
+        "mikestead.dotenv",
+        "naumovs.color-highlight",
+        "streetsidesoftware.code-spell-checker"
+      ]
+    }
+  }
+}
