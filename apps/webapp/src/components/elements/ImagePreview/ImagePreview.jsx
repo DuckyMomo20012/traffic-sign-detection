@@ -6,7 +6,7 @@ import { ImageMenu } from './ImageMenu.jsx';
 import { ImageResizer } from './ImageResizer.jsx';
 
 const ImagePreview = ({ caption, src, onRemoveClick, onDownloadClick }) => {
-  const { ref, width, height } = useElementSize();
+  const { ref, width } = useElementSize();
 
   const [isImageLoaded, setIsImageLoaded] = useState(false);
   const [isModalOpened, modalHandlers] = useDisclosure(false);

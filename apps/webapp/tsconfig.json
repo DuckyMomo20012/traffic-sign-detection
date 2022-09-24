@@ -13,6 +13,7 @@
     "noFallthroughCasesInSwitch": true,
     "baseUrl": "./src",
     "paths": {
+      "@/*": ["*"],
       "@/constants/*": ["constants/*"],
       "@/context/*": ["context/*"],
       "@/hooks/*": ["hooks/*"],
@@ -20,10 +21,11 @@
       "@/utils/*": ["utils/*"],
       "@/routes/*": ["routes/*"],
       "@/pages/*": ["pages/*"],
+      "@/components/*": ["components/*"],
       "@/elements/*": ["components/elements/*"],
       "@/layouts/*": ["components/layouts/*"],
       "@/modules/*": ["components/modules/*"],
-      "@/lib/*": ["../lib/*"]
+      "@/libs/*": ["libs/*"]
     }
   },
   "files": [],

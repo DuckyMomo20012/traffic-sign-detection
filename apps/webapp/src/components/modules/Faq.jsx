@@ -2,13 +2,13 @@ import { Icon } from '@iconify/react';
 import {
   Accordion,
   Anchor,
-  Stack,
-  Title,
-  Text,
   List,
-  ThemeIcon,
-  Space,
   ScrollArea,
+  Space,
+  Stack,
+  Text,
+  ThemeIcon,
+  Title,
 } from '@mantine/core';
 
 const Faq = () => {
