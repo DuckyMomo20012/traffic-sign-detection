@@ -10,15 +10,16 @@
     "../../.eslintrc.json"
   ],
   "parserOptions": {
-    "babelOptions": {
-      "presets": ["@babel/preset-react"]
-    },
     "ecmaFeatures": {
-      "ecmaVersion": 2022,
       "jsx": true
     },
-    "requireConfigFile": false,
+    "ecmaVersion": "latest",
     "sourceType": "module"
+  },
+  "plugins": ["react", "import", "prettier"],
+  "rules": {
+    "react/jsx-sort-props": "warn",
+    "react/prop-types": "off"
   },
   "ignorePatterns": ["!**/*"],
   "overrides": [
