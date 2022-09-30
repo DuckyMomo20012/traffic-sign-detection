@@ -8,13 +8,11 @@
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "ecmaFeatures": {
-      "ecmaVersion": 2022
-    },
-    "requireConfigFile": false,
+    "ecmaFeatures": {},
+    "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "plugins": ["import", "@nrwl/nx", "react"],
+  "plugins": ["import", "@nrwl/nx", "prettier"],
   "rules": {
     "eqeqeq": "warn",
     "import/extensions": "off",
@@ -48,7 +46,6 @@
         "endOfLine": "auto"
       }
     ],
-    "react/prop-types": "off",
     "require-await": "warn",
     "sort-imports": [
       "warn",
