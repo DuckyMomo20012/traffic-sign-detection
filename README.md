@@ -133,10 +133,10 @@
 
 - Python: `>= 3.9`.
 
-- This project uses [Yarn](https://yarnpkg.com/) as package manager:
+- This project uses [pnpm](https://pnpm.io/) as package manager:
 
   ```bash
-  npm install --global yarn
+  npm install --global pnpm
   ```
 
 - This project uses [Poetry](https://python-poetry.org/) as package manager:
@@ -171,7 +171,7 @@ Install dependencies:
 - **webapp and api:**
 
   ```bash
-  yarn
+  pnpm install
   ```
 
 - **yolo:**
@@ -185,7 +185,7 @@ Install dependencies:
 Start all apps:
 
 > **Note**: Install `nx` globally to invoke the command directly using `nx`, or
-> use `yarn nx`.
+> use `pnpx nx`.
 
 ```bash
 nx run-many --target=serve
@@ -196,7 +196,7 @@ Start each app manually:
 > **Note**: `webapp`, `api`, and `yolo` needs to be **run concurrently**.
 
 > **Note**: Install `nx` globally to invoke the command directly using `nx`, or
-> use `yarn nx`.
+> use `pnpx nx`.
 
 - **web:**
 
