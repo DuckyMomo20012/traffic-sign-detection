@@ -1,5 +1,15 @@
 {
   "extends": ["../../.eslintrc.json"],
+  "plugins": ["import"],
+  "rules": {
+    "import/no-extraneous-dependencies": [
+      "warn",
+      {
+        "devDependencies": true,
+        "packageDir": ["./"]
+      }
+    ]
+  },
   "ignorePatterns": ["!**/*"],
   "overrides": [
     {
