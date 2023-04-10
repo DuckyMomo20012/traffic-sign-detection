@@ -17,11 +17,17 @@ env = Env()
 # Read .env into os.environ
 env.read_env()
 
-app = FastAPI()
+# Use this to register FastAPI routes
+api = FastAPI()
 
-# create a Socket.IO Async server
+# Use this to register Socket.IO events
 sio = socketio.AsyncServer(async_mode="asgi")
-app = socketio.ASGIApp(sio)
+
+app = socketio.ASGIApp(sio, api)
+
+# @api.get("/")
+# async def index():
+#     return "Hello World"
 
 # NOTE: Have to put this here, so socket io events can read "app.model"
 modelFileName = "./model/best.pt"
